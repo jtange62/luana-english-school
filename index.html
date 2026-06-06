@@ -20,7 +20,7 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   html { scroll-behavior: smooth; }
-  section { scroll-margin-top: 100px; }
+  section { scroll-margin-top: 130px; }
 
   body {
     font-family: 'Nunito', sans-serif;
@@ -81,7 +81,7 @@
       z-index: 99;
     }
     .nav-links.open a { font-size: 1.1rem; padding: 12px 16px; text-align: center; }
-    section { padding: 60px 16px; scroll-margin-top: 160px; }
+    section { padding: 20px 16px 60px; scroll-margin-top: 150px; }
     .about-grid, .classes-grid, .summer-weeks { grid-template-columns: 1fr; }
     .summer-pricing { grid-template-columns: 1fr; padding: 24px; }
     .hero h1 { font-size: 2.4rem; }
@@ -709,7 +709,7 @@
 @keyframes shimmer { 0%{background-position:0% 50%} 100%{background-position:200% 50%} }
 </style>
 <script>
-function _fixNavTop(){var b=document.getElementById('summer-banner'),n=document.querySelector('nav');if(b&&n){var bh=b.offsetHeight;n.style.top=bh+'px';document.documentElement.style.scrollPaddingTop=(bh+n.offsetHeight)+'px';}}
+function _fixNavTop(){var b=document.getElementById('summer-banner'),n=document.querySelector('nav');if(b&&n)n.style.top=b.offsetHeight+'px';}
 document.addEventListener('DOMContentLoaded',_fixNavTop);
 window.addEventListener('resize',_fixNavTop);
 </script>
