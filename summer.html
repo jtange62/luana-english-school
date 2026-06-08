@@ -16,8 +16,8 @@
 
   .banner {
     position:fixed; top:0; left:0; width:100%; z-index:200;
-    background: Linear-gradient(90deg, #FF7F6E, #FFD95A, #FF7F6E);
-    background-size:200% 100%; animation: shimmer 3s Linear infinite;
+    background: linear-gradient(90deg, #FF7F6E, #FFD95A, #FF7F6E);
+    background-size:200% 100%; animation: shimmer 3s linear infinite;
     text-align:center; padding:10px 20px;
     font-family:'Baloo 2',cursive; font-weight:800; font-size:0.95rem; color:#7A4A0A;
   }
@@ -53,59 +53,48 @@
 
   /* Reuse summer CSS from main site */
   .summer {
-    background: Linear-gradient(135deg, #FFD95A 0%, #FF9F6E 100%);
+    background: linear-gradient(135deg, #FFD95A 0%, #FF9F6E 100%);
     position: relative; overflow: hidden; padding: 80px 20px;
   }
   .summer::before {
     content: '☀️'; position: absolute; top: -20px; right: 60px;
-    font-size: 8rem; opacity: 0.15; animation: spin 20s Linear infinite;
+    font-size: 8rem; opacity: 0.15; animation: spin 20s linear infinite;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
   .container { max-width: 1100px; margin: 0 auto; }
   .section-tag {
-    display: inLine-block; background: white;
+    display: inline-block; background: white;
     font-weight: 800; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase;
     padding: 5px 16px; border-radius: 20px; margin-bottom: 14px;
     box-shadow: 2px 2px 0 rgba(0,0,0,0.15);
   }
   .section-title {
     font-family:'Baloo 2',cursive; font-size:clamp(2rem,4vw,2.8rem);
-    font-weight:800; Line-height:1.15; margin-bottom:14px; color:white;
+    font-weight:800; line-height:1.15; margin-bottom:14px; color:white;
   }
-  .section-sub { font-size:1.05rem; color:rgba(255,255,255,0.85); Line-height:1.7; max-width:580px; }
+  .section-sub { font-size:1.05rem; color:rgba(255,255,255,0.85); line-height:1.7; max-width:580px; }
   .summer-weeks {
     display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:50px;
   }
   .week-card { background:rgba(255,255,255,0.95); border-radius:24px; padding:28px 24px; }
-  .week-num { font-family:'Baloo 2',cursive; font-size:1rem; font-weight:800; letter-spacing:1px; text-transform:uppercase; color:var(--coral); margin-bottom:10px; text-decoration:underline; }
-  .week-Theme { font-family:'Baloo 2',cursive; font-size:1.35rem; font-weight:800; margin-bottom:6px; }
+  .week-num { font-family:'Baloo 2',cursive; font-size:0.75rem; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--coral); margin-bottom:8px; }
+  .week-theme { font-family:'Baloo 2',cursive; font-size:1.35rem; font-weight:800; margin-bottom:6px; }
   .week-dates { font-size:0.85rem; color:#888; font-weight:700; margin-bottom:16px; }
-  .week-trip { background:var(--cream); padding:10px 14px; border-radius:12px; font-size:0.85rem; font-weight:700; }
-  .week-trip-label { display:flex; align-items:center; gap:8px; }
-  .week-trip-dest { display:block; margin-top:4px; padding-left:24px; color:var(--coral); font-weight:800; font-size:0.9rem; }
+  .week-trip { display:flex; align-items:center; gap:8px; background:var(--cream); padding:10px 14px; border-radius:12px; font-size:0.85rem; font-weight:700; }
   .summer-pricing {
     background:rgba(255,255,255,0.95); border-radius:28px; padding:40px;
     margin-top:40px; display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:center;
   }
   .pricing-table { width:100%; border-collapse:collapse; }
-  .pricing-table th { font-size:0.8rem; font-weight:800; letter-spacing:1px; text-transform:uppercase; color:#888; padding:10px; text-align:left; border-bottom:2px solid #eee; white-space:nowrap; }
-  .pricing-table td { padding:14px 10px; border-bottom:1px solid #f0f0f0; font-weight:700; white-space:nowrap; }
+  .pricing-table th { font-size:0.8rem; font-weight:800; letter-spacing:1px; text-transform:uppercase; color:#888; padding:10px; text-align:left; border-bottom:2px solid #eee; }
+  .pricing-table td { padding:14px 10px; border-bottom:1px solid #f0f0f0; font-weight:700; }
   .pricing-table td:not(:first-child) { font-size:1.1rem; }
   .pricing-table tr:last-child td { border-bottom:none; }
   .price-highlight { color:var(--coral); font-size:1.2rem !important; }
   .pricing-info h3 { font-family:'Baloo 2',cursive; font-size:1.5rem; font-weight:800; margin-bottom:12px; }
-  .pricing-info p { font-size:0.95rem; color:#555; Line-height:1.7; margin-bottom:12px; }
+  .pricing-info p { font-size:0.95rem; color:#555; line-height:1.7; margin-bottom:12px; }
   .ext-price { background:var(--cream); border-radius:14px; padding:14px 18px; font-size:0.9rem; }
   .ext-price strong { display:block; font-size:1rem; margin-bottom:4px; }
-  .price-cell { display:flex; align-items:center; gap:8px; white-space:nowrap; }
-  .price-value { display:inline-block; min-width:5.5em; }
-  .off-badge {
-    background:var(--coral); color:white;
-    font-family:'Baloo 2',cursive; font-weight:800; font-size:0.7rem;
-    line-height:1.3; text-align:center;
-    padding:4px 8px; border-radius:20px;
-    display:inline-block; white-space:nowrap; flex-shrink:0;
-  }
 
   /* Schedule */
   .schedule { background:white; padding:80px 20px; }
@@ -129,7 +118,7 @@
   /* CTA */
   .cta-section { background:var(--cream); padding:60px 20px; text-align:center; }
   .cta-btn {
-    display:inLine-block; background:var(--coral); color:white;
+    display:inline-block; background:var(--coral); color:white;
     font-weight:800; font-size:1.05rem; padding:18px 44px; border-radius:40px;
     text-decoration:none; box-shadow:0 6px 0 #c9503f; transition:all 0.15s;
     font-family:'Baloo 2',cursive;
@@ -145,7 +134,7 @@
   @media(max-width: 600px) {
     /* Typography */
     body { font-size: 15px; }
-    .hero h1 { font-size: 2rem; Line-height: 1.2; }
+    .hero h1 { font-size: 2rem; line-height: 1.2; }
     .hero-school-name { font-size: 1.8rem; padding: 6px 20px; }
     .hero-sub { font-size: 0.95rem; padding: 0 8px; }
     .section-title { font-size: 1.6rem; }
@@ -190,9 +179,27 @@
     .summer-pricing { padding: 20px; gap: 24px; }
     .summer-weeks { grid-template-columns: 1fr; gap: 16px; }
 
+    /* Pricing table → stacked cards on mobile */
+    .pricing-table thead { display: none; }
+    .pricing-table tbody tr {
+      display: flex; flex-wrap: wrap; align-items: baseline;
+      gap: 0 16px; padding: 12px 0; border-bottom: 1px solid #f0f0f0;
+    }
+    .pricing-table tbody tr:last-child { border-bottom: none; }
+    .pricing-table td { display: inline-flex; flex-direction: column; border-bottom: none; padding: 0; }
+    .pricing-table td:first-child {
+      width: 100%; font-size: 0.75rem; text-transform: uppercase;
+      letter-spacing: 0.8px; color: #aaa; font-weight: 800; margin-bottom: 4px;
+    }
+    .pricing-table td[data-label]::before {
+      content: attr(data-label); font-size: 0.7rem; color: #bbb; font-weight: 700; margin-bottom: 2px;
+    }
+    .price-highlight { font-size: 1.1rem !important; }
+    .pricing-table td:not(:first-child) { font-size: 1rem !important; }
+
     /* Activity cards */
-    .Activity-card { flex-direction: column; padding: 20px; gap: 12px; }
-    .Activity-icon { width: 48px; height: 48px; font-size: 1.6rem; }
+    .activity-card { flex-direction: column; padding: 20px; gap: 12px; }
+    .activity-icon { width: 48px; height: 48px; font-size: 1.6rem; }
 
     /* Tabs */
     .tabs { flex-direction: column; gap: 8px; }
@@ -230,7 +237,6 @@
     <li><a href="summer.html">Summer School</a></li>
     <li><a href="gallery.html">Gallery</a></li>
     <li><a href="fees.html">Fees</a></li>
-    <li><a href="newsletter.html">Newsletter</a></li>
     <li><a href="index.html#contact">Contact</a></li>
   </ul></div>
   <button class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">
@@ -250,26 +256,20 @@
         <div class="week-card">
           <div class="week-num">Week 1 • 7/27 – 7/31</div>
           <div class="week-theme">🌎 Festivals of the World</div>
-          <div class="week-trip">
-            <div class="week-trip-label">🏛 フィールドトリップ</div>
-            <span class="week-trip-dest">7/31 Team Labs</span>
-          </div>
+          <div class="week-dates">7月27日（日）〜 7月30日（水）</div>
+          <div class="week-trip">🏛 フィールドトリップ｜7/31 Team Lab</div>
         </div>
         <div class="week-card">
           <div class="week-num">Week 2 • 8/3 – 8/7</div>
           <div class="week-theme">🐠 Ocean Explorers</div>
-          <div class="week-trip">
-            <div class="week-trip-label">🐟 フィールドトリップ</div>
-            <span class="week-trip-dest">8/7 Enoshima Aquarium</span>
-          </div>
+          <div class="week-dates">8月3日（日）〜 8月6日（水）</div>
+          <div class="week-trip">🐟 フィールドトリップ｜8/7 Aquarium</div>
         </div>
         <div class="week-card">
           <div class="week-num">Week 3 • 8/17 – 8/21</div>
           <div class="week-theme">🧭 Adventure Survival</div>
-          <div class="week-trip">
-            <div class="week-trip-label">🦕 フィールドトリップ</div>
-            <span class="week-trip-dest">8/21 Hugtratops</span>
-          </div>
+          <div class="week-dates">8月17日（日）〜 8月20日（水）</div>
+          <div class="week-trip">🦕 フィールドトリップ｜8/21 Hugtratops</div>
         </div>
       </div>
 
@@ -278,16 +278,20 @@
           <h3>💰 受講料金</h3>
           <p>内部生の方には特別割引をご用意しています。複数週お申し込みでさらにお得！</p>
           <table class="pricing-table">
-            <tr><th>期間</th><th>内部生</th><th>外部生</th></tr>
-            <tr><td>1 Week</td><td class="price-highlight">¥49,800</td><td>¥55,000</td></tr>
-            <tr><td>2 Weeks</td><td class="price-highlight"><span class="price-cell"><span class="price-value">¥97,600</span><span class="off-badge">¥2000 OFF</span></span></td><td>¥108,000</td></tr>
-            <tr><td>3 Weeks</td><td class="price-highlight"><span class="price-cell"><span class="price-value">¥145,400</span><span class="off-badge">さらに¥2000 OFF</span></span></td><td>¥161,000</td></tr>
+            <thead><tr><th>期間</th><th>内部生</th><th>外部生</th></tr></thead>
+            <tbody>
+              <tr><td>1 Week</td><td class="price-highlight" data-label="内部生">¥49,800</td><td data-label="外部生">¥55,000</td></tr>
+              <tr><td>2 Weeks</td><td class="price-highlight" data-label="内部生">¥97,600</td><td data-label="外部生">¥108,000</td></tr>
+              <tr><td>3 Weeks</td><td class="price-highlight" data-label="内部生">¥145,400</td><td data-label="外部生">¥161,000</td></tr>
+            </tbody>
           </table>
         </div>
         <div class="pricing-info">
+          <h3>⏰ 時間 &amp; 延長</h3>
+          <p>通常時間：9:30 – 14:00<br>延長コース：9:30 – 18:00（+¥2,000 OFF）</p>
           <div class="ext-price">
-            <strong>🕑 Summer Schoolの後の延長Lesson　14:00 – 18:00</strong>
-            4時間 ¥4,000 ／ 1時間 ¥1,200
+            <strong>🕑 延長レッスン</strong>
+            4時間パック ¥4,000<br>1時間単位 ¥1,200
           </div>
         </div>
       </div>
@@ -301,7 +305,7 @@
       <p style="font-size:1.05rem;color:#666;line-height:1.7;max-width:580px;margin:0 auto;">サマースクールの1日の流れをご紹介します。</p>
       <div class="schedule-timeline">
         <div class="timeline-item"><div class="time-bubble">9:30</div><div class="timeline-content"><h4>Arrival</h4><p>登校・朝のあいさつ</p></div></div>
-        <div class="timeline-item"><div class="time-bubble">9:45</div><div class="timeline-content"><h4>Warm Up</h4><p>朝のサークルタイム・英語のウォームアップ</p></div></div>
+        <div class="timeline-item"><div class="time-bubble">9:45</div><div class="timeline-content"><h4>Circle Time</h4><p>朝のサークルタイム・英語のウォームアップ</p></div></div>
         <div class="timeline-item"><div class="time-bubble">10:15</div><div class="timeline-content"><h4>Theme Activity 1</h4><p>テーマ別アクティビティ（午前の部）</p></div></div>
         <div class="timeline-item"><div class="time-bubble">11:30</div><div class="timeline-content"><h4>Lunch Time 🍱</h4><p>みんなでランチ</p></div></div>
         <div class="timeline-item"><div class="time-bubble">12:30</div><div class="timeline-content"><h4>Theme Activity 2</h4><p>テーマ別アクティビティ（午後の部）</p></div></div>
@@ -314,7 +318,7 @@
   <div class="cta-section">
     <h2 style="font-family:'Baloo 2',cursive;font-size:1.8rem;font-weight:800;color:var(--brown);margin-bottom:12px;">✨ 今すぐ申し込もう！</h2>
     <p style="color:#666;margin-bottom:28px;">定員に限りがございます。お早めにお申し込みください。</p>
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdOMr6tBK_ql0omv56ILcO3X_gxkgirsDRfkBSVzMbuwPGG7A/viewform?usp=header" target="_blank" class="cta-btn">体験レッスンを申し込む</a>
+    <a href="index.html#contact" class="cta-btn">体験レッスンを申し込む</a>
   </div>
 
 </div>
