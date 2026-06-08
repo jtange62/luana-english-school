@@ -503,6 +503,25 @@
   .timeLine-content h4 { font-weight: 800; margin-bottom: 3px; }
   .timeLine-content p { font-size: 0.9rem; color: #777; }
 
+  /* ── ACCESS ── */
+  .access { background: var(--cream); }
+  .access-card {
+    display: grid; grid-template-columns: 220px 1fr; gap: 40px;
+    background: white; border-radius: 28px; padding: 40px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    margin-top: 40px; align-items: center;
+  }
+  .address-label {
+    font-size: 0.75rem; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 1.5px; color: #aaa; margin-bottom: 6px;
+  }
+  .address-text { font-size: 1.15rem; font-weight: 700; color: var(--dark); line-height: 1.7; }
+  .access-map iframe { width: 100%; height: 300px; border: 0; border-radius: 18px; display: block; }
+  @media(max-width: 700px) {
+    .access-card { grid-template-columns: 1fr; gap: 24px; padding: 24px; }
+    .access-map iframe { height: 220px; }
+  }
+
   /* ── CONTACT ── */
   .contact {
     background: Linear-gradient(160deg, #F0FBFF, #FFF0F0);
@@ -725,6 +744,7 @@ window.addEventListener('resize',_fixNavTop);
     <li><a href="fees.html">Fees</a></li>
     <li><a href="newsletter.html">Newsletter</a></li>
     <li><a href="index.html#contact">Contact</a></li>
+    <li><a href="index.html#access">Access</a></li>
   </ul>
 </nav>
 <script>
@@ -1012,6 +1032,26 @@ document.querySelectorAll(".nav-links a").forEach(link => {
       </a>
     </div>
 
+  </div>
+</section>
+
+<!-- ACCESS -->
+<section class="access" id="access">
+  <div class="container">
+    <div class="section-tag" style="background:var(--sun);box-shadow:2px 2px 0 var(--coral);">📍 Access</div>
+    <h2 class="section-title">場所・アクセス</h2>
+    <div class="access-card">
+      <div class="access-address">
+        <div class="address-label">住所</div>
+        <p class="address-text">府中市住吉町 1-24-19<br>1F</p>
+      </div>
+      <div class="access-map">
+        <iframe
+          src="https://maps.google.com/maps?q=東京都府中市住吉町1-24-19&output=embed&z=16"
+          allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+    </div>
   </div>
 </section>
 
