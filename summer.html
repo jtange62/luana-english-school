@@ -190,6 +190,26 @@
     .summer-pricing { padding: 20px; gap: 24px; }
     .summer-weeks { grid-template-columns: 1fr; gap: 16px; }
 
+    /* Pricing table → stacked rows on mobile */
+    .pricing-table thead { display: none; }
+    .pricing-table tbody tr {
+      display: flex; flex-wrap: wrap; align-items: flex-end;
+      gap: 0 20px; padding: 12px 0; border-bottom: 1px solid #f0f0f0;
+    }
+    .pricing-table tbody tr:last-child { border-bottom: none; }
+    .pricing-table td { display: flex; flex-direction: column; border-bottom: none; padding: 0; white-space: normal; }
+    .pricing-table td:first-child {
+      width: 100%; font-size: 0.72rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.8px; color: #aaa; margin-bottom: 6px;
+    }
+    .pricing-table td[data-label]::before {
+      content: attr(data-label); font-size: 0.68rem; color: #bbb; font-weight: 700; margin-bottom: 3px;
+    }
+    .price-highlight { font-size: 1rem !important; }
+    .pricing-table td:not(:first-child) { font-size: 0.95rem !important; }
+    .price-cell { flex-wrap: wrap; gap: 4px 6px; }
+    .off-badge { font-size: 0.6rem; padding: 3px 7px; }
+
     /* Activity cards */
     .Activity-card { flex-direction: column; padding: 20px; gap: 12px; }
     .Activity-icon { width: 48px; height: 48px; font-size: 1.6rem; }
@@ -278,10 +298,12 @@
           <h3>💰 受講料金</h3>
           <p>内部生の方には特別割引をご用意しています。複数週お申し込みでさらにお得！</p>
           <table class="pricing-table">
-            <tr><th>期間</th><th>内部生</th><th>外部生</th></tr>
-            <tr><td>1 Week</td><td class="price-highlight">¥49,800</td><td>¥55,000</td></tr>
-            <tr><td>2 Weeks</td><td class="price-highlight"><span class="price-cell"><span class="price-value">¥97,600</span><span class="off-badge">¥2000 OFF</span></span></td><td>¥108,000</td></tr>
-            <tr><td>3 Weeks</td><td class="price-highlight"><span class="price-cell"><span class="price-value">¥145,400</span><span class="off-badge">さらに¥2000 OFF</span></span></td><td>¥161,000</td></tr>
+            <thead><tr><th>期間</th><th>内部生</th><th>外部生</th></tr></thead>
+            <tbody>
+              <tr><td>1 Week</td><td class="price-highlight" data-label="内部生">¥49,800</td><td data-label="外部生">¥55,000</td></tr>
+              <tr><td>2 Weeks</td><td class="price-highlight" data-label="内部生"><span class="price-cell"><span class="price-value">¥97,600</span><span class="off-badge">¥2000 OFF</span></span></td><td data-label="外部生">¥108,000</td></tr>
+              <tr><td>3 Weeks</td><td class="price-highlight" data-label="内部生"><span class="price-cell"><span class="price-value">¥145,400</span><span class="off-badge">さらに¥2000 OFF</span></span></td><td data-label="外部生">¥161,000</td></tr>
+            </tbody>
           </table>
         </div>
         <div class="pricing-info">
