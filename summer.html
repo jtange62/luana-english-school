@@ -91,6 +91,11 @@
   .pricing-table td:not(:first-child) { font-size:1.1rem; }
   .pricing-table tr:last-child td { border-bottom:none; }
   .price-highlight { color:var(--coral); font-size:1.2rem !important; }
+  .discount-badge {
+    display:inline-block; background:var(--coral); color:#fff;
+    font-size:0.62rem; font-weight:800; padding:2px 8px;
+    border-radius:20px; letter-spacing:0.3px; vertical-align:middle; white-space:nowrap;
+  }
   .pricing-info h3 { font-family:'Baloo 2',cursive; font-size:1.5rem; font-weight:800; margin-bottom:12px; }
   .pricing-info p { font-size:0.95rem; color:#555; line-height:1.7; margin-bottom:12px; }
   .ext-price { background:var(--cream); border-radius:14px; padding:14px 18px; font-size:0.9rem; }
@@ -281,8 +286,8 @@
             <thead><tr><th>期間</th><th>内部生</th><th>外部生</th></tr></thead>
             <tbody>
               <tr><td>1 Week</td><td class="price-highlight" data-label="内部生">¥49,800</td><td data-label="外部生">¥55,000</td></tr>
-              <tr><td>2 Weeks</td><td class="price-highlight" data-label="内部生">¥97,600</td><td data-label="外部生">¥108,000</td></tr>
-              <tr><td>3 Weeks</td><td class="price-highlight" data-label="内部生">¥145,400</td><td data-label="外部生">¥161,000</td></tr>
+              <tr><td>2 Weeks</td><td class="price-highlight" data-label="内部生">¥97,600 <span class="discount-badge">¥2,000 OFF</span></td><td data-label="外部生">¥108,000</td></tr>
+              <tr><td>3 Weeks</td><td class="price-highlight" data-label="内部生">¥145,400 <span class="discount-badge">さらに ¥2,000 OFF</span></td><td data-label="外部生">¥161,000</td></tr>
             </tbody>
           </table>
         </div>
