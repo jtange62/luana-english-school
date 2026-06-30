@@ -87,6 +87,34 @@
   }
   .ig-btn:hover { transform:translateY(-2px); opacity:0.92; }
 
+  /* Section headings */
+  .section-block { margin-bottom:60px; }
+  .section-heading {
+    font-family:'Baloo 2',cursive; font-weight:800; font-size:1.5rem;
+    color:var(--brown); margin-bottom:20px;
+    display:flex; align-items:center; gap:12px;
+  }
+  .section-heading::after {
+    content:''; flex:1; height:2px;
+    background:linear-gradient(to right, var(--mint), transparent);
+    border-radius:2px;
+  }
+
+  /* Month sticky pill */
+  .month-pill {
+    position:sticky; top:120px; z-index:50;
+    display:flex; justify-content:center;
+    pointer-events:none; margin-bottom:16px;
+  }
+  .month-pill span {
+    background:rgba(45,45,45,0.75); backdrop-filter:blur(6px);
+    color:white; font-family:'Baloo 2',cursive; font-weight:700;
+    font-size:0.85rem; padding:5px 18px; border-radius:20px;
+    letter-spacing:0.5px;
+  }
+
+  .month-group { margin-bottom:8px; }
+
   /* Photo grid */
   .photo-grid {
     display:grid;
@@ -95,44 +123,45 @@
   }
 
   .photo-item {
-    aspect-ratio:1;
-    border-radius:16px;
-    overflow:hidden;
-    background:white;
-    display:flex; align-items:center; justify-content:center;
-    position:relative;
-    cursor:pointer;
+    aspect-ratio:1; border-radius:16px; overflow:hidden;
+    background:white; display:flex; align-items:center; justify-content:center;
+    position:relative; cursor:pointer;
     transition:transform 0.2s, box-shadow 0.2s;
   }
   .photo-item:hover { transform:scale(1.02); box-shadow:0 6px 20px rgba(0,0,0,0.12); }
-
-  .photo-item img {
-    width:100%; height:100%; object-fit:cover; display:block;
-  }
-
-  /* Placeholder styling for when no image yet */
-  .photo-item.placeholder {
-    background:Linear-gradient(135deg, #E8F8FF, #FFF3D6);
-    border:2px dashed #cce8f4;
-    flex-direction:column; gap:8px;
-    cursor:default;
-  }
-  .photo-item.placeholder:hover { transform:none; box-shadow:none; }
-  .photo-item.placeholder .ph-emoji { font-size:2.2rem; opacity:0.5; }
-  .photo-item.placeholder .ph-text { font-size:0.75rem; color:#aaa; font-weight:700; font-family:'Baloo 2',cursive; }
-
-  /* Add photo instruction */
-  .add-note {
-    text-align:center; margin-top:32px;
-    background:white; border-radius:20px; padding:24px;
-    border:2px dashed #cce8f4; color:#aaa; font-size:0.85rem; Line-height:1.7;
-  }
-  .add-note strong { color:var(--brown); display:block; margin-bottom:6px; font-size:0.95rem; }
+  .photo-item img { width:100%; height:100%; object-fit:cover; display:block; }
 
   @media(max-width:600px) {
     .photo-grid { grid-template-columns:repeat(2,1fr); gap:8px; }
     .photo-item { border-radius:12px; }
+    .month-pill { top:100px; }
   }
+
+  /* Lightbox */
+  .lb-overlay {
+    display:none; position:fixed; inset:0; z-index:1000;
+    background:rgba(0,0,0,0.88); align-items:center; justify-content:center;
+  }
+  .lb-overlay.open { display:flex; }
+  .lb-img {
+    max-width:92vw; max-height:88vh; border-radius:12px;
+    box-shadow:0 8px 40px rgba(0,0,0,0.5); object-fit:contain;
+  }
+  .lb-close {
+    position:absolute; top:16px; right:20px;
+    background:none; border:none; color:white; font-size:2rem;
+    cursor:pointer; line-height:1; opacity:0.8;
+  }
+  .lb-close:hover { opacity:1; }
+  .lb-arrow {
+    position:absolute; top:50%; transform:translateY(-50%);
+    background:rgba(255,255,255,0.15); border:none; color:white;
+    font-size:2rem; cursor:pointer; padding:12px 16px; border-radius:8px;
+    transition:background 0.2s;
+  }
+  .lb-arrow:hover { background:rgba(255,255,255,0.3); }
+  .lb-prev { left:12px; }
+  .lb-next { right:12px; }
 </style>
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-YBX9T1NJEL"></script>
@@ -207,41 +236,108 @@ window.addEventListener('resize',_fixNavTop);
     </a>
   </div>
 
-  <div class="photo-grid">
-    <div class="photo-item"><img src="photos/photo-01.jpg" alt="英語の授業風景 - Luana English School 府中市"></div>
-    <div class="photo-item"><img src="photos/photo-02.jpg" alt="子どもたちが英語で遊ぶ様子 - Luana English School"></div>
-    <div class="photo-item"><img src="photos/photo-03.jpg" alt="ネイティブ講師との英語レッスン - 府中市"></div>
-    <div class="photo-item"><img src="photos/photo-04.jpg" alt="工作・クラフトアクティビティ - Luana English School" loading="lazy"></div>
-    <div class="photo-item"><img src="photos/photo-05.jpg" alt="フォニックス学習の様子 - Luana English School 府中市" loading="lazy"></div>
-    <div class="photo-item"><img src="photos/photo-06.jpg" alt="サークルタイムの英語授業 - 府中市中河原" loading="lazy"></div>
-    <div class="photo-item"><img src="photos/photo-07.jpg" alt="子ども英語教室の活動風景 - Luana English School" loading="lazy"></div>
-    <div class="photo-item"><img src="photos/photo-09.jpg" alt="テーマ学習の様子 - Luana English School" loading="lazy"></div>
-    <div class="photo-item"><img src="photos/photo-10.jpg" alt="英語レッスン風景 - Luana English School 府中市" loading="lazy"></div>
-    <div class="photo-item"><img src="photos/photo-11.jpg" alt="アクティビティタイム - Luana English School" loading="lazy"></div>
-    <div class="photo-item"><img src="photos/photo-16.jpg" alt="フィールドトリップの様子 - Luana English School" loading="lazy"></div>
-    <div class="photo-item"><img src="photos/photo-17.jpg" alt="英語工作クラフト - 府中市の英語教室" loading="lazy"></div>
-    <div class="photo-item"><img src="photos/photo-18.jpg" alt="サマースクールの活動 - Luana English School" loading="lazy"></div>
-    <div class="photo-item"><img src="photos/photo-19.jpg" alt="英語レッスンの様子 - 府中市中河原" loading="lazy"></div>
-    <div class="photo-item"><img src="photos/photo-20.jpg" alt="子ども英語教室 - Luana English School" loading="lazy"></div>
-    <div class="photo-item"><img src="photos/photo-22.jpg" alt="Luana English Schoolの活動風景" loading="lazy"></div>
-    <div class="photo-item"><img src="photos/photo-23.jpg" alt="英語教室の日常風景 - 府中市" loading="lazy"></div>
-    <div class="photo-item"><img src="photos/photo-25.jpg" alt="英語の授業風景 - Luana English School 府中市" loading="lazy"></div>
-    <div class="photo-item"><img src="photos/photo-26.jpg" alt="子どもたちが英語で遊ぶ様子 - Luana English School" loading="lazy"></div>
-    <div class="photo-item"><img src="photos/photo-27.jpg" alt="ネイティブ講師との英語レッスン - 府中市" loading="lazy"></div>
-    <div class="photo-item"><img src="photos/photo-29.jpg" alt="英語レッスン風景 - Luana English School 府中市" loading="lazy"></div>
-    <div class="photo-item"><img src="photos/photo-30.jpg" alt="子ども英語教室の活動風景 - Luana English School" loading="lazy"></div>
-    <div class="photo-item"><img src="photos/photo-31.jpg" alt="英語で遊ぶ子どもたち - 府中市中河原" loading="lazy"></div>
-    <div class="photo-item"><img src="photos/photo-32.jpg" alt="英語教室の日常風景 - Luana English School" loading="lazy"></div>
-    <div class="photo-item"><img src="photos/photo-33.jpg" alt="英語の授業風景 - Luana English School 府中市" loading="lazy"></div>
-    <div class="photo-item"><img src="photos/photo-34.jpg" alt="子どもたちが英語で遊ぶ様子 - Luana English School" loading="lazy"></div>
+  <!-- Our Space -->
+  <div class="section-block">
+    <h2 class="section-heading">🏫 Our Space</h2>
+    <div class="photo-grid">
+      <div class="photo-item" data-src="photos/our-space/photo-24.jpg"><img src="photos/our-space/photo-24.jpg" alt="ルアナイングリッシュスクールの教室 - 府中市" loading="lazy"></div>
+      <div class="photo-item" data-src="photos/our-space/1781240911799.jpg"><img src="photos/our-space/1781240911799.jpg" alt="英語教室の施設 - Luana English School" loading="lazy"></div>
+      <div class="photo-item" data-src="photos/our-space/1781240921446.jpg"><img src="photos/our-space/1781240921446.jpg" alt="英語教室の施設 - 府中市中河原" loading="lazy"></div>
+      <div class="photo-item" data-src="photos/our-space/photo-25.jpg"><img src="photos/our-space/photo-25.jpg" alt="ルアナイングリッシュスクールの教室環境" loading="lazy"></div>
+      <div class="photo-item" data-src="photos/our-space/photo-26.jpg"><img src="photos/our-space/photo-26.jpg" alt="子どもが学ぶ教室 - Luana English School" loading="lazy"></div>
+      <div class="photo-item" data-src="photos/our-space/photo-27.jpg"><img src="photos/our-space/photo-27.jpg" alt="英語教室の設備 - 府中市" loading="lazy"></div>
+      <div class="photo-item" data-src="photos/our-space/photo-29.jpg"><img src="photos/our-space/photo-29.jpg" alt="学習スペース - Luana English School" loading="lazy"></div>
+      <div class="photo-item" data-src="photos/our-space/photo-30.jpg"><img src="photos/our-space/photo-30.jpg" alt="教室の様子 - ルアナイングリッシュスクール" loading="lazy"></div>
+      <div class="photo-item" data-src="photos/our-space/photo-31.jpg"><img src="photos/our-space/photo-31.jpg" alt="英語教室の環境 - 府中市中河原" loading="lazy"></div>
+    </div>
   </div>
 
+  <!-- Every Day Moments -->
+  <div class="section-block">
+    <h2 class="section-heading">📸 Every Day Moments</h2>
+    <div class="month-group" data-month="June 2026">
+      <div class="month-pill"><span>June 2026</span></div>
+      <div class="photo-grid">
+        <div class="photo-item" data-src="photos/Everyday%20Moments/1782783604103-1.jpg"><img src="photos/Everyday%20Moments/1782783604103-1.jpg" alt="英語レッスンの様子 - Luana English School" loading="lazy"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/1782783604103-10.jpg"><img src="photos/Everyday%20Moments/1782783604103-10.jpg" alt="子どもたちの活動風景 - Luana English School" loading="lazy"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/1782783604103-6.jpg"><img src="photos/Everyday%20Moments/1782783604103-6.jpg" alt="英語教室の日常 - 府中市" loading="lazy"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/photo-33.jpg"><img src="photos/Everyday%20Moments/photo-33.jpg" alt="英語の授業風景 - Luana English School 府中市" loading="lazy"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/photo-34.jpg"><img src="photos/Everyday%20Moments/photo-34.jpg" alt="子どもたちが英語で遊ぶ様子 - Luana English School" loading="lazy"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/1780892439892.jpg"><img src="photos/Everyday%20Moments/1780892439892.jpg" alt="英語教室の活動 - Luana English School" loading="lazy"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/1780892863264.jpg"><img src="photos/Everyday%20Moments/1780892863264.jpg" alt="子どもたちのレッスン風景 - 府中市" loading="lazy"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/1780895299591.jpg"><img src="photos/Everyday%20Moments/1780895299591.jpg" alt="英語レッスンの様子 - 府中市中河原" loading="lazy"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/1780895302559.jpg"><img src="photos/Everyday%20Moments/1780895302559.jpg" alt="Luana English Schoolの活動風景" loading="lazy"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/photo-01.jpg"><img src="photos/Everyday%20Moments/photo-01.jpg" alt="英語の授業風景 - Luana English School 府中市"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/photo-02.jpg"><img src="photos/Everyday%20Moments/photo-02.jpg" alt="子どもたちが英語で遊ぶ様子 - Luana English School" loading="lazy"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/photo-03.jpg"><img src="photos/Everyday%20Moments/photo-03.jpg" alt="ネイティブ講師との英語レッスン - 府中市" loading="lazy"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/photo-04.jpg"><img src="photos/Everyday%20Moments/photo-04.jpg" alt="工作・クラフトアクティビティ - Luana English School" loading="lazy"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/photo-05.jpg"><img src="photos/Everyday%20Moments/photo-05.jpg" alt="フォニックス学習の様子 - Luana English School 府中市" loading="lazy"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/photo-06.jpg"><img src="photos/Everyday%20Moments/photo-06.jpg" alt="サークルタイムの英語授業 - 府中市中河原" loading="lazy"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/photo-07.jpg"><img src="photos/Everyday%20Moments/photo-07.jpg" alt="子ども英語教室の活動風景 - Luana English School" loading="lazy"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/photo-09.jpg"><img src="photos/Everyday%20Moments/photo-09.jpg" alt="テーマ学習の様子 - Luana English School" loading="lazy"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/photo-10.jpg"><img src="photos/Everyday%20Moments/photo-10.jpg" alt="英語レッスン風景 - Luana English School 府中市" loading="lazy"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/photo-11.jpg"><img src="photos/Everyday%20Moments/photo-11.jpg" alt="アクティビティタイム - Luana English School" loading="lazy"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/photo-16.jpg"><img src="photos/Everyday%20Moments/photo-16.jpg" alt="フィールドトリップの様子 - Luana English School" loading="lazy"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/photo-17.jpg"><img src="photos/Everyday%20Moments/photo-17.jpg" alt="英語工作クラフト - 府中市の英語教室" loading="lazy"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/photo-18.jpg"><img src="photos/Everyday%20Moments/photo-18.jpg" alt="英語レッスンの様子 - 府中市中河原" loading="lazy"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/photo-19.jpg"><img src="photos/Everyday%20Moments/photo-19.jpg" alt="子ども英語教室 - Luana English School" loading="lazy"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/photo-20.jpg"><img src="photos/Everyday%20Moments/photo-20.jpg" alt="Luana English Schoolの活動風景" loading="lazy"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/photo-22.jpg"><img src="photos/Everyday%20Moments/photo-22.jpg" alt="英語教室の日常風景 - 府中市" loading="lazy"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/photo-23.jpg"><img src="photos/Everyday%20Moments/photo-23.jpg" alt="サマースクールの活動 - Luana English School" loading="lazy"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Lightbox -->
+<div class="lb-overlay" id="lb" role="dialog" aria-modal="true">
+  <button class="lb-close" id="lb-close" aria-label="Close">&#x2715;</button>
+  <button class="lb-arrow lb-prev" id="lb-prev" aria-label="Previous">&#x2039;</button>
+  <img class="lb-img" id="lb-img" src="" alt="">
+  <button class="lb-arrow lb-next" id="lb-next" aria-label="Next">&#x203a;</button>
 </div>
 
 <script>
 document.querySelectorAll(".nav-links a").forEach(link => {
   link.addEventListener("click", () => document.querySelector(".nav-links").classList.remove("open"));
 });
+
+(function() {
+  const items = Array.from(document.querySelectorAll(".photo-item[data-src]"));
+  const overlay = document.getElementById("lb");
+  const lbImg = document.getElementById("lb-img");
+  let current = 0;
+
+  function open(index) {
+    current = index;
+    const item = items[current];
+    lbImg.src = item.dataset.src;
+    lbImg.alt = item.querySelector("img").alt;
+    overlay.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function close() {
+    overlay.classList.remove("open");
+    document.body.style.overflow = "";
+  }
+
+  function prev() { open((current - 1 + items.length) % items.length); }
+  function next() { open((current + 1) % items.length); }
+
+  items.forEach((item, i) => item.addEventListener("click", () => open(i)));
+  document.getElementById("lb-close").addEventListener("click", close);
+  document.getElementById("lb-prev").addEventListener("click", prev);
+  document.getElementById("lb-next").addEventListener("click", next);
+  overlay.addEventListener("click", e => { if (e.target === overlay) close(); });
+  document.addEventListener("keydown", e => {
+    if (!overlay.classList.contains("open")) return;
+    if (e.key === "Escape") close();
+    if (e.key === "ArrowLeft") prev();
+    if (e.key === "ArrowRight") next();
+  });
+})();
 </script>
 
 </body>
