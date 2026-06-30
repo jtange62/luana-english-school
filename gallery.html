@@ -132,7 +132,7 @@
   .photo-item img { width:100%; height:100%; object-fit:cover; display:block; }
 
   @media(max-width:600px) {
-    .photo-grid { grid-template-columns:repeat(2,1fr); gap:8px; }
+    .photo-grid { grid-template-columns:repeat(2,1fr) !important; gap:8px; }
     .photo-item { border-radius:12px; }
     .month-pill { top:100px; }
   }
@@ -239,7 +239,7 @@ window.addEventListener('resize',_fixNavTop);
   <!-- Our Space -->
   <div class="section-block">
     <h2 class="section-heading">🏫 Our Space</h2>
-    <div class="photo-grid">
+    <div class="photo-grid" style="grid-template-columns:repeat(4,1fr);">
       <div class="photo-item" data-src="photos/our-space/photo-24.jpg"><img src="photos/our-space/photo-24.jpg" alt="ルアナイングリッシュスクールの教室 - 府中市" loading="lazy"></div>
       <div class="photo-item" data-src="photos/our-space/1781240911799.jpg"><img src="photos/our-space/1781240911799.jpg" alt="英語教室の施設 - Luana English School" loading="lazy"></div>
 <div class="photo-item" data-src="photos/our-space/photo-25.jpg"><img src="photos/our-space/photo-25.jpg" alt="ルアナイングリッシュスクールの教室環境" loading="lazy"></div>
