@@ -428,7 +428,7 @@
     margin-bottom: 6px;
   }
   .week-dates {
-    font-size: 0.85rem; color: #888; font-weight: 700;
+    font-size: 0.85rem; color: #666; font-weight: 700;
     margin-bottom: 16px;
   }
   .week-trip {
@@ -452,7 +452,7 @@
   .pricing-table { width: 100%; border-collapse: collapse; }
   .pricing-table th {
     font-size: 0.8rem; font-weight: 800; letter-spacing: 1px;
-    text-transform: uppercase; color: #888;
+    text-transform: uppercase; color: #666;
     padding: 10px; text-align: left;
     border-bottom: 2px solid #eee;
   }
@@ -519,7 +519,7 @@
     text-align: left;
   }
   .timeLine-content h4 { font-weight: 800; margin-bottom: 3px; }
-  .timeLine-content p { font-size: 0.9rem; color: #777; }
+  .timeLine-content p { font-size: 0.9rem; color: #555; }
 
   /* ── ACCESS ── */
   .access { background: var(--cream); }
@@ -531,7 +531,7 @@
   }
   .address-label {
     font-size: 0.75rem; font-weight: 800; text-transform: uppercase;
-    letter-spacing: 1.5px; color: #aaa; margin-bottom: 6px;
+    letter-spacing: 1.5px; color: #666; margin-bottom: 6px;
   }
   .address-text { font-size: 1.15rem; font-weight: 700; color: var(--dark); line-height: 1.7; }
   .access-map iframe { width: 100%; height: 300px; border: 0; border-radius: 18px; display: block; }
@@ -567,7 +567,7 @@
     font-size: 2.5rem; margin-bottom: 14px; display: flex; justify-content: center;
   }
   .contact-card h3 { font-weight: 800; margin-bottom: 6px; }
-  .contact-card p { font-size: 0.9rem; color: #777; }
+  .contact-card p { font-size: 0.9rem; color: #555; }
 
   .cta-btn {
     display: inLine-block;
@@ -816,7 +816,10 @@ document.querySelectorAll(".nav-links a").forEach(link => {
     </div>
     <div class="about-grid">
       <div class="about-illustration" style="padding:0;border:4px solid var(--sky);overflow:hidden;border-radius:32px;">
-  <img src="images/index-2.jpg" alt="Luana English School exterior" fetchpriority="high" width="1108" height="1477" style="width:100%;height:100%;object-fit:cover;display:block;">
+  <picture>
+    <source srcset="images/index-2.webp" type="image/webp">
+    <img src="images/index-2.jpg" alt="Luana English School exterior" fetchpriority="high" width="1108" height="1477" style="width:100%;height:100%;object-fit:cover;display:block;">
+  </picture>
 </div>
       <div>
         <div class="about-features">
