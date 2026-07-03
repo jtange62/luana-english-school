@@ -73,7 +73,7 @@
   .hero {
     min-height: 38vh; background: Linear-gradient(160deg, #FFF8DC 0%, #FFF3D6 100%);
     display: flex; align-items: center; justify-content: center;
-    text-align: center; padding: 142px 20px 50px;
+    text-align: center; padding: calc(var(--header-h, 130px) + 12px) 20px 50px;
   }
   .hero-tag {
     display: inLine-block; background: var(--sun); color: var(--brown);
@@ -265,7 +265,7 @@
 @media(max-width:760px){#summer-banner{font-size:0.78rem;padding:7px 10px;}}
 </style>
 <script>
-function _fixNavTop(){var b=document.getElementById('summer-banner'),n=document.querySelector('nav');if(b&&n)n.style.top=b.offsetHeight+'px';}
+function _fixNavTop(){var b=document.getElementById('summer-banner'),n=document.querySelector('nav');if(b&&n){n.style.top=b.offsetHeight+'px';document.documentElement.style.setProperty('--header-h',(b.offsetHeight+n.offsetHeight+12)+'px');}}
 document.addEventListener('DOMContentLoaded',_fixNavTop);
 window.addEventListener('resize',_fixNavTop);
 </script>

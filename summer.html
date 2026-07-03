@@ -67,7 +67,7 @@
     .nav-links.open a { font-size:1.1rem; padding:12px 16px; text-align:center; }
   }
 
-  .page-content { padding-top: 120px; }
+  .page-content { padding-top: calc(var(--header-h, 108px) + 12px); }
 
   /* Reuse summer CSS from main site */
   .summer {
@@ -265,7 +265,7 @@
 
 <div id="summer-banner" class="banner">☀️ Summer School 2026 — 現在受付中！</div>
 <script>
-function _fixNavTop(){var b=document.getElementById('summer-banner'),n=document.querySelector('nav');if(b&&n)n.style.top=b.offsetHeight+'px';}
+function _fixNavTop(){var b=document.getElementById('summer-banner'),n=document.querySelector('nav');if(b&&n){n.style.top=b.offsetHeight+'px';document.documentElement.style.setProperty('--header-h',(b.offsetHeight+n.offsetHeight+12)+'px');}}
 document.addEventListener('DOMContentLoaded',_fixNavTop);
 window.addEventListener('resize',_fixNavTop);
 </script>
