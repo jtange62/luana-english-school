@@ -756,7 +756,23 @@
 function _fixNavTop(){var b=document.getElementById('summer-banner'),n=document.querySelector('nav');if(b&&n){n.style.top=b.offsetHeight+'px';document.documentElement.style.setProperty('--header-h',(b.offsetHeight+n.offsetHeight+12)+'px');}}
 document.addEventListener('DOMContentLoaded',_fixNavTop);
 window.addEventListener('resize',_fixNavTop);
-window.addEventListener('load',function(){if(!location.hash)return;var t=document.querySelector(location.hash);if(!t)return;setTimeout(function(){_fixNavTop();t.scrollIntoView();},150);});
+window.addEventListener('load',function(){
+  if(!location.hash)return;
+  var t=document.querySelector(location.hash);if(!t)return;
+  var stop=false;
+  ['touchstart','wheel','keydown'].forEach(function(e){window.addEventListener(e,function(){stop=true;},{passive:true,once:true});});
+  var tries=0,iv=setInterval(function(){
+    if(stop||++tries>14){clearInterval(iv);return;}
+    _fixNavTop();
+    var top=t.getBoundingClientRect().top;
+    var want=parseFloat(getComputedStyle(t).scrollMarginTop)||0;
+    if(Math.abs(top-want)>6){
+      var h=document.documentElement;h.style.scrollBehavior='auto';
+      window.scrollTo(0,window.scrollY+top-want);
+      h.style.scrollBehavior='';
+    }
+  },150);
+});
 </script>
 <nav style="top:42px;">
   <div style="display:flex;align-items:center;gap:8px;"><a href="/"><img src="logo.png" alt="Luana English School" style="height:100px;width:100px;object-fit:contain;margin-bottom:12px;"></a>
