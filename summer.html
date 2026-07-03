@@ -263,7 +263,12 @@
 </script></head>
 <body>
 
-<div class="banner">☀️ Summer School 2026 — 現在受付中！</div>
+<div id="summer-banner" class="banner">☀️ Summer School 2026 — 現在受付中！</div>
+<script>
+function _fixNavTop(){var b=document.getElementById('summer-banner'),n=document.querySelector('nav');if(b&&n)n.style.top=b.offsetHeight+'px';}
+document.addEventListener('DOMContentLoaded',_fixNavTop);
+window.addEventListener('resize',_fixNavTop);
+</script>
 
 <nav style="top:42px;">
 <div style="display:flex;align-items:center;gap:8px;"><a href="/"><img src="logo.png" alt="Luana English School" style="height:70px;width:auto;object-fit:contain;"></a>
