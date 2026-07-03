@@ -38,7 +38,7 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   html { scroll-behavior: smooth; }
-  section { scroll-margin-top: 130px; }
+  section { scroll-margin-top: var(--header-h, 130px); }
 
   body {
     font-family: 'Nunito', sans-serif;
@@ -99,7 +99,7 @@
       z-index: 99;
     }
     .nav-links.open a { font-size: 1.1rem; padding: 12px 16px; text-align: center; }
-    section { padding: 20px 16px 60px; scroll-margin-top: 150px; }
+    section { padding: 20px 16px 60px; scroll-margin-top: var(--header-h, 150px); }
     .about-grid, .classes-grid, .summer-weeks { grid-template-columns: 1fr; }
     .summer-pricing { grid-template-columns: 1fr; padding: 24px; }
     .hero h1 { font-size: 2.4rem; }
@@ -753,9 +753,10 @@
 @keyframes shimmer { 0%{background-position:0% 50%} 100%{background-position:200% 50%} }
 </style>
 <script>
-function _fixNavTop(){var b=document.getElementById('summer-banner'),n=document.querySelector('nav');if(b&&n)n.style.top=b.offsetHeight+'px';}
+function _fixNavTop(){var b=document.getElementById('summer-banner'),n=document.querySelector('nav');if(b&&n){n.style.top=b.offsetHeight+'px';document.documentElement.style.setProperty('--header-h',(b.offsetHeight+n.offsetHeight+12)+'px');}}
 document.addEventListener('DOMContentLoaded',_fixNavTop);
 window.addEventListener('resize',_fixNavTop);
+window.addEventListener('load',function(){if(!location.hash)return;var t=document.querySelector(location.hash);if(!t)return;setTimeout(function(){_fixNavTop();t.scrollIntoView();},150);});
 </script>
 <nav style="top:42px;">
   <div style="display:flex;align-items:center;gap:8px;"><a href="/"><img src="logo.png" alt="Luana English School" style="height:100px;width:100px;object-fit:contain;margin-bottom:12px;"></a>
