@@ -432,33 +432,47 @@ document.querySelectorAll(".nav-links a").forEach(link => {
   link.addEventListener("click", () => document.querySelector(".nav-links").classList.remove("open"));
 });
 
-async function renderPDFPreviews() {
-  const canvases = document.querySelectorAll('canvas[data-pdf]');
-  for (const canvas of canvases) {
-    const pdfUrl = canvas.getAttribute('data-pdf');
-    try {
-      const pdf = await pdfjsLib.getDocument(pdfUrl).promise;
-      const page = await pdf.getPage(1);
-      const scale = 1.5;
-      const viewport = page.getViewport({ scale });
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-      const context = canvas.getContext('2d');
-      await page.render({ canvasContext: context, viewport }).promise;
-    } catch (error) {
-      console.error(`Error rendering PDF ${pdfUrl}:`, error);
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#f0f0f0';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#999';
-      ctx.font = '14px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('PDF preview unavailable', canvas.width / 2, canvas.height / 2);
-    }
+async function renderPDFPage(canvas) {
+  const pdfUrl = canvas.getAttribute('data-pdf');
+  if (canvas.dataset.rendered) return;
+  canvas.dataset.rendered = 'true';
+
+  try {
+    const pdf = await pdfjsLib.getDocument(pdfUrl).promise;
+    const page = await pdf.getPage(1);
+    const scale = 1.2;
+    const viewport = page.getViewport({ scale });
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    const context = canvas.getContext('2d');
+    await page.render({ canvasContext: context, viewport }).promise;
+  } catch (error) {
+    console.warn(`Error rendering PDF ${pdfUrl}:`, error.message);
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#f0f0f0';
+    ctx.fillRect(0, 0, canvas.width || 300, canvas.height || 400);
+    ctx.fillStyle = '#999';
+    ctx.font = '14px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('PDF preview unavailable', (canvas.width || 300) / 2, (canvas.height || 400) / 2);
   }
 }
 
-document.addEventListener('DOMContentLoaded', renderPDFPreviews);
+function setupLazyPDFLoading() {
+  const canvases = document.querySelectorAll('canvas[data-pdf]');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        renderPDFPage(entry.target);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { rootMargin: '50px' });
+
+  canvases.forEach(canvas => observer.observe(canvas));
+}
+
+document.addEventListener('DOMContentLoaded', setupLazyPDFLoading);
 </script>
 
 </body>
