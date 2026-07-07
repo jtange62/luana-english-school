@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git commit -m ' *)",
+      "Bash(grep -iE 'Lesson [0-9]|[0-9]{1,2}:[0-9]{2}|月曜|金曜|土曜|日曜' c:/Users/jtange/luana-english-school/index.html)",
+      "Bash(node -e \"let s='';process.stdin.on\\('data',d=>s+=d\\).on\\('end',\\(\\)=>{JSON.parse\\(s\\);console.log\\('VALID JSON'\\)}\\)\")",
+      "PowerShell(Add-Type -AssemblyName System.Drawing; $p = \"c:\\\\Users\\\\jtange\\\\luana-english-school\\\\photos\\\\our-space\\\\photo-24.jpg\"; $img = [System.Drawing.Image]::FromFile\\($p\\); \"photo-24.jpg: {0}x{1}\" -f $img.Width, $img.Height; $img.Dispose\\(\\))",
+      "PowerShell(Add-Type -AssemblyName System.Drawing; foreach \\($f in @\\(\"photos\\\\our-space\\\\photo-24.jpg\",\"images\\\\index-2.jpg\"\\)\\) { $p = Join-Path \"c:\\\\Users\\\\jtange\\\\luana-english-school\" $f; $img = [System.Drawing.Image]::FromFile\\($p\\); $orient = \"none\"; if \\($img.PropertyIdList -contains 274\\) { $orient = $img.GetPropertyItem\\(274\\).Value[0] }; \"{0}: {1}x{2}  EXIF-orientation={3}\" -f $f, $img.Width, $img.Height, $orient; $img.Dispose\\(\\) })",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\jtange\\\\luana-english-school\" -File)",
+      "Bash(Select-Object Name)",
+      "Bash(Sort-Object Name)",
+      "Bash(rm c:\\\\Users\\\\jtange\\\\luana-english-school\\\\_redirects)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\jtange\\luana-english-school"
+    ]
+  }
+}
