@@ -237,11 +237,18 @@
     font-size:0.82rem; color:#444;
   }
 
+  .card-thumb canvas {
+    width:100%; height:100%; display:block;
+  }
+
   @media(max-width:600px) {
     .pdf-grid { grid-template-columns:repeat(2,1fr); gap:14px; }
     .card-body { padding:14px; }
   }
 </style>
+<!-- PDF.js Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-YBX9T1NJEL"></script>
 <script>
@@ -328,7 +335,7 @@ window.addEventListener('resize',_fixNavTop);
     <!-- ====== JULY 2026 ====== -->
     <a href="pdfs/newsletters/2026-07.pdf" target="_blank" class="pdf-card">
       <div class="card-thumb">
-        <iframe src="pdfs/newsletters/2026-07.pdf#page=1&amp;toolbar=0&amp;navpanes=0&amp;scrollbar=0&amp;view=FitH" title="7月号プレビュー" loading="lazy"></iframe>
+        <canvas data-pdf="pdfs/newsletters/2026-07.pdf"></canvas>
         <span class="new-badge">NEW</span>
       </div>
       <div class="card-body">
@@ -342,7 +349,7 @@ window.addEventListener('resize',_fixNavTop);
     <!-- ====== JUNE 2026 ====== -->
     <a href="pdfs/newsletters/2026-06.pdf" target="_blank" class="pdf-card">
       <div class="card-thumb">
-        <iframe src="pdfs/newsletters/2026-06.pdf#page=1&amp;toolbar=0&amp;navpanes=0&amp;scrollbar=0&amp;view=FitH" title="6月号プレビュー" loading="lazy"></iframe>
+        <canvas data-pdf="pdfs/newsletters/2026-06.pdf"></canvas>
       </div>
       <div class="card-body">
         <span class="card-date">June 2026</span>
@@ -355,7 +362,7 @@ window.addEventListener('resize',_fixNavTop);
     <!-- ====== MAY 2026 ====== -->
     <a href="pdfs/newsletters/2026-05.pdf" target="_blank" class="pdf-card">
       <div class="card-thumb">
-        <iframe src="pdfs/newsletters/2026-05.pdf#page=1&amp;toolbar=0&amp;navpanes=0&amp;scrollbar=0&amp;view=FitH" title="5月号プレビュー" loading="lazy"></iframe>
+        <canvas data-pdf="pdfs/newsletters/2026-05.pdf"></canvas>
       </div>
       <div class="card-body">
         <span class="card-date">May 2026</span>
@@ -377,7 +384,7 @@ window.addEventListener('resize',_fixNavTop);
       <!-- ====== MAIN FLYER ====== -->
       <a href="pdfs/flyers/main-flyer.pdf" target="_blank" class="pdf-card">
         <div class="card-thumb">
-          <iframe src="pdfs/flyers/main-flyer.pdf#page=1&amp;toolbar=0&amp;navpanes=0&amp;scrollbar=0&amp;view=FitH" title="スクールチラシプレビュー" loading="lazy"></iframe>
+          <canvas data-pdf="pdfs/flyers/main-flyer.pdf"></canvas>
           <span class="new-badge">NEW</span>
         </div>
         <div class="card-body">
@@ -397,6 +404,34 @@ window.addEventListener('resize',_fixNavTop);
 document.querySelectorAll(".nav-links a").forEach(link => {
   link.addEventListener("click", () => document.querySelector(".nav-links").classList.remove("open"));
 });
+
+async function renderPDFPreviews() {
+  const canvases = document.querySelectorAll('canvas[data-pdf]');
+  for (const canvas of canvases) {
+    const pdfUrl = canvas.getAttribute('data-pdf');
+    try {
+      const pdf = await pdfjsLib.getDocument(pdfUrl).promise;
+      const page = await pdf.getPage(1);
+      const scale = 1.5;
+      const viewport = page.getViewport({ scale });
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      const context = canvas.getContext('2d');
+      await page.render({ canvasContext: context, viewport }).promise;
+    } catch (error) {
+      console.error(`Error rendering PDF ${pdfUrl}:`, error);
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#f0f0f0';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#999';
+      ctx.font = '14px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('PDF preview unavailable', canvas.width / 2, canvas.height / 2);
+    }
+  }
+}
+
+document.addEventListener('DOMContentLoaded', renderPDFPreviews);
 </script>
 
 </body>
