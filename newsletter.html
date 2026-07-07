@@ -296,10 +296,19 @@ window.addEventListener('resize',_fixNavTop);
     <p class="section-intro">クラスやイベントのご案内チラシはこちらに掲載します。</p>
 
     <div class="pdf-grid">
-      <div class="coming-soon">
-        <h3>準備中</h3>
-        <p>チラシPDFを追加すると、ここにカードとして表示できます。</p>
-      </div>
+      <!-- ====== MAIN FLYER ====== -->
+      <a href="pdfs/flyers/main-flyer.pdf" target="_blank" class="pdf-card">
+        <div class="card-thumb">
+          <canvas data-pdf="pdfs/flyers/main-flyer.pdf"></canvas>
+          <span class="new-badge">NEW</span>
+        </div>
+        <div class="card-body">
+          <span class="card-date">Flyer</span>
+          <span class="card-title">スクールチラシ</span>
+          <p class="card-desc">Luana English School のご案内チラシです。</p>
+          <span class="card-link">PDFを開く →</span>
+        </div>
+      </a>
     </div>
   </section>
 
