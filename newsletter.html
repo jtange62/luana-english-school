@@ -5,20 +5,20 @@
 <link rel="icon" type="image/png" href="logo.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="canonical" href="https://luanaenglishschool.jp/newsletter">
-<title>ニュースレター | Luana English School ルアナイングリッシュスクール | 府中市</title>
-<meta name="description" content="ルアナイングリッシュスクール（Luana English School）の毎月のニュースレター。教室の活動報告やイベント情報をPDFでお届けします。府中市中河原。">
-<meta name="keywords" content="英語学校,英語教室,子ども英語,府中市,中河原,ルアナイングリッシュスクール,Luana English School,ニュースレター,お知らせ">
+<title>ニュースレター・チラシ | Luana English School ルアナイングリッシュスクール | 府中市</title>
+<meta name="description" content="ルアナイングリッシュスクール（Luana English School）のニュースレターとチラシ・ご案内。教室の活動報告やイベント情報をPDFでお届けします。府中市中河原。">
+<meta name="keywords" content="英語学校,英語教室,子ども英語,府中市,中河原,ルアナイングリッシュスクール,Luana English School,ニュースレター,チラシ,お知らせ">
 <meta name="category" content="英語学校">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Luana English School">
-<meta property="og:title" content="ニュースレター | Luana English School 府中市">
-<meta property="og:description" content="Luana English Schoolの毎月のニュースレター。教室の活動報告やイベント情報をPDFでお届けします。府中市中河原。">
+<meta property="og:title" content="ニュースレター・チラシ | Luana English School 府中市">
+<meta property="og:description" content="Luana English Schoolのニュースレターとチラシ・ご案内。教室の活動報告やイベント情報をPDFでお届けします。府中市中河原。">
 <meta property="og:url" content="https://luanaenglishschool.jp/newsletter">
 <meta property="og:image" content="https://luanaenglishschool.jp/photos/photo-01.jpg">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="ニュースレター | Luana English School 府中市">
-<meta name="twitter:description" content="Luana English Schoolの毎月のニュースレター。教室の活動報告やイベント情報をPDFでお届けします。府中市中河原。">
+<meta name="twitter:title" content="ニュースレター・チラシ | Luana English School 府中市">
+<meta name="twitter:description" content="Luana English Schoolのニュースレターとチラシ・ご案内。教室の活動報告やイベント情報をPDFでお届けします。府中市中河原。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" media="print" onload="this.media='all'">
@@ -76,6 +76,15 @@
 
   .content { max-width:900px; margin:0 auto; padding:50px 20px 80px; }
 
+  .archive-section { margin-bottom:56px; }
+  .section-heading {
+    font-family:'Baloo 2',cursive; font-weight:800; font-size:1.55rem;
+    color:var(--brown); margin-bottom:8px;
+  }
+  .section-intro {
+    color:#666; font-size:0.92rem; line-height:1.7; margin-bottom:18px;
+  }
+
   /* Latest badge */
   .latest-label {
     display:inline-block;
@@ -85,22 +94,22 @@
     padding:4px 12px; border-radius:20px; margin-bottom:12px;
   }
 
-  /* Newsletter grid */
-  .newsletter-grid {
+  /* PDF card grid */
+  .pdf-grid {
     display:grid;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap:24px;
     margin-top:16px;
   }
 
-  .newsletter-card {
+  .pdf-card {
     background:white; border-radius:24px; overflow:hidden;
     box-shadow:0 4px 16px rgba(0,0,0,0.07);
     text-decoration:none; color:var(--dark);
     transition:transform 0.2s, box-shadow 0.2s;
     display:flex; flex-direction:column;
   }
-  .newsletter-card:hover { transform:translateY(-6px); box-shadow:0 10px 28px rgba(0,0,0,0.12); }
+  .pdf-card:hover { transform:translateY(-6px); box-shadow:0 10px 28px rgba(0,0,0,0.12); }
 
   /* Thumbnail area */
   .card-thumb {
@@ -151,7 +160,7 @@
   }
 
   @media(max-width:600px) {
-    .newsletter-grid { grid-template-columns:repeat(2,1fr); gap:14px; }
+    .pdf-grid { grid-template-columns:repeat(2,1fr); gap:14px; }
     .card-body { padding:14px; }
   }
 </style>
@@ -209,9 +218,9 @@ window.addEventListener('resize',_fixNavTop);
 
 <div class="hero">
   <div>
-    <div class="hero-tag">📰 Newsletter</div>
-    <h1>毎月のニュースレター</h1>
-    <p>Luana English School の最新情報をお届けします！</p>
+    <div class="hero-tag">📰 News & Flyers</div>
+    <h1>ニュースレター・チラシ</h1>
+    <p>Luana English School の最新情報とご案内をお届けします！</p>
   </div>
 </div>
 
@@ -220,21 +229,28 @@ window.addEventListener('resize',_fixNavTop);
   <!-- ================================================
     HOW TO ADD A NEW NEWSLETTER EACH MONTH:
     1. Export your Canva newsletter as a PDF
-    2. Save it to the newsletters/ folder as: YYYY-MM.pdf  (e.g. 2026-07.pdf)
-    3. Copy one of the .newsletter-card blocks below
+    2. Save it to the pdfs/newsletters/ folder as: YYYY-MM.pdf  (e.g. 2026-08.pdf)
+    3. Copy one of the .pdf-card blocks below
     4. Update: href, card-date, card-title, card-desc
-    5. Remove class="new-badge" from the previous month's card
-    6. Optionally add a cover image: replace the emoji in card-thumb with <img src="newsletters/2026-07-cover.jpg">
+    5. Move the NEW badge to the latest card
+
+    HOW TO ADD A NEW FLYER:
+    1. Save the PDF to pdfs/flyers/ with a clear lowercase filename
+    2. Copy one of the .pdf-card blocks into the flyer grid
+    3. Update the title, description, href, and data-pdf
   ================================================ -->
 
-  <div class="latest-label">🌟 最新号</div>
+  <section class="archive-section" aria-labelledby="newsletter-heading">
+    <h2 id="newsletter-heading" class="section-heading">ニュースレター</h2>
+    <p class="section-intro">毎月のテーマや教室での活動の様子をPDFでご覧いただけます。</p>
+    <div class="latest-label">🌟 最新号</div>
 
-  <div class="newsletter-grid">
+    <div class="pdf-grid">
 
     <!-- ====== JULY 2026 ====== -->
-    <a href="pdfs/July.pdf" target="_blank" class="newsletter-card">
+    <a href="pdfs/newsletters/2026-07.pdf" target="_blank" class="pdf-card">
       <div class="card-thumb">
-        <canvas data-pdf="pdfs/July.pdf"></canvas>
+        <canvas data-pdf="pdfs/newsletters/2026-07.pdf"></canvas>
         <span class="new-badge">NEW</span>
       </div>
       <div class="card-body">
@@ -246,9 +262,9 @@ window.addEventListener('resize',_fixNavTop);
     </a>
 
     <!-- ====== JUNE 2026 ====== -->
-    <a href="pdfs/June.pdf" target="_blank" class="newsletter-card">
+    <a href="pdfs/newsletters/2026-06.pdf" target="_blank" class="pdf-card">
       <div class="card-thumb">
-        <canvas data-pdf="pdfs/June.pdf"></canvas>
+        <canvas data-pdf="pdfs/newsletters/2026-06.pdf"></canvas>
       </div>
       <div class="card-body">
         <span class="card-date">June 2026</span>
@@ -259,9 +275,9 @@ window.addEventListener('resize',_fixNavTop);
     </a>
 
     <!-- ====== MAY 2026 ====== -->
-    <a href="pdfs/May.pdf" target="_blank" class="newsletter-card">
+    <a href="pdfs/newsletters/2026-05.pdf" target="_blank" class="pdf-card">
       <div class="card-thumb">
-        <canvas data-pdf="pdfs/May.pdf"></canvas>
+        <canvas data-pdf="pdfs/newsletters/2026-05.pdf"></canvas>
       </div>
       <div class="card-body">
         <span class="card-date">May 2026</span>
@@ -272,7 +288,20 @@ window.addEventListener('resize',_fixNavTop);
     </a>
     <!-- ====== END OF CARDS — add new months above this line ====== -->
 
-  </div>
+    </div>
+  </section>
+
+  <section class="archive-section" aria-labelledby="flyer-heading">
+    <h2 id="flyer-heading" class="section-heading">チラシ・ご案内</h2>
+    <p class="section-intro">クラスやイベントのご案内チラシはこちらに掲載します。</p>
+
+    <div class="pdf-grid">
+      <div class="coming-soon">
+        <h3>準備中</h3>
+        <p>チラシPDFを追加すると、ここにカードとして表示できます。</p>
+      </div>
+    </div>
+  </section>
 
 
 </div>
