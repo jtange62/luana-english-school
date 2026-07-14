@@ -66,7 +66,7 @@
     text-align:center; padding:calc(var(--header-h, 130px) + 12px) 20px 50px;
   }
   .hero-tag {
-    display:inLine-block; background:var(--sun); color:var(--brown);
+    display:inLine-block; background:var(--sun); color:#6E4517;
     font-weight:800; font-size:0.8rem; letter-spacing:2px; text-transform:uppercase;
     padding:6px 18px; border-radius:30px; margin-bottom:20px;
   }
@@ -122,12 +122,12 @@
   .fee-row:last-child { border-bottom:none; }
   .fee-row .label { color:#555; font-weight:600; }
   .fee-row .amount { font-weight:800; color:var(--dark); font-size:1rem; }
-  .fee-row.highlight .amount { color:var(--coral); font-size:1.05rem; }
+  .fee-row.highlight .amount { color:#BA3E2B; font-size:1.05rem; }
 
   .fee-divider {
     font-family:'Baloo 2',cursive; font-size:0.75rem; font-weight:800;
     letter-spacing:1px; text-transform:uppercase;
-    color:#aaa; padding:12px 0 4px; display:block;
+    color:#6E6E6E; padding:12px 0 4px; display:block;
   }
 
   .fee-row.enrollment {
@@ -145,14 +145,14 @@
     margin-top:50px; background:linear-gradient(135deg,#E8F8FF,#FFF3D6);
     border-radius:28px; padding:40px; text-align:center; border:3px solid var(--sky);
   }
-  .cta-box h3 { font-family:'Baloo 2',cursive; font-size:1.5rem; font-weight:800; color:var(--brown); margin-bottom:10px; }
+  .cta-box h2 { font-family:'Baloo 2',cursive; font-size:1.5rem; font-weight:800; color:var(--brown); margin-bottom:10px; }
   .cta-box p { color:#666; margin-bottom:24px; font-size:0.95rem; }
   .cta-btn {
-    display:inLine-block; background:var(--coral); color:white;
+    display:inLine-block; background:#CC4632; color:white;
     font-weight:800; font-size:1rem; padding:16px 36px; border-radius:40px;
-    text-decoration:none; box-shadow:0 6px 0 #c9503f; transition:all 0.15s;
+    text-decoration:none; box-shadow:0 6px 0 #9E3524; transition:all 0.15s;
   }
-  .cta-btn:hover { transform:translateY(-3px); box-shadow:0 9px 0 #c9503f; }
+  .cta-btn:hover { transform:translateY(-3px); box-shadow:0 9px 0 #9E3524; }
 
   @media(max-width:700px) {
     .fee-grid { grid-template-columns:1fr; }
@@ -213,6 +213,7 @@ window.addEventListener('resize',_fixNavTop);
   </button>
 </nav>
 
+<main>
 <div class="hero">
   <div>
     <div class="hero-tag">💴 料金案内</div>
@@ -331,7 +332,7 @@ window.addEventListener('resize',_fixNavTop);
   </div>
 
   <div class="cta-box">
-    <h3>✨ 体験レッスン受付中！</h3>
+    <h2>✨ 体験レッスン受付中！</h2>
     <p>ご希望のクラスのボタンからお申し込みください。</p>
     <div style="display:flex; flex-wrap:wrap; gap:16px; justify-content:center; margin-top:8px;">
       <a href="https://docs.google.com/forms/d/e/1FAIpQLScj5WNaLAc5Z9DxK1OZVFvbwyybkOBnePVofcUGATNvIcAJnQ/viewform?usp=header"
@@ -363,6 +364,7 @@ window.addEventListener('resize',_fixNavTop);
 
 </div>
 
+</main>
 <script>
 document.querySelectorAll(".nav-links a").forEach(link => {
   link.addEventListener("click", () => document.querySelector(".nav-links").classList.remove("open"));

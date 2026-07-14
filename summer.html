@@ -95,12 +95,12 @@
     display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:50px;
   }
   .week-card { background:rgba(255,255,255,0.95); border-radius:24px; padding:28px 24px; }
-  .week-num { font-family:'Baloo 2',cursive; font-size:1rem; font-weight:800; letter-spacing:1px; text-transform:uppercase; color:var(--coral); margin-bottom:10px; text-decoration:underline; }
+  .week-num { font-family:'Baloo 2',cursive; font-size:1rem; font-weight:800; letter-spacing:1px; text-transform:uppercase; color:#BA3E2B; margin-bottom:10px; text-decoration:underline; }
   .week-Theme { font-family:'Baloo 2',cursive; font-size:1.35rem; font-weight:800; margin-bottom:6px; }
   .week-dates { font-size:0.85rem; color:#888; font-weight:700; margin-bottom:16px; }
   .week-trip { background:var(--cream); padding:10px 14px; border-radius:12px; font-size:0.85rem; font-weight:700; }
   .week-trip-label { display:flex; align-items:center; gap:8px; }
-  .week-trip-dest { display:block; margin-top:4px; padding-left:24px; color:var(--coral); font-weight:800; font-size:0.9rem; }
+  .week-trip-dest { display:block; margin-top:4px; padding-left:24px; color:#BA3E2B; font-weight:800; font-size:0.9rem; }
   .summer-pricing {
     background:rgba(255,255,255,0.95); border-radius:28px; padding:40px;
     margin-top:40px; display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:center;
@@ -122,15 +122,15 @@
   .pricing-table td { padding:14px 10px; border-bottom:1px solid #f0f0f0; font-weight:700; white-space:nowrap; }
   .pricing-table td:not(:first-child) { font-size:1.1rem; }
   .pricing-table tr:last-child td { border-bottom:none; }
-  .price-highlight { color:var(--coral); font-size:1.2rem !important; }
-  .pricing-info h3 { font-family:'Baloo 2',cursive; font-size:1.5rem; font-weight:800; margin-bottom:12px; }
+  .price-highlight { color:#BA3E2B; font-size:1.2rem !important; }
+  .pricing-info h2 { font-family:'Baloo 2',cursive; font-size:1.5rem; font-weight:800; margin-bottom:12px; }
   .pricing-info p { font-size:0.95rem; color:#555; Line-height:1.7; margin-bottom:12px; }
   .ext-price { background:var(--cream); border-radius:14px; padding:14px 18px; font-size:0.9rem; }
   .ext-price strong { display:block; font-size:1rem; margin-bottom:4px; }
   .price-cell { display:flex; align-items:center; gap:8px; white-space:nowrap; }
   .price-value { display:inline-block; min-width:5.5em; }
   .off-badge {
-    background:var(--coral); color:white;
+    background:#CC4632; color:white;
     font-family:'Baloo 2',cursive; font-weight:800; font-size:0.7rem;
     line-height:1.3; text-align:center;
     padding:4px 8px; border-radius:20px;
@@ -153,18 +153,18 @@
     box-shadow:0 3px 0 #3aacdb; position:relative; z-index:1;
   }
   .timeline-content { padding-top:8px; text-align:left; }
-  .timeline-content h4 { font-weight:800; margin-bottom:3px; }
-  .timeline-content p { font-size:0.9rem; color:#777; }
+  .timeline-content h3 { font-weight:800; margin-bottom:3px; }
+  .timeline-content p { font-size:0.9rem; color:#6E6E6E; }
 
   /* CTA */
   .cta-section { background:var(--cream); padding:60px 20px; text-align:center; }
   .cta-btn {
-    display:inLine-block; background:var(--coral); color:white;
+    display:inLine-block; background:#CC4632; color:white;
     font-weight:800; font-size:1.05rem; padding:18px 44px; border-radius:40px;
-    text-decoration:none; box-shadow:0 6px 0 #c9503f; transition:all 0.15s;
+    text-decoration:none; box-shadow:0 6px 0 #9E3524; transition:all 0.15s;
     font-family:'Baloo 2',cursive;
   }
-  .cta-btn:hover { transform:translateY(-3px); box-shadow:0 9px 0 #c9503f; }
+  .cta-btn:hover { transform:translateY(-3px); box-shadow:0 9px 0 #9E3524; }
 
   .faq { background:white; padding:70px 20px; }
   .faq-list { max-width:800px; margin:34px auto 0; display:grid; gap:14px; }
@@ -314,6 +314,7 @@ window.addEventListener('resize',_fixNavTop);
   </button>
 </nav>
 
+<main>
 <div class="page-content">
 
   <section class="summer">
@@ -370,7 +371,7 @@ window.addEventListener('resize',_fixNavTop);
 
       <div class="summer-pricing">
         <div>
-          <h3>💰 受講料金</h3>
+          <h2>💰 受講料金</h2>
           <p>内部生の方には特別割引をご用意しています。複数週お申し込みでさらにお得！</p>
           <table class="pricing-table">
             <thead><tr><th>期間</th><th>内部生</th><th>外部生</th></tr></thead>
@@ -397,13 +398,13 @@ window.addEventListener('resize',_fixNavTop);
       <h2 style="font-family:'Baloo 2',cursive;font-size:clamp(2rem,4vw,2.8rem);font-weight:800;margin-bottom:14px;">1日のスケジュール</h2>
       <p style="font-size:1.05rem;color:#666;line-height:1.7;max-width:580px;margin:0 auto;">サマースクールの1日の流れをご紹介します。</p>
       <div class="schedule-timeline">
-        <div class="timeline-item"><div class="time-bubble">9:30</div><div class="timeline-content"><h4>Arrival</h4><p>登校・朝のあいさつ</p></div></div>
-        <div class="timeline-item"><div class="time-bubble">9:45</div><div class="timeline-content"><h4>Warm Up</h4><p>朝のサークルタイム・英語のウォームアップ</p></div></div>
-        <div class="timeline-item"><div class="time-bubble">10:15</div><div class="timeline-content"><h4>Theme Activity 1</h4><p>テーマ別アクティビティ（午前の部）</p></div></div>
-        <div class="timeline-item"><div class="time-bubble">11:30</div><div class="timeline-content"><h4>Lunch Time 🍱</h4><p>みんなでランチ</p></div></div>
-        <div class="timeline-item"><div class="time-bubble">12:30</div><div class="timeline-content"><h4>Theme Activity 2</h4><p>テーマ別アクティビティ（午後の部）</p></div></div>
-        <div class="timeline-item"><div class="time-bubble">13:30</div><div class="timeline-content"><h4>Diary Time ✏️</h4><p>今日の振り返り・英語ダイアリー</p></div></div>
-        <div class="timeline-item"><div class="time-bubble">14:00</div><div class="timeline-content"><h4>Good-bye Time 👋</h4><p>帰りのあいさつ（延長は18:00まで）</p></div></div>
+        <div class="timeline-item"><div class="time-bubble">9:30</div><div class="timeline-content"><h3>Arrival</h3><p>登校・朝のあいさつ</p></div></div>
+        <div class="timeline-item"><div class="time-bubble">9:45</div><div class="timeline-content"><h3>Warm Up</h3><p>朝のサークルタイム・英語のウォームアップ</p></div></div>
+        <div class="timeline-item"><div class="time-bubble">10:15</div><div class="timeline-content"><h3>Theme Activity 1</h3><p>テーマ別アクティビティ（午前の部）</p></div></div>
+        <div class="timeline-item"><div class="time-bubble">11:30</div><div class="timeline-content"><h3>Lunch Time 🍱</h3><p>みんなでランチ</p></div></div>
+        <div class="timeline-item"><div class="time-bubble">12:30</div><div class="timeline-content"><h3>Theme Activity 2</h3><p>テーマ別アクティビティ（午後の部）</p></div></div>
+        <div class="timeline-item"><div class="time-bubble">13:30</div><div class="timeline-content"><h3>Diary Time ✏️</h3><p>今日の振り返り・英語ダイアリー</p></div></div>
+        <div class="timeline-item"><div class="time-bubble">14:00</div><div class="timeline-content"><h3>Good-bye Time 👋</h3><p>帰りのあいさつ（延長は18:00まで）</p></div></div>
       </div>
     </div>
   </section>
@@ -550,6 +551,7 @@ document.querySelectorAll(".nav-links a").forEach(link => {
 }
 </script>
 
+</main>
 </body>
 </html>
 
