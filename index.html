@@ -5,8 +5,8 @@
 <link rel="icon" type="image/png" href="logo.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="canonical" href="https://luanaenglishschool.jp/">
-<title>Luana English School | ルアナイングリッシュスクール | 府中市の子ども英語教室 | 中河原</title>
-<meta name="description" content="ルアナイングリッシュスクール。府中市中河原の子ども英語学校・英語教室。ネイティブ講師と保育士が、幼児から小学生の英語力を楽しく育てます。プレスクール・アフタースクール・サマースクール対応。">
+<title>Luana English School | 府中市中河原の子ども英語教室</title>
+<meta name="description" content="府中市中河原の子ども英語教室、Luana English School。1〜2歳・幼稚園児・小学生を対象に、ネイティブ講師と保育士がAll Englishの環境で楽しく学べるレッスンを提供。体験レッスン受付中。">
 <meta name="keywords" content="英語学校,英語教室,子ども英語,府中市,中河原,ルアナイングリッシュスクール,Luana English School,プレスクール,アフタースクール,サマースクール,ネイティブ講師">
 <meta name="category" content="英語学校">
 <meta property="og:type" content="website">
@@ -178,8 +178,21 @@
 
   .hero-sub {
     font-size: 1.1rem; color: #555; Line-height: 1.7;
-    margin: 20px auto; max-width: 520px;
+    margin: 18px auto; max-width: 600px;
     animation: popIn 0.7s 0.2s ease both;
+  }
+
+  .hero-trust {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+    margin: 0 auto 12px;
+    animation: popIn 0.7s 0.28s ease both;
+  }
+  .hero-trust span {
+    background: rgba(255,255,255,0.88);
+    border: 2px solid rgba(91,200,245,0.45);
+    color: #424242;
+    font-size: 0.85rem; font-weight: 800;
+    padding: 7px 12px; border-radius: 20px;
   }
 
   .hero-cta {
@@ -224,6 +237,40 @@
     animation: popIn 0.6s ease both;
     box-shadow: 0 4px 0 rgba(0,0,0,0.08);
   }
+
+  /* ── TRIAL CHOICE ── */
+  .trial-choice {
+    background: #ffffff;
+    padding: 52px 20px 60px;
+    text-align: center;
+  }
+  .trial-choice .section-sub { margin: 0 auto; }
+  .trial-actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    max-width: 900px;
+    margin: 28px auto 0;
+  }
+  .trial-action {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 64px;
+    padding: 14px 18px;
+    border: 3px solid var(--sky);
+    border-radius: 8px;
+    background: #EAF8FE;
+    color: #68420F;
+    font-family: 'Baloo 2', cursive;
+    font-size: 1rem; font-weight: 800;
+    line-height: 1.35;
+    text-decoration: none;
+    box-shadow: 0 5px 0 rgba(91,200,245,0.28);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .trial-action:nth-child(2) { background: #FFF8DC; border-color: var(--sun); box-shadow: 0 5px 0 rgba(255,217,90,0.35); }
+  .trial-action:nth-child(3) { background: #F5F0FF; border-color: var(--lavender); box-shadow: 0 5px 0 rgba(201,167,240,0.35); }
+  .trial-action:hover { transform: translateY(-2px); box-shadow: 0 7px 0 rgba(91,200,245,0.28); }
+  .trial-note { margin-top: 18px; color: #666; font-size: 0.92rem; }
   @keyframes popIn {
     from { opacity: 0; transform: translateY(20px) scale(0.97); }
     to   { opacity: 1; transform: translateY(0) scale(1); }
@@ -540,6 +587,15 @@
     .access-map iframe { height: 220px; }
   }
 
+  /* ── FAQ ── */
+  .faq { background: var(--cream); }
+  .faq .section-title, .faq .section-sub { text-align: center; margin-left: auto; margin-right: auto; }
+  .faq .section-tag { display: table; margin-left: auto; margin-right: auto; }
+  .faq-list { max-width: 820px; margin: 34px auto 0; border-top: 2px solid #eadfce; }
+  .faq-item { border-bottom: 2px solid #eadfce; padding: 22px 4px; }
+  .faq-item h3 { font-size: 1.05rem; line-height: 1.5; margin-bottom: 8px; color: #704814; }
+  .faq-item p { color: #555; line-height: 1.75; }
+
   /* ── CONTACT ── */
   .contact {
     background: Linear-gradient(160deg, #F0FBFF, #FFF0F0);
@@ -659,6 +715,8 @@
     .hero h1 { font-size: 2rem; Line-height: 1.2; }
     .hero-school-name { font-size: 1.8rem; padding: 6px 20px; }
     .hero-sub { font-size: 0.95rem; padding: 0 8px; }
+    .hero-trust { gap: 6px; }
+    .hero-trust span { font-size: 0.76rem; padding: 6px 9px; }
     .section-title { font-size: 1.6rem; }
 
     /* Spacing */
@@ -675,6 +733,7 @@
       display: block; width: 100%; text-align: center;
       margin: 8px 0 !important; font-size: 0.95rem;
     }
+    .trial-actions { grid-template-columns: 1fr; gap: 12px; }
 
     /* About */
     .about-grid { grid-template-columns: 1fr; gap: 24px; }
@@ -807,19 +866,36 @@ document.querySelectorAll(".nav-links a").forEach(link => {
   <div class="blob blob-4"></div>
   <div class="hero-content">
     <div class="hero-school-name">Luana English School</div>
-    <div class="hero-badge">🌸 中河原 • 府中市</div>
-    <h1><em>Learn, Play and<br>Shine in English!</em></h1>
+    <div class="hero-badge">🌸 中河原・府中市｜体験レッスン受付中</div>
+    <h1><em>府中市中河原の<br>子ども英語スクール</em></h1>
     <p class="hero-sub">
-      インターナショナルスクールで長年経験を積んだ保育士と、経験豊富な<br>
-      ネイティブ講師たちが、一人ひとりの「楽しい！」を大切にしながら、<br>
-      "生きた英語"を楽しく届けます。<br><br>
-      はじめての英語でも安心して通える、あたたかくアットホームな空間。<br>
-      "英語って楽しい！"があふれるスクールです。
+      1〜2歳・幼稚園児・小学生が対象。インターナショナルスクール経験のある保育士とネイティブ講師が、All Englishの環境で「英語って楽しい！」を育てます。
     </p>
+    <div class="hero-trust" aria-label="スクールの特徴">
+      <span>ネイティブ講師</span>
+      <span>保育士在籍</span>
+      <span>初心者歓迎</span>
+      <span>お迎え相談可</span>
+    </div>
     <div>
-      <a href="#contact" class="hero-cta">✨ 体験レッスンを申し込む</a>
+      <a href="#trial" class="hero-cta">✨ 体験レッスンを申し込む</a>
       <a href="#classes" class="hero-cta-2">クラスを見る →</a>
     </div>
+  </div>
+</section>
+
+<!-- TRIAL CHOICE -->
+<section class="trial-choice" id="trial">
+  <div class="container">
+    <div class="section-tag">✨ Trial Lesson</div>
+    <h2 class="section-title">お子さまに合う体験レッスン</h2>
+    <p class="section-sub">年齢に合うクラスを選ぶと、申込フォームが開きます。はじめての英語でも安心してご参加ください。</p>
+    <div class="trial-actions">
+      <a class="trial-action" href="https://docs.google.com/forms/d/e/1FAIpQLScj5WNaLAc5Z9DxK1OZVFvbwyybkOBnePVofcUGATNvIcAJnQ/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_preschool')">🐣 1〜2歳児クラス</a>
+      <a class="trial-action" href="https://docs.google.com/forms/d/e/1FAIpQLSe1fLxRno8bzY1DzSxAqpGnieWfcCrWDZJTVNnzL8yoUu-zdQ/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_kinder')">🌻 幼稚園児クラス</a>
+      <a class="trial-action" href="https://docs.google.com/forms/d/e/1FAIpQLSc-GqYR10IOEfLaSN1hieuvVi3gziH-jySSuas-caJ3-MEclw/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_afterschool')">🎒 小学生クラス</a>
+    </div>
+    <p class="trial-note">どのクラスか迷う場合は、下のお問い合わせからお気軽にご相談ください。</p>
   </div>
 </section>
 
@@ -1021,6 +1097,33 @@ document.querySelectorAll(".nav-links a").forEach(link => {
     </div>
 </section>
 
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="container">
+    <div class="section-tag">💬 FAQ</div>
+    <h2 class="section-title">よくあるご質問</h2>
+    <p class="section-sub">体験前に保護者の方からよくいただくご質問です。</p>
+    <div class="faq-list">
+      <div class="faq-item">
+        <h3>英語がはじめてでも参加できますか？</h3>
+        <p>はい、初心者のお子さまも歓迎しています。一人ひとりのペースに合わせ、歌や遊び、アクティビティを通して自然に英語へ親しめるようサポートします。</p>
+      </div>
+      <div class="faq-item">
+        <h3>何歳から通えますか？</h3>
+        <p>1〜2歳児向けのプリスクール、年少〜年長向けのキンダースクール、小学生向けのアフタースクールをご用意しています。</p>
+      </div>
+      <div class="faq-item">
+        <h3>体験レッスンはどこから申し込めますか？</h3>
+        <p>このページ上部の「お子さまに合う体験レッスン」から、年齢に合うクラスを選んでお申し込みいただけます。</p>
+      </div>
+      <div class="faq-item">
+        <h3>小学生のお迎えサービスはありますか？</h3>
+        <p>中河原付近の小学校、および府中駅から聖蹟桜ヶ丘の間でお迎えに対応しています。対象エリアや時間については事前にご相談ください。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- CONTACT -->
 <section class="contact" id="contact">
   <div class="container">
@@ -1161,11 +1264,49 @@ document.querySelectorAll(".nav-links a").forEach(link => {
 }
 </script>
 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "英語がはじめてでも参加できますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "はい、初心者のお子さまも歓迎しています。一人ひとりのペースに合わせ、歌や遊び、アクティビティを通して自然に英語へ親しめるようサポートします。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "何歳から通えますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "1〜2歳児向けのプリスクール、年少〜年長向けのキンダースクール、小学生向けのアフタースクールをご用意しています。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "体験レッスンはどこから申し込めますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "ホームページ上部の体験レッスン案内から、年齢に合うクラスを選んでお申し込みいただけます。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "小学生のお迎えサービスはありますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "中河原付近の小学校、および府中駅から聖蹟桜ヶ丘の間でお迎えに対応しています。対象エリアや時間については事前にご相談ください。"
+      }
+    }
+  ]
+}
+</script>
+
 </body>
 </html>
-
-
-
 
 
 
