@@ -148,7 +148,7 @@
     opacity: 0.25;
   }
 
-  .hero-content { position: relative; z-index: 2; max-width: 700px; }
+  .hero-content { position: relative; z-index: 2; width: 100%; max-width: 700px; min-width: 0; }
 
   .hero-badge {
     display: inLine-block;
@@ -237,6 +237,8 @@
     animation: popIn 0.6s ease both;
     box-shadow: 0 4px 0 rgba(0,0,0,0.08);
   }
+
+  .mobile-signup-bar { display: none; }
   .hero-catchphrase {
     color: #704814;
     font-family: 'Baloo 2', cursive;
@@ -280,6 +282,16 @@
   .trial-action:nth-child(3) { background: #F5F0FF; border-color: var(--lavender); box-shadow: 0 5px 0 rgba(201,167,240,0.35); }
   .trial-action:hover { transform: translateY(-2px); box-shadow: 0 7px 0 rgba(91,200,245,0.28); }
   .trial-note { margin-top: 18px; color: #666; font-size: 0.92rem; }
+
+  .moments { background:#EAF8FE; padding:64px 20px; text-align:center; }
+  .moments-grid {
+    display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px;
+    max-width:1000px; margin:28px auto 22px;
+  }
+  .moments-grid img {
+    width:100%; aspect-ratio:4/3; object-fit:cover; display:block; border-radius:8px;
+  }
+  .moments-link { color:#136E94; font-weight:800; text-decoration:none; }
   @keyframes popIn {
     from { opacity: 0; transform: translateY(20px) scale(0.97); }
     to   { opacity: 1; transform: translateY(0) scale(1); }
@@ -722,7 +734,11 @@
     /* Typography */
     body { font-size: 15px; }
     .hero h1 { font-size: 2rem; Line-height: 1.2; }
-    .hero-school-name { font-size: 1.8rem; padding: 6px 20px; }
+    .hero { padding-left: 16px; padding-right: 16px; }
+    .hero-school-name {
+      max-width: 100%; font-size: 1.55rem; padding: 8px 12px;
+      white-space: normal; overflow-wrap: anywhere;
+    }
     .hero-catchphrase { font-size: 0.98rem; padding: 0 8px; }
     .hero-sub { font-size: 0.95rem; padding: 0 8px; }
     .hero-trust { gap: 6px; }
@@ -744,6 +760,9 @@
       margin: 8px 0 !important; font-size: 0.95rem;
     }
     .trial-actions { grid-template-columns: 1fr; gap: 12px; }
+    .moments-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .moments-grid a:first-child { grid-column:1 / -1; }
+    .moments-grid a:first-child img { aspect-ratio:16/9; }
 
     /* About */
     .about-grid { grid-template-columns: 1fr; gap: 24px; }
@@ -787,6 +806,20 @@
     .cta-btn, .hero-cta { padding: 14px 28px; font-size: 0.95rem; }
     .cta-box { padding: 28px 20px; }
 
+    .mobile-signup-bar {
+      position: fixed; z-index: 250; left: 0; right: 0; bottom: 0;
+      display: flex; gap: 10px; padding: 10px 12px;
+      background: rgba(255,255,255,0.97); border-top: 1px solid #e8e8e8;
+      box-shadow: 0 -4px 18px rgba(0,0,0,0.12);
+    }
+    .mobile-signup-bar a {
+      flex: 1; min-width: 0; padding: 13px 10px; border-radius: 8px;
+      text-align: center; text-decoration: none; font-weight: 800;
+    }
+    .mobile-signup-bar .mobile-trial { background: #CC4632; color: white; }
+    .mobile-signup-bar .mobile-line { background: #06C755; color: white; }
+    body { padding-bottom: 72px; }
+
     /* Footer */
     footer { padding: 30px 16px; }
 
@@ -815,8 +848,8 @@
   font-family:'Baloo 2',cursive; font-weight:800; font-size:0.95rem;
   color: #7A4A0A; letter-spacing:0.5px;
 ">
-  ☀️ Summer School 2026 — 現在受付中！&nbsp;
-  <a href="https://docs.google.com/forms/d/e/1FAIpQLSdOMr6tBK_ql0omv56ILcO3X_gxkgirsDRfkBSVzMbuwPGG7A/viewform?usp=header" target="_blank" onclick="gtag('event','summer_signup')" style="color:#7A4A0A; text-decoration:underline; font-weight:800;">今すぐ申し込む →</a>
+  ☀️ Summer School 2026 受付中！&nbsp;
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSdOMr6tBK_ql0omv56ILcO3X_gxkgirsDRfkBSVzMbuwPGG7A/viewform?usp=header" target="_blank" onclick="gtag('event','summer_signup')" style="color:#7A4A0A; text-decoration:underline; font-weight:800;">申し込む →</a>
 </div>
 <style>
 @keyframes shimmer { 0%{background-position:0% 50%} 100%{background-position:200% 50%} }
@@ -846,7 +879,7 @@ window.addEventListener('load',function(){
 <nav style="top:42px;">
   <div style="display:flex;align-items:center;gap:8px;"><a href="/"><img src="logo.png" alt="Luana English School" style="height:100px;width:100px;object-fit:contain;margin-bottom:12px;"></a>
   <button class="hamburger" onclick="this.nextElementSibling.classList.toggle('open')" aria-label="Menu"><span></span><span></span><span></span></button>
-    <ul class="nav-links">
+  <ul class="nav-links">
     <li><a href="/#about">About</a></li>
     <li><a href="#approach">Our Approach</a></li>
     <li><a href="/#classes">Classes</a></li>
@@ -857,6 +890,7 @@ window.addEventListener('load',function(){
     <li><a href="/#contact">Contact</a></li>
     <li><a href="/#access">Access</a></li>
   </ul>
+  </div>
 </nav>
 <script>
 document.querySelectorAll(".nav-links a").forEach(link => {
@@ -907,6 +941,20 @@ document.querySelectorAll(".nav-links a").forEach(link => {
       <a class="trial-action" href="https://docs.google.com/forms/d/e/1FAIpQLSc-GqYR10IOEfLaSN1hieuvVi3gziH-jySSuas-caJ3-MEclw/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_afterschool')">🎒 小学生クラス</a>
     </div>
     <p class="trial-note">どのクラスか迷う場合は、下のお問い合わせからお気軽にご相談ください。</p>
+  </div>
+</section>
+
+<section class="moments" aria-labelledby="moments-title">
+  <div class="container">
+    <div class="section-tag">Everyday at Luana</div>
+    <h2 class="section-title" id="moments-title">レッスンの様子</h2>
+    <p class="section-sub" style="margin:0 auto;">英語を使いながら、工作・ゲーム・外遊びなどを楽しんでいます。</p>
+    <div class="moments-grid">
+      <a href="/gallery" aria-label="レッスン写真をもっと見る"><img src="photos/Everyday Moments/July 2026/photo-35.jpg" alt="Luana English Schoolで先生と子どもたちが過ごす様子" loading="lazy" decoding="async"></a>
+      <a href="/gallery" aria-label="工作の写真をもっと見る"><img src="photos/Everyday Moments/July 2026/photo-23.jpg" alt="英語レッスンで工作を楽しむ子どもたち" loading="lazy" decoding="async"></a>
+      <a href="/gallery" aria-label="外遊びの写真をもっと見る"><img src="photos/Everyday Moments/June 2026/photo-20.jpg" alt="先生と子どもたちが外で活動する様子" loading="lazy" decoding="async"></a>
+    </div>
+    <a class="moments-link" href="/gallery">写真をもっと見る →</a>
   </div>
 </section>
 
@@ -1159,7 +1207,7 @@ document.querySelectorAll(".nav-links a").forEach(link => {
   <path d="M11 15 L11 31" fill="none" stroke="#C5221F" stroke-width="2"/>
   <path d="M37 15 L37 31" fill="none" stroke="#C5221F" stroke-width="2"/>
 </svg></span>
-        <h3>Gmail</h3>
+        <h3>メールで問い合わせ</h3>
         <p>luanaenglishschool@gmail.com</p>
       </a>
       <a href="https://lin.ee/SOqP6Vz" target="_blank" class="contact-card" onclick="gtag('event','contact_line')">
@@ -1168,8 +1216,8 @@ document.querySelectorAll(".nav-links a").forEach(link => {
   <path d="M24 10C15.163 10 8 16.014 8 23.4c0 6.628 5.88 12.18 13.82 13.18.538.116 1.27.355 1.456.815.167.418.109 1.073.054 1.496l-.235 1.41c-.072.418-.33 1.634 1.43.891 1.76-.744 9.495-5.59 12.956-9.572C39.72 29.05 40 26.32 40 23.4 40 16.014 32.837 10 24 10z" fill="white"/>
   <path d="M20.5 26.5h-3.8v-6.8h1.6v5.2h2.2v1.6zm1.9 0h-1.6v-6.8h1.6v6.8zm6.7 0h-1.6l-2.7-4.1v4.1h-1.6v-6.8h1.6l2.7 4.1v-4.1h1.6v6.8zm4.8-5.2h-2.7v1.3h2.7v1.6h-2.7v1.3h2.7v1.6h-4.3v-7.4h4.3v1.6z" fill="#06C755"/>
 </svg></span>
-        <h3>公式 Line</h3>
-        <p>Lineからお気軽にお問い合わせください</p>
+        <h3>LINEで相談</h3>
+        <p>質問やクラス選びのご相談はこちら</p>
       </a>
       <a href="https://www.instagram.com/luana.english.school?igsh=aGtxZnR4NWYzaDZ0&utm_source=qr" target="_blank" class="contact-card" onclick="gtag('event','instagram_click')">
         <span class="contact-icon"><svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
@@ -1221,6 +1269,11 @@ document.querySelectorAll(".nav-links a").forEach(link => {
   </div>
 </section>
 </main>
+
+<div class="mobile-signup-bar" aria-label="お問い合わせ">
+  <a class="mobile-trial" href="#trial">体験予約</a>
+  <a class="mobile-line" href="https://lin.ee/SOqP6Vz" target="_blank" rel="noopener" onclick="gtag('event','contact_line_sticky')">LINEで相談</a>
+</div>
 
 <!-- FOOTER -->
 <footer>

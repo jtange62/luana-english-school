@@ -165,6 +165,13 @@
     font-family:'Baloo 2',cursive;
   }
   .cta-btn:hover { transform:translateY(-3px); box-shadow:0 9px 0 #9E3524; }
+  .summer-top-actions { display:flex; justify-content:center; margin:30px 0 8px; }
+  .pricing-cta {
+    margin-top:28px; padding:24px; text-align:center; background:white;
+    border:2px solid var(--sun); border-radius:8px;
+  }
+  .pricing-cta p { color:#666; margin-bottom:18px; }
+  .mobile-signup-bar { display:none; }
 
   .faq { background:white; padding:70px 20px; }
   .faq-list { max-width:800px; margin:34px auto 0; display:grid; gap:14px; }
@@ -269,6 +276,19 @@
 
     /* CTAs */
     .cta-btn, .hero-cta { padding: 14px 28px; font-size: 0.95rem; }
+    .summer-top-actions .cta-btn { width:100%; text-align:center; }
+    .mobile-signup-bar {
+      position:fixed; z-index:250; left:0; right:0; bottom:0; display:flex; gap:10px;
+      padding:10px 12px; background:rgba(255,255,255,0.97); border-top:1px solid #e8e8e8;
+      box-shadow:0 -4px 18px rgba(0,0,0,0.12);
+    }
+    .mobile-signup-bar a {
+      flex:1; min-width:0; padding:13px 10px; border-radius:8px;
+      text-align:center; text-decoration:none; color:white; font-weight:800;
+    }
+    .mobile-signup-bar .mobile-trial { background:#CC4632; }
+    .mobile-signup-bar .mobile-line { background:#06C755; }
+    body { padding-bottom:72px; }
     .cta-box { padding: 28px 20px; }
 
     /* Footer */
@@ -289,7 +309,7 @@
 </script></head>
 <body>
 
-<div id="summer-banner" class="banner">☀️ Summer School 2026 — 現在受付中！</div>
+<div id="summer-banner" class="banner">☀️ Summer School 2026 受付中！</div>
 <script>
 function _fixNavTop(){var b=document.getElementById('summer-banner'),n=document.querySelector('nav');if(b&&n){n.style.top=b.offsetHeight+'px';document.documentElement.style.setProperty('--header-h',(b.offsetHeight+n.offsetHeight+12)+'px');}}
 document.addEventListener('DOMContentLoaded',_fixNavTop);
@@ -338,6 +358,10 @@ window.addEventListener('resize',_fixNavTop);
         </div>
       </div>
 
+      <div class="summer-top-actions">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdOMr6tBK_ql0omv56ILcO3X_gxkgirsDRfkBSVzMbuwPGG7A/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','summer_signup_top')" class="cta-btn">サマースクールに申し込む</a>
+      </div>
+
       <div class="summer-weeks">
         <div class="week-card">
           <div class="week-num">Week 1 • 7/27 – 7/31</div>
@@ -384,6 +408,11 @@ window.addEventListener('resize',_fixNavTop);
             4時間 ¥4,000 ／ 1時間 ¥1,200
           </div>
         </div>
+      </div>
+
+      <div class="pricing-cta">
+        <p>参加する週を選んでお申し込みいただけます。</p>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdOMr6tBK_ql0omv56ILcO3X_gxkgirsDRfkBSVzMbuwPGG7A/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','summer_signup_pricing')" class="cta-btn">参加を申し込む</a>
       </div>
     </div>
   </section>
@@ -553,6 +582,10 @@ document.querySelectorAll(".nav-links a").forEach(link => {
 </script>
 
 </main>
+<div class="mobile-signup-bar" aria-label="お問い合わせ">
+  <a class="mobile-trial" href="https://docs.google.com/forms/d/e/1FAIpQLSdOMr6tBK_ql0omv56ILcO3X_gxkgirsDRfkBSVzMbuwPGG7A/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','summer_signup_sticky')">参加申込</a>
+  <a class="mobile-line" href="https://lin.ee/SOqP6Vz" target="_blank" rel="noopener" onclick="gtag('event','contact_line_sticky')">LINEで相談</a>
+</div>
 </body>
 </html>
 

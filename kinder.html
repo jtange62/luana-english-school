@@ -157,6 +157,14 @@
   }
   .cta-btn:hover { transform: translateY(-3px); box-shadow: 0 9px 0 #9E3524; }
 
+  .hero-actions { display:flex; justify-content:center; flex-wrap:wrap; gap:12px; margin-top:24px; }
+  .hero-actions .cta-btn { padding:14px 28px; }
+  .hero-fees-link {
+    display:inline-flex; align-items:center; padding:14px 24px; border:2px solid var(--sun);
+    border-radius:40px; color:var(--brown); background:white; text-decoration:none; font-weight:800;
+  }
+  .mobile-signup-bar { display:none; }
+
   @media(max-width:600px) {
     .Activity-card { flex-direction:column; padding:18px; }
     .tabs { gap:8px; }
@@ -227,6 +235,21 @@
 
     /* CTAs */
     .cta-btn, .hero-cta { padding: 14px 28px; font-size: 0.95rem; }
+    .hero > div { width:100%; min-width:0; }
+    .hero-actions { flex-direction:column; }
+    .hero-actions a { width:100%; justify-content:center; text-align:center; }
+    .mobile-signup-bar {
+      position:fixed; z-index:250; left:0; right:0; bottom:0; display:flex; gap:10px;
+      padding:10px 12px; background:rgba(255,255,255,0.97); border-top:1px solid #e8e8e8;
+      box-shadow:0 -4px 18px rgba(0,0,0,0.12);
+    }
+    .mobile-signup-bar a {
+      flex:1; min-width:0; padding:13px 10px; border-radius:8px;
+      text-align:center; text-decoration:none; color:white; font-weight:800;
+    }
+    .mobile-signup-bar .mobile-trial { background:#CC4632; }
+    .mobile-signup-bar .mobile-line { background:#06C755; }
+    body { padding-bottom:72px; }
     .cta-box { padding: 28px 20px; }
 
     /* Footer */
@@ -257,8 +280,8 @@
   color: #7A4A0A;
   letter-spacing:0.5px;
 ">
-  ☀️ Summer School 2026 — 現在受付中！&nbsp;
-  <a href="https://docs.google.com/forms/d/e/1FAIpQLSdOMr6tBK_ql0omv56ILcO3X_gxkgirsDRfkBSVzMbuwPGG7A/viewform?usp=header" target="_blank" onclick="gtag('event','summer_signup')" style="color:#7A4A0A; text-decoration:underline; font-weight:800;">今すぐ申し込む →</a>
+  ☀️ Summer School 2026 受付中！&nbsp;
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSdOMr6tBK_ql0omv56ILcO3X_gxkgirsDRfkBSVzMbuwPGG7A/viewform?usp=header" target="_blank" onclick="gtag('event','summer_signup')" style="color:#7A4A0A; text-decoration:underline; font-weight:800;">申し込む →</a>
 </div>
 <style>
 @keyframes shimmer { 0%{background-position:0% 50%} 100%{background-position:200% 50%} }
@@ -293,6 +316,10 @@ window.addEventListener('resize',_fixNavTop);
     <div class="hero-tag">🌻 Kinder School</div>
     <h1>幼稚園児クラス</h1>
     <p>年少・年中・年長、それぞれのレベルに合わせた英語の時間！</p>
+    <div class="hero-actions">
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSe1fLxRno8bzY1DzSxAqpGnieWfcCrWDZJTVNnzL8yoUu-zdQ/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_kinder_hero')" class="cta-btn">体験レッスンを申し込む</a>
+      <a href="/fees" class="hero-fees-link">料金を見る</a>
+    </div>
   </div>
 </div>
 
@@ -447,6 +474,10 @@ window.addEventListener('resize',_fixNavTop);
 </div>
 
 </main>
+<div class="mobile-signup-bar" aria-label="お問い合わせ">
+  <a class="mobile-trial" href="https://docs.google.com/forms/d/e/1FAIpQLSe1fLxRno8bzY1DzSxAqpGnieWfcCrWDZJTVNnzL8yoUu-zdQ/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_kinder_sticky')">体験予約</a>
+  <a class="mobile-line" href="https://lin.ee/SOqP6Vz" target="_blank" rel="noopener" onclick="gtag('event','contact_line_sticky')">LINEで相談</a>
+</div>
 <script>
 function showTab(id, btn) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
