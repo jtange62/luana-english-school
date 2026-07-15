@@ -232,10 +232,19 @@
     display: inLine-block;
     padding: 8px 32px;
     border-radius: 20px;
-    margin-bottom: 18px;
+    margin-bottom: 8px;
     letter-spacing: -0.5px;
     animation: popIn 0.6s ease both;
     box-shadow: 0 4px 0 rgba(0,0,0,0.08);
+  }
+  .hero-catchphrase {
+    color: #704814;
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.15rem;
+    font-weight: 800;
+    line-height: 1.35;
+    margin-bottom: 18px;
+    animation: popIn 0.6s 0.08s ease both;
   }
 
   /* ── TRIAL CHOICE ── */
@@ -714,6 +723,7 @@
     body { font-size: 15px; }
     .hero h1 { font-size: 2rem; Line-height: 1.2; }
     .hero-school-name { font-size: 1.8rem; padding: 6px 20px; }
+    .hero-catchphrase { font-size: 0.98rem; padding: 0 8px; }
     .hero-sub { font-size: 0.95rem; padding: 0 8px; }
     .hero-trust { gap: 6px; }
     .hero-trust span { font-size: 0.76rem; padding: 6px 9px; }
@@ -866,6 +876,7 @@ document.querySelectorAll(".nav-links a").forEach(link => {
   <div class="blob blob-4"></div>
   <div class="hero-content">
     <div class="hero-school-name">Luana English School</div>
+    <p class="hero-catchphrase">Learn, Play and Shine in English!</p>
     <div class="hero-badge">🌸 中河原・府中市｜体験レッスン受付中</div>
     <h1><em>府中市中河原の<br>子ども英語スクール</em></h1>
     <p class="hero-sub">
@@ -1307,7 +1318,6 @@ document.querySelectorAll(".nav-links a").forEach(link => {
 
 </body>
 </html>
-
 
 
 
