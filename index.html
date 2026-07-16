@@ -149,7 +149,12 @@
     opacity: 0.25;
   }
 
-  .hero-content { position: relative; z-index: 2; width: 100%; max-width: 700px; min-width: 0; }
+  .hero-content {
+    position: relative; z-index: 2; width: 100%; max-width: 1180px; min-width: 0;
+    display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(300px, 0.82fr);
+    align-items: center; gap: clamp(32px, 5vw, 72px); text-align: left;
+  }
+  .hero-copy { min-width: 0; }
 
   .hero-badge {
     display: inLine-block;
@@ -165,7 +170,7 @@
 
   .hero h1 {
     font-family: 'Baloo 2', cursive;
-    font-size: clamp(2.8rem, 7vw, 4.5rem);
+    font-size: clamp(2.6rem, 5vw, 4.2rem);
     font-weight: 800;
     Line-height: 1.1;
     color: var(--dark);
@@ -179,13 +184,13 @@
 
   .hero-sub {
     font-size: 1.1rem; color: #555; Line-height: 1.7;
-    margin: 18px auto; max-width: 600px;
+    margin: 18px 0; max-width: 600px;
     animation: popIn 0.7s 0.2s ease both;
   }
 
   .hero-trust {
-    display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
-    margin: 0 auto 12px;
+    display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 8px;
+    margin: 0 0 12px;
     animation: popIn 0.7s 0.28s ease both;
   }
   .hero-trust span {
@@ -223,20 +228,55 @@
   }
   .hero-cta-2:hover { background: var(--sky); color: var(--white); }
 
+  .hero-photo {
+    position: relative; width: 100%; max-width: 430px;
+    justify-self: end; animation: popIn 0.8s 0.28s ease both;
+  }
+  .hero-photo-frame {
+    aspect-ratio: 3 / 4; overflow: hidden; border-radius: 36px;
+    border: 7px solid rgba(255,255,255,0.96);
+    background: var(--white);
+    box-shadow: 0 24px 55px rgba(84, 62, 45, 0.2), 10px 10px 0 rgba(91,200,245,0.35);
+    transform: rotate(1.5deg);
+  }
+  .hero-photo-frame img {
+    width: 100%; height: 100%; display: block; object-fit: cover;
+    object-position: center center;
+  }
+  .hero-photo-caption {
+    position: absolute; left: -18px; bottom: 24px;
+    max-width: calc(100% - 20px); padding: 10px 17px;
+    border-radius: 18px; background: rgba(255,255,255,0.96);
+    color: #704814; font-family: 'Baloo 2', cursive;
+    font-size: 0.95rem; font-weight: 800; line-height: 1.25;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.14);
+    transform: rotate(-2deg);
+  }
+
 
   .hero-school-name {
     font-family: 'Baloo 2', cursive;
-    font-size: clamp(2.4rem, 7vw, 4rem);
+    font-size: clamp(2rem, 3.6vw, 3.4rem);
     font-weight: 800;
     color: #7A4A0A;
     background: #B8F0E6;
-    display: inLine-block;
-    padding: 8px 32px;
+    display: inline-block;
+    width: fit-content;
+    max-width: 100%;
+    white-space: nowrap;
+    padding: 8px clamp(18px, 2.2vw, 32px);
     border-radius: 20px;
     margin-bottom: 8px;
     letter-spacing: -0.5px;
     animation: popIn 0.6s ease both;
     box-shadow: 0 4px 0 rgba(0,0,0,0.08);
+  }
+
+  @media(max-width: 900px) {
+    .hero-content { grid-template-columns: 1fr; text-align: center; gap: 40px; }
+    .hero-sub { margin-left: auto; margin-right: auto; }
+    .hero-trust { justify-content: center; }
+    .hero-photo { justify-self: center; max-width: 390px; }
   }
 
   .mobile-signup-bar { display: none; }
@@ -761,7 +801,7 @@
     .hero { padding-left: 16px; padding-right: 16px; }
     .hero-school-name {
       max-width: 100%; font-size: 1.55rem; padding: 8px 12px;
-      white-space: normal; overflow-wrap: anywhere;
+      white-space: nowrap;
     }
     .hero-catchphrase { font-size: 0.98rem; padding: 0 8px; }
     .hero-sub { font-size: 0.95rem; padding: 0 8px; }
@@ -933,22 +973,32 @@ document.querySelectorAll(".nav-links a").forEach(link => {
   <div class="blob blob-3"></div>
   <div class="blob blob-4"></div>
   <div class="hero-content">
-    <div class="hero-school-name">Luana English School</div>
-    <p class="hero-catchphrase">Learn, Play and Shine in English!</p>
-    <div class="hero-badge">🌸 中河原・府中市｜体験レッスン受付中</div>
-    <h1><em>府中市中河原の<br>子ども英語スクール</em></h1>
-    <p class="hero-sub">
-      1〜2歳・幼稚園児・小学生が対象。インターナショナルスクール経験のある保育士とネイティブ講師が、All Englishの環境で「英語って楽しい！」を育てます。
-    </p>
-    <div class="hero-trust" aria-label="スクールの特徴">
-      <span>ネイティブ講師</span>
-      <span>保育士在籍</span>
-      <span>初心者歓迎</span>
-      <span>お迎え相談可</span>
+    <div class="hero-copy">
+      <div class="hero-school-name">Luana English School</div>
+      <p class="hero-catchphrase">Learn, Play and Shine in English!</p>
+      <div class="hero-badge">🌸 中河原・府中市｜体験レッスン受付中</div>
+      <h1><em>府中市中河原の<br>子ども英語スクール</em></h1>
+      <p class="hero-sub">
+        1〜2歳・幼稚園児・小学生が対象。インターナショナルスクール経験のある保育士とネイティブ講師が、All Englishの環境で「英語って楽しい！」を育てます。
+      </p>
+      <div class="hero-trust" aria-label="スクールの特徴">
+        <span>ネイティブ講師</span>
+        <span>保育士在籍</span>
+        <span>初心者歓迎</span>
+        <span>お迎え相談可</span>
+      </div>
+      <div>
+        <a href="#trial" class="hero-cta">✨ 体験レッスンを申し込む</a>
+        <a href="#classes" class="hero-cta-2">クラスを見る →</a>
+      </div>
     </div>
-    <div>
-      <a href="#trial" class="hero-cta">✨ 体験レッスンを申し込む</a>
-      <a href="#classes" class="hero-cta-2">クラスを見る →</a>
+    <div class="hero-photo">
+      <div class="hero-photo-frame">
+        <img src="photos/Everyday Moments/July 2026/photo-35.jpg"
+          alt="Luana English Schoolの先生と子どもたちが教室で楽しく過ごす様子"
+          width="900" height="1200" fetchpriority="high" decoding="async">
+      </div>
+      <div class="hero-photo-caption">🌈 Everyday at Luana</div>
     </div>
   </div>
 </section>
@@ -1432,6 +1482,3 @@ document.querySelectorAll(".nav-links a").forEach(link => {
 <script src="/site.js"></script>
 </body>
 </html>
-
-
-
