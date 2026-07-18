@@ -1,3 +1,26 @@
+(() => {
+  if (typeof window.gtag !== 'function') return;
+
+  let loaded = false;
+  const interactionEvents = ['pointerdown', 'keydown', 'scroll'];
+
+  const loadAnalytics = () => {
+    if (loaded) return;
+    loaded = true;
+    interactionEvents.forEach(eventName => window.removeEventListener(eventName, loadAnalytics));
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = 'https://www.googletagmanager.com/gtag/js?id=G-YBX9T1NJEL';
+    document.head.appendChild(script);
+  };
+
+  interactionEvents.forEach(eventName => window.addEventListener(eventName, loadAnalytics, {
+    once: true,
+    passive: true
+  }));
+  window.addEventListener('load', () => window.setTimeout(loadAnalytics, 2500), { once: true });
+})();
+
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('a[target="_blank"]').forEach(link => {
     const rel = new Set((link.getAttribute('rel') || '').split(/\s+/).filter(Boolean));
