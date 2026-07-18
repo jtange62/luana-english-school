@@ -1,8 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
 <link rel="icon" type="image/png" href="logo.png">
+<link rel="stylesheet" href="/site.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="canonical" href="https://luanaenglishschool.jp/gallery">
 <title>ギャラリー | Luana English School ルアナイングリッシュスクール | 府中市</title>
@@ -129,6 +130,10 @@
     transition:transform 0.2s, box-shadow 0.2s;
   }
   .photo-item:hover { transform:scale(1.02); box-shadow:0 6px 20px rgba(0,0,0,0.12); }
+  .photo-item:focus-visible {
+    outline:4px solid var(--coral); outline-offset:3px;
+    transform:scale(1.02); box-shadow:0 6px 20px rgba(0,0,0,0.12);
+  }
   .photo-item img { width:100%; height:100%; object-fit:cover; display:block; }
 
   @media(max-width:600px) {
@@ -145,6 +150,7 @@
   .lb-img {
     max-width:92vw; max-height:88vh; border-radius:12px;
     box-shadow:0 8px 40px rgba(0,0,0,0.5); object-fit:contain;
+    touch-action:pan-y; user-select:none; -webkit-user-drag:none;
   }
   .lb-close {
     position:absolute; top:16px; right:20px;
@@ -159,6 +165,7 @@
     transition:background 0.2s;
   }
   .lb-arrow:hover { background:rgba(255,255,255,0.3); }
+  .lb-overlay button:focus-visible { outline:3px solid var(--sun); outline-offset:3px; }
   .lb-prev { left:12px; }
   .lb-next { right:12px; }
 </style>
@@ -183,7 +190,7 @@
   letter-spacing:0.5px;
 ">
   ☀️ Summer School 2026 受付中！&nbsp;
-  <a href="https://docs.google.com/forms/d/e/1FAIpQLSdOMr6tBK_ql0omv56ILcO3X_gxkgirsDRfkBSVzMbuwPGG7A/viewform?usp=header" target="_blank" onclick="gtag('event','summer_signup')" style="color:#7A4A0A; text-decoration:underline; font-weight:800;">申し込む →</a>
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSdOMr6tBK_ql0omv56ILcO3X_gxkgirsDRfkBSVzMbuwPGG7A/viewform?usp=header" target="_blank" onclick="gtag('event','summer_signup')" style="color:#7A4A0A; text-decoration:underline; font-weight:800;" rel="noopener noreferrer">申し込む →</a>
 </div>
 <style>
 @keyframes shimmer { 0%{background-position:0% 50%} 100%{background-position:200% 50%} }
@@ -196,7 +203,7 @@ window.addEventListener('resize',_fixNavTop);
 </script>
 <nav style="top:42px;">
   <div class="nav-inner">
-    <a href="/"><img src="logo.png" alt="Luana English School" style="height:70px;width:auto;"></a>
+    <a href="/"><img src="logo.png" alt="Luana English School" style="height:70px;width:auto;" width="144" height="144"></a>
     <ul class="nav-links">
       <li><a href="/#about">About</a></li>
       <li><a href="/#approach">Our Approach</a></li>
@@ -226,7 +233,7 @@ window.addEventListener('resize',_fixNavTop);
 <div class="content">
 
   <div class="ig-cta">
-    <a href="https://www.instagram.com/luana.english.school?igsh=aGtxZnR4NWYzaDZ0&utm_source=qr" target="_blank" onclick="gtag('event','instagram_click')" class="ig-btn">
+    <a href="https://www.instagram.com/luana.english.school?igsh=aGtxZnR4NWYzaDZ0&utm_source=qr" target="_blank" onclick="gtag('event','instagram_click')" class="ig-btn" rel="noopener noreferrer">
       <svg width="24" height="24" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
         <rect width="48" height="48" rx="10" fill="white" opacity="0.2"/>
         <rect x="13" y="13" width="22" height="22" rx="6" fill="none" stroke="white" stroke-width="2.5"/>
@@ -241,17 +248,17 @@ window.addEventListener('resize',_fixNavTop);
   <div class="section-block">
     <h2 class="section-heading">🏫 Our Space</h2>
     <div class="photo-grid" style="grid-template-columns:repeat(4,1fr);">
-      <div class="photo-item" data-src="photos/our-space/photo-24.jpg"><img src="photos/our-space/photo-24.jpg" alt="ルアナイングリッシュスクールの教室 - 府中市" loading="lazy"></div>
-      <div class="photo-item" data-src="photos/our-space/1781240911799.jpg"><img src="photos/our-space/1781240911799.jpg" alt="英語教室の施設 - Luana English School" loading="lazy"></div>
-<div class="photo-item" data-src="photos/our-space/photo-25.jpg"><img src="photos/our-space/photo-25.jpg" alt="ルアナイングリッシュスクールの教室環境" loading="lazy"></div>
-      <div class="photo-item" data-src="photos/our-space/photo-26.jpg"><img src="photos/our-space/photo-26.jpg" alt="子どもが学ぶ教室 - Luana English School" loading="lazy"></div>
-      <div class="photo-item" data-src="photos/our-space/photo-27.jpg"><img src="photos/our-space/photo-27.jpg" alt="英語教室の設備 - 府中市" loading="lazy"></div>
-      <div class="photo-item" data-src="photos/our-space/photo-29.jpg"><img src="photos/our-space/photo-29.jpg" alt="学習スペース - Luana English School" loading="lazy"></div>
-      <div class="photo-item" data-src="photos/our-space/photo-30.jpg"><img src="photos/our-space/photo-30.jpg" alt="教室の様子 - ルアナイングリッシュスクール" loading="lazy"></div>
-      <div class="photo-item" data-src="photos/our-space/photo-31.jpg"><img src="photos/our-space/photo-31.jpg" alt="英語教室の環境 - 府中市中河原" loading="lazy"></div>
-      <div class="photo-item" data-src="photos/our-space/photo-32.jpg"><img src="photos/our-space/photo-32.jpg" alt="ルアナイングリッシュスクールの教室 - 府中市" loading="lazy"></div>
-      <div class="photo-item" data-src="photos/our-space/photo-33.jpg"><img src="photos/our-space/photo-33.jpg" alt="英語教室の施設 - Luana English School" loading="lazy"></div>
-      <div class="photo-item" data-src="photos/our-space/photo-34.jpg"><img src="photos/our-space/photo-34.jpg" alt="教室の様子 - ルアナイングリッシュスクール" loading="lazy"></div>
+      <div class="photo-item" data-src="photos/our-space/photo-24.jpg"><img src="photos/gallery-optimized/480/our-space/photo-24.webp" alt="ルアナイングリッシュスクールの教室 - 府中市" loading="lazy" width="1108" height="1477" srcset="photos/gallery-optimized/480/our-space/photo-24.webp 480w, photos/gallery-optimized/960/our-space/photo-24.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+      <div class="photo-item" data-src="photos/our-space/1781240911799.jpg"><img src="photos/gallery-optimized/480/our-space/1781240911799.webp" alt="英語教室の施設 - Luana English School" loading="lazy" width="1108" height="1477" srcset="photos/gallery-optimized/480/our-space/1781240911799.webp 480w, photos/gallery-optimized/960/our-space/1781240911799.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+<div class="photo-item" data-src="photos/our-space/photo-25.jpg"><img src="photos/gallery-optimized/480/our-space/photo-25.webp" alt="ルアナイングリッシュスクールの教室環境" loading="lazy" width="1477" height="1108" srcset="photos/gallery-optimized/480/our-space/photo-25.webp 480w, photos/gallery-optimized/960/our-space/photo-25.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+      <div class="photo-item" data-src="photos/our-space/photo-26.jpg"><img src="photos/gallery-optimized/480/our-space/photo-26.webp" alt="子どもが学ぶ教室 - Luana English School" loading="lazy" width="1108" height="1477" srcset="photos/gallery-optimized/480/our-space/photo-26.webp 480w, photos/gallery-optimized/960/our-space/photo-26.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+      <div class="photo-item" data-src="photos/our-space/photo-27.jpg"><img src="photos/gallery-optimized/480/our-space/photo-27.webp" alt="英語教室の設備 - 府中市" loading="lazy" width="1477" height="1108" srcset="photos/gallery-optimized/480/our-space/photo-27.webp 480w, photos/gallery-optimized/960/our-space/photo-27.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+      <div class="photo-item" data-src="photos/our-space/photo-29.jpg"><img src="photos/gallery-optimized/480/our-space/photo-29.webp" alt="学習スペース - Luana English School" loading="lazy" width="1477" height="1108" srcset="photos/gallery-optimized/480/our-space/photo-29.webp 480w, photos/gallery-optimized/960/our-space/photo-29.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+      <div class="photo-item" data-src="photos/our-space/photo-30.jpg"><img src="photos/gallery-optimized/480/our-space/photo-30.webp" alt="教室の様子 - ルアナイングリッシュスクール" loading="lazy" width="1361" height="1084" srcset="photos/gallery-optimized/480/our-space/photo-30.webp 480w, photos/gallery-optimized/960/our-space/photo-30.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+      <div class="photo-item" data-src="photos/our-space/photo-31.jpg"><img src="photos/gallery-optimized/480/our-space/photo-31.webp" alt="英語教室の環境 - 府中市中河原" loading="lazy" width="1477" height="1108" srcset="photos/gallery-optimized/480/our-space/photo-31.webp 480w, photos/gallery-optimized/960/our-space/photo-31.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+      <div class="photo-item" data-src="photos/our-space/photo-32.jpg"><img src="photos/gallery-optimized/480/our-space/photo-32.webp" alt="ルアナイングリッシュスクールの教室 - 府中市" loading="lazy" width="1999" height="1500" srcset="photos/gallery-optimized/480/our-space/photo-32.webp 480w, photos/gallery-optimized/960/our-space/photo-32.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+      <div class="photo-item" data-src="photos/our-space/photo-33.jpg"><img src="photos/gallery-optimized/480/our-space/photo-33.webp" alt="英語教室の施設 - Luana English School" loading="lazy" width="1999" height="1500" srcset="photos/gallery-optimized/480/our-space/photo-33.webp 480w, photos/gallery-optimized/960/our-space/photo-33.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+      <div class="photo-item" data-src="photos/our-space/photo-34.jpg"><img src="photos/gallery-optimized/480/our-space/photo-34.webp" alt="教室の様子 - ルアナイングリッシュスクール" loading="lazy" width="900" height="1200" srcset="photos/gallery-optimized/480/our-space/photo-34.webp 480w, photos/gallery-optimized/960/our-space/photo-34.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
     </div>
   </div>
 
@@ -261,71 +268,71 @@ window.addEventListener('resize',_fixNavTop);
     <div class="month-group" data-month="July 2026">
       <div class="month-pill"><span>July 2026</span></div>
       <div class="photo-grid">
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/IMG_20260701_163128.jpg"><img src="photos/Everyday%20Moments/July%202026/IMG_20260701_163128.jpg" alt="英語レッスンの様子 - Luana English School 2026年7月" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/IMG_20260703_172957.jpg"><img src="photos/Everyday%20Moments/July%202026/IMG_20260703_172957.jpg" alt="子どもたちの活動風景 - Luana English School 2026年7月" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/IMG_20260703_173011.jpg"><img src="photos/Everyday%20Moments/July%202026/IMG_20260703_173011.jpg" alt="英語教室の日常 - Luana English School 2026年7月" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-02.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-02.jpg" alt="自然を使った工作アクティビティ - Luana English School 2026年7月" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-03.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-03.jpg" alt="英語レッスンの様子 - Luana English School 2026年7月" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-04.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-04.jpg" alt="子どもたちの活動風景 - Luana English School 2026年7月" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-05.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-05.jpg" alt="英語教室の日常 - Luana English School 2026年7月" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-06.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-06.jpg" alt="堆肥作り体験アクティビティ - Luana English School 2026年7月" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-07.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-07.jpg" alt="お花の工作アクティビティ - Luana English School 2026年7月" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-08.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-08.jpg" alt="おもちゃで遊ぶ子どもたち - Luana English School 2026年7月" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-09.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-09.jpg" alt="外遊びの様子 - Luana English School 2026年7月" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-10.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-10.jpg" alt="アートアクティビティの様子 - Luana English School 2026年7月" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-12.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-12.jpg" alt="子どもたちの活動風景 - Luana English School 2026年7月" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-13.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-13.jpg" alt="カードマッチゲームで遊ぶ子どもたち - Luana English School 府中市" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-14.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-14.jpg" alt="カップスタッキングに挑戦する子どもたち - Luana English School 2026年7月" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-15.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-15.jpg" alt="ハート工作アクティビティ - Luana English School 2026年7月" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-16.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-16.jpg" alt="アート活動の様子 - Luana English School 2026年7月" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-18.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-18.jpg" alt="英語教室での交流の様子 - Luana English School 2026年7月" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-19.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-19.jpg" alt="仲良く活動する子どもたち - Luana English School 2026年7月" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-20.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-20.jpg" alt="読書を楽しむ子ども - Luana English School 2026年7月" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-21.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-21.jpg" alt="ゲームタイムの様子 - Luana English School 2026年7月" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-22.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-22.jpg" alt="ワードサーチパズルに挑戦する子ども - Luana English School 府中市中河原" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-23.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-23.jpg" alt="英語アクティビティの一コマ - Luana English School 2026年7月" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-24.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-24.jpg" alt="読み聞かせタイムの様子 - Luana English School 2026年7月" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-25.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-25.jpg" alt="英語教室の日常風景 - Luana English School 2026年7月" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-26.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-26.jpg" alt="ペイントアートに取り組む子どもたち - Luana English School 2026年7月" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-27.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-27.jpg" alt="読書アクティビティの様子 - Luana English School 府中市" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-29.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-29.jpg" alt="英語教室での活動風景 - Luana English School 2026年7月" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-30.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-30.jpg" alt="お花の工作を楽しむ様子 - Luana English School 2026年7月" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-31.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-31.jpg" alt="英語アクティビティに参加する子ども - Luana English School 2026年7月" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-32.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-32.jpg" alt="7月の英語教室アクティビティ - Luana English School 府中市" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-34.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-34.jpg" alt="自然観察アクティビティ - Luana English School 2026年7月" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-35.jpg"><img src="photos/Everyday%20Moments/July%202026/photo-35.jpg" alt="リスニング授業の様子 - Luana English School 府中市中河原" loading="lazy"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/IMG_20260701_163128.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/IMG_20260701_163128.webp" alt="英語レッスンの様子 - Luana English School 2026年7月" loading="lazy" width="2000" height="1500" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/IMG_20260701_163128.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/IMG_20260701_163128.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/IMG_20260703_172957.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/IMG_20260703_172957.webp" alt="子どもたちの活動風景 - Luana English School 2026年7月" loading="lazy" width="1600" height="1200" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/IMG_20260703_172957.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/IMG_20260703_172957.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/IMG_20260703_173011.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/IMG_20260703_173011.webp" alt="英語教室の日常 - Luana English School 2026年7月" loading="lazy" width="1440" height="1080" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/IMG_20260703_173011.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/IMG_20260703_173011.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-02.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-02.webp" alt="自然を使った工作アクティビティ - Luana English School 2026年7月" loading="lazy" width="1477" height="1108" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-02.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-02.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-03.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-03.webp" alt="英語レッスンの様子 - Luana English School 2026年7月" loading="lazy" width="900" height="1200" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-03.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-03.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-04.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-04.webp" alt="子どもたちの活動風景 - Luana English School 2026年7月" loading="lazy" width="900" height="1200" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-04.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-04.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-05.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-05.webp" alt="英語教室の日常 - Luana English School 2026年7月" loading="lazy" width="900" height="1200" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-05.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-05.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-06.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-06.webp" alt="堆肥作り体験アクティビティ - Luana English School 2026年7月" loading="lazy" width="900" height="1208" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-06.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-06.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-07.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-07.webp" alt="お花の工作アクティビティ - Luana English School 2026年7月" loading="lazy" width="1200" height="900" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-07.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-07.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-08.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-08.webp" alt="おもちゃで遊ぶ子どもたち - Luana English School 2026年7月" loading="lazy" width="900" height="1200" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-08.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-08.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-09.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-09.webp" alt="外遊びの様子 - Luana English School 2026年7月" loading="lazy" width="1108" height="1477" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-09.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-09.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-10.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-10.webp" alt="アートアクティビティの様子 - Luana English School 2026年7月" loading="lazy" width="1477" height="1108" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-10.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-10.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-12.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-12.webp" alt="子どもたちの活動風景 - Luana English School 2026年7月" loading="lazy" width="900" height="1200" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-12.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-12.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-13.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-13.webp" alt="カードマッチゲームで遊ぶ子どもたち - Luana English School 府中市" loading="lazy" width="900" height="1200" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-13.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-13.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-14.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-14.webp" alt="カップスタッキングに挑戦する子どもたち - Luana English School 2026年7月" loading="lazy" width="1200" height="900" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-14.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-14.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-15.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-15.webp" alt="ハート工作アクティビティ - Luana English School 2026年7月" loading="lazy" width="900" height="1200" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-15.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-15.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-16.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-16.webp" alt="アート活動の様子 - Luana English School 2026年7月" loading="lazy" width="1200" height="900" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-16.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-16.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-18.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-18.webp" alt="英語教室での交流の様子 - Luana English School 2026年7月" loading="lazy" width="900" height="1200" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-18.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-18.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-19.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-19.webp" alt="仲良く活動する子どもたち - Luana English School 2026年7月" loading="lazy" width="1200" height="900" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-19.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-19.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-20.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-20.webp" alt="読書を楽しむ子ども - Luana English School 2026年7月" loading="lazy" width="900" height="1200" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-20.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-20.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-21.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-21.webp" alt="ゲームタイムの様子 - Luana English School 2026年7月" loading="lazy" width="900" height="1200" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-21.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-21.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-22.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-22.webp" alt="ワードサーチパズルに挑戦する子ども - Luana English School 府中市中河原" loading="lazy" width="900" height="1200" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-22.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-22.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-23.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-23.webp" alt="英語アクティビティの一コマ - Luana English School 2026年7月" loading="lazy" width="900" height="1200" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-23.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-23.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-24.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-24.webp" alt="読み聞かせタイムの様子 - Luana English School 2026年7月" loading="lazy" width="900" height="1200" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-24.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-24.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-25.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-25.webp" alt="英語教室の日常風景 - Luana English School 2026年7月" loading="lazy" width="603" height="802" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-25.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-25.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-26.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-26.webp" alt="ペイントアートに取り組む子どもたち - Luana English School 2026年7月" loading="lazy" width="900" height="1200" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-26.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-26.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-27.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-27.webp" alt="読書アクティビティの様子 - Luana English School 府中市" loading="lazy" width="645" height="853" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-27.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-27.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-29.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-29.webp" alt="英語教室での活動風景 - Luana English School 2026年7月" loading="lazy" width="435" height="761" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-29.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-29.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-30.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-30.webp" alt="お花の工作を楽しむ様子 - Luana English School 2026年7月" loading="lazy" width="1200" height="900" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-30.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-30.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-31.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-31.webp" alt="英語アクティビティに参加する子ども - Luana English School 2026年7月" loading="lazy" width="596" height="804" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-31.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-31.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-32.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-32.webp" alt="7月の英語教室アクティビティ - Luana English School 府中市" loading="lazy" width="1200" height="900" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-32.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-32.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-34.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-34.webp" alt="自然観察アクティビティ - Luana English School 2026年7月" loading="lazy" width="792" height="1051" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-34.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-34.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/July%202026/photo-35.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-35.webp" alt="リスニング授業の様子 - Luana English School 府中市中河原" loading="lazy" width="900" height="1200" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-35.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-35.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
       </div>
     </div>
 
     <div class="month-group" data-month="June 2026">
       <div class="month-pill"><span>June 2026</span></div>
       <div class="photo-grid">
-        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/1782783604103-1.jpg"><img src="photos/Everyday%20Moments/June%202026/1782783604103-1.jpg" alt="英語レッスンの様子 - Luana English School" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/1782783604103-10.jpg"><img src="photos/Everyday%20Moments/June%202026/1782783604103-10.jpg" alt="子どもたちの活動風景 - Luana English School" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/1782783604103-6.jpg"><img src="photos/Everyday%20Moments/June%202026/1782783604103-6.jpg" alt="英語教室の日常 - 府中市" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-33.jpg"><img src="photos/Everyday%20Moments/June%202026/photo-33.jpg" alt="英語の授業風景 - Luana English School 府中市" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-34.jpg"><img src="photos/Everyday%20Moments/June%202026/photo-34.jpg" alt="子どもたちが英語で遊ぶ様子 - Luana English School" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/1780892439892.jpg"><img src="photos/Everyday%20Moments/June%202026/1780892439892.jpg" alt="英語教室の活動 - Luana English School" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/1780892863264.jpg"><img src="photos/Everyday%20Moments/June%202026/1780892863264.jpg" alt="子どもたちのレッスン風景 - 府中市" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/1780895299591.jpg"><img src="photos/Everyday%20Moments/June%202026/1780895299591.jpg" alt="英語レッスンの様子 - 府中市中河原" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/1780895302559.jpg"><img src="photos/Everyday%20Moments/June%202026/1780895302559.jpg" alt="Luana English Schoolの活動風景" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-01.jpg"><img src="photos/Everyday%20Moments/June%202026/photo-01.jpg" alt="英語の授業風景 - Luana English School 府中市"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-02.jpg"><img src="photos/Everyday%20Moments/June%202026/photo-02.jpg" alt="子どもたちが英語で遊ぶ様子 - Luana English School" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-03.jpg"><img src="photos/Everyday%20Moments/June%202026/photo-03.jpg" alt="ネイティブ講師との英語レッスン - 府中市" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-04.jpg"><img src="photos/Everyday%20Moments/June%202026/photo-04.jpg" alt="工作・クラフトアクティビティ - Luana English School" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-05.jpg"><img src="photos/Everyday%20Moments/June%202026/photo-05.jpg" alt="フォニックス学習の様子 - Luana English School 府中市" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-06.jpg"><img src="photos/Everyday%20Moments/June%202026/photo-06.jpg" alt="サークルタイムの英語授業 - 府中市中河原" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-07.jpg"><img src="photos/Everyday%20Moments/June%202026/photo-07.jpg" alt="子ども英語教室の活動風景 - Luana English School" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-09.jpg"><img src="photos/Everyday%20Moments/June%202026/photo-09.jpg" alt="テーマ学習の様子 - Luana English School" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-10.jpg"><img src="photos/Everyday%20Moments/June%202026/photo-10.jpg" alt="英語レッスン風景 - Luana English School 府中市" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-11.jpg"><img src="photos/Everyday%20Moments/June%202026/photo-11.jpg" alt="アクティビティタイム - Luana English School" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-16.jpg"><img src="photos/Everyday%20Moments/June%202026/photo-16.jpg" alt="フィールドトリップの様子 - Luana English School" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-17.jpg"><img src="photos/Everyday%20Moments/June%202026/photo-17.jpg" alt="英語工作クラフト - 府中市の英語教室" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-18.jpg"><img src="photos/Everyday%20Moments/June%202026/photo-18.jpg" alt="英語レッスンの様子 - 府中市中河原" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-19.jpg"><img src="photos/Everyday%20Moments/June%202026/photo-19.jpg" alt="子ども英語教室 - Luana English School" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-20.jpg"><img src="photos/Everyday%20Moments/June%202026/photo-20.jpg" alt="Luana English Schoolの活動風景" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-22.jpg"><img src="photos/Everyday%20Moments/June%202026/photo-22.jpg" alt="英語教室の日常風景 - 府中市" loading="lazy"></div>
-        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-23.jpg"><img src="photos/Everyday%20Moments/June%202026/photo-23.jpg" alt="サマースクールの活動 - Luana English School" loading="lazy"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/1782783604103-1.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/June%202026/1782783604103-1.webp" alt="英語レッスンの様子 - Luana English School" loading="lazy" width="1200" height="900" srcset="photos/gallery-optimized/480/Everyday%20Moments/June%202026/1782783604103-1.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/June%202026/1782783604103-1.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/1782783604103-10.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/June%202026/1782783604103-10.webp" alt="子どもたちの活動風景 - Luana English School" loading="lazy" width="900" height="1200" srcset="photos/gallery-optimized/480/Everyday%20Moments/June%202026/1782783604103-10.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/June%202026/1782783604103-10.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/1782783604103-6.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/June%202026/1782783604103-6.webp" alt="英語教室の日常 - 府中市" loading="lazy" width="1200" height="900" srcset="photos/gallery-optimized/480/Everyday%20Moments/June%202026/1782783604103-6.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/June%202026/1782783604103-6.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-33.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-33.webp" alt="英語の授業風景 - Luana English School 府中市" loading="lazy" width="900" height="1200" srcset="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-33.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/June%202026/photo-33.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-34.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-34.webp" alt="子どもたちが英語で遊ぶ様子 - Luana English School" loading="lazy" width="900" height="1200" srcset="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-34.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/June%202026/photo-34.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/1780892439892.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/June%202026/1780892439892.webp" alt="英語教室の活動 - Luana English School" loading="lazy" width="1265" height="1102" srcset="photos/gallery-optimized/480/Everyday%20Moments/June%202026/1780892439892.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/June%202026/1780892439892.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/1780892863264.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/June%202026/1780892863264.webp" alt="子どもたちのレッスン風景 - 府中市" loading="lazy" width="1477" height="1108" srcset="photos/gallery-optimized/480/Everyday%20Moments/June%202026/1780892863264.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/June%202026/1780892863264.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/1780895299591.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/June%202026/1780895299591.webp" alt="英語レッスンの様子 - 府中市中河原" loading="lazy" width="916" height="691" srcset="photos/gallery-optimized/480/Everyday%20Moments/June%202026/1780895299591.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/June%202026/1780895299591.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/1780895302559.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/June%202026/1780895302559.webp" alt="Luana English Schoolの活動風景" loading="lazy" width="702" height="927" srcset="photos/gallery-optimized/480/Everyday%20Moments/June%202026/1780895302559.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/June%202026/1780895302559.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-01.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-01.webp" alt="英語の授業風景 - Luana English School 府中市" width="1477" height="1109" srcset="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-01.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/June%202026/photo-01.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-02.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-02.webp" alt="子どもたちが英語で遊ぶ様子 - Luana English School" loading="lazy" width="1540" height="1062" srcset="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-02.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/June%202026/photo-02.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-03.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-03.webp" alt="ネイティブ講師との英語レッスン - 府中市" loading="lazy" width="1108" height="1477" srcset="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-03.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/June%202026/photo-03.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-04.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-04.webp" alt="工作・クラフトアクティビティ - Luana English School" loading="lazy" width="1108" height="1477" srcset="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-04.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/June%202026/photo-04.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-05.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-05.webp" alt="フォニックス学習の様子 - Luana English School 府中市" loading="lazy" width="1108" height="1477" srcset="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-05.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/June%202026/photo-05.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-06.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-06.webp" alt="サークルタイムの英語授業 - 府中市中河原" loading="lazy" width="1108" height="1477" srcset="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-06.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/June%202026/photo-06.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-07.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-07.webp" alt="子ども英語教室の活動風景 - Luana English School" loading="lazy" width="1108" height="1477" srcset="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-07.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/June%202026/photo-07.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-09.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-09.webp" alt="テーマ学習の様子 - Luana English School" loading="lazy" width="1265" height="1102" srcset="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-09.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/June%202026/photo-09.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-10.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-10.webp" alt="英語レッスン風景 - Luana English School 府中市" loading="lazy" width="1108" height="1477" srcset="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-10.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/June%202026/photo-10.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-11.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-11.webp" alt="アクティビティタイム - Luana English School" loading="lazy" width="1108" height="1477" srcset="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-11.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/June%202026/photo-11.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-16.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-16.webp" alt="フィールドトリップの様子 - Luana English School" loading="lazy" width="1108" height="1477" srcset="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-16.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/June%202026/photo-16.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-17.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-17.webp" alt="英語工作クラフト - 府中市の英語教室" loading="lazy" width="1108" height="1477" srcset="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-17.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/June%202026/photo-17.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-18.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-18.webp" alt="英語レッスンの様子 - 府中市中河原" loading="lazy" width="1108" height="1477" srcset="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-18.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/June%202026/photo-18.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-19.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-19.webp" alt="子ども英語教室 - Luana English School" loading="lazy" width="1477" height="1108" srcset="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-19.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/June%202026/photo-19.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-20.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-20.webp" alt="Luana English Schoolの活動風景" loading="lazy" width="1108" height="1477" srcset="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-20.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/June%202026/photo-20.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-22.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-22.webp" alt="英語教室の日常風景 - 府中市" loading="lazy" width="1477" height="1108" srcset="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-22.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/June%202026/photo-22.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
+        <div class="photo-item" data-src="photos/Everyday%20Moments/June%202026/photo-23.jpg"><img src="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-23.webp" alt="サマースクールの活動 - Luana English School" loading="lazy" width="1477" height="1108" srcset="photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-23.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/June%202026/photo-23.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
       </div>
     </div>
   </div>
@@ -334,7 +341,7 @@ window.addEventListener('resize',_fixNavTop);
 
 </main>
 <!-- Lightbox -->
-<div class="lb-overlay" id="lb" role="dialog" aria-modal="true">
+<div class="lb-overlay" id="lb" role="dialog" aria-modal="true" aria-label="写真ビューアー" aria-hidden="true">
   <button class="lb-close" id="lb-close" aria-label="Close">&#x2715;</button>
   <button class="lb-arrow lb-prev" id="lb-prev" aria-label="Previous">&#x2039;</button>
   <img class="lb-img" id="lb-img" src="" alt="">
@@ -354,7 +361,11 @@ document.querySelectorAll(".month-group[hidden]").forEach(group => {
   const items = Array.from(document.querySelectorAll(".photo-item[data-src]"));
   const overlay = document.getElementById("lb");
   const lbImg = document.getElementById("lb-img");
+  const closeButton = document.getElementById("lb-close");
   let current = 0;
+  let returnFocus = null;
+  let touchStartX = 0;
+  let touchStartY = 0;
 
   function open(index) {
     current = index;
@@ -362,31 +373,69 @@ document.querySelectorAll(".month-group[hidden]").forEach(group => {
     lbImg.src = item.dataset.src;
     lbImg.alt = item.querySelector("img").alt;
     overlay.classList.add("open");
+    overlay.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
+    closeButton.focus();
   }
 
   function close() {
     overlay.classList.remove("open");
+    overlay.setAttribute("aria-hidden", "true");
     document.body.style.overflow = "";
+    if (returnFocus) returnFocus.focus();
   }
 
   function prev() { open((current - 1 + items.length) % items.length); }
   function next() { open((current + 1) % items.length); }
 
-  items.forEach((item, i) => item.addEventListener("click", () => open(i)));
-  document.getElementById("lb-close").addEventListener("click", close);
+  items.forEach((item, i) => {
+    const label = item.querySelector("img").alt;
+    item.setAttribute("role", "button");
+    item.setAttribute("tabindex", "0");
+    item.setAttribute("aria-label", `${label}を拡大表示`);
+    const activate = () => { returnFocus = item; open(i); };
+    item.addEventListener("click", activate);
+    item.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        activate();
+      }
+    });
+  });
+  closeButton.addEventListener("click", close);
   document.getElementById("lb-prev").addEventListener("click", prev);
   document.getElementById("lb-next").addEventListener("click", next);
   overlay.addEventListener("click", e => { if (e.target === overlay) close(); });
+  lbImg.addEventListener("touchstart", event => {
+    if (event.touches.length !== 1) return;
+    touchStartX = event.touches[0].clientX;
+    touchStartY = event.touches[0].clientY;
+  }, { passive: true });
+  lbImg.addEventListener("touchend", event => {
+    if (event.changedTouches.length !== 1) return;
+    const deltaX = event.changedTouches[0].clientX - touchStartX;
+    const deltaY = event.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(deltaX) < 50 || Math.abs(deltaX) <= Math.abs(deltaY) * 1.2) return;
+    if (deltaX < 0) next();
+    else prev();
+  }, { passive: true });
   document.addEventListener("keydown", e => {
     if (!overlay.classList.contains("open")) return;
     if (e.key === "Escape") close();
     if (e.key === "ArrowLeft") prev();
     if (e.key === "ArrowRight") next();
+    if (e.key === "Tab") {
+      const controls = Array.from(overlay.querySelectorAll("button"));
+      const first = controls[0];
+      const last = controls[controls.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
   });
 })();
 </script>
 
+<script src="/site.js"></script>
 </body>
 </html>
 

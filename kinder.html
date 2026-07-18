@@ -1,8 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
 <link rel="icon" type="image/png" href="logo.png">
+<link rel="stylesheet" href="/site.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="canonical" href="https://luanaenglishschool.jp/kinder">
 <title>キンダー英語クラス | Luana English School ルアナイングリッシュスクール | 府中市</title>
@@ -281,7 +282,7 @@
   letter-spacing:0.5px;
 ">
   ☀️ Summer School 2026 受付中！&nbsp;
-  <a href="https://docs.google.com/forms/d/e/1FAIpQLSdOMr6tBK_ql0omv56ILcO3X_gxkgirsDRfkBSVzMbuwPGG7A/viewform?usp=header" target="_blank" onclick="gtag('event','summer_signup')" style="color:#7A4A0A; text-decoration:underline; font-weight:800;">申し込む →</a>
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSdOMr6tBK_ql0omv56ILcO3X_gxkgirsDRfkBSVzMbuwPGG7A/viewform?usp=header" target="_blank" onclick="gtag('event','summer_signup')" style="color:#7A4A0A; text-decoration:underline; font-weight:800;" rel="noopener noreferrer">申し込む →</a>
 </div>
 <style>
 @keyframes shimmer { 0%{background-position:0% 50%} 100%{background-position:200% 50%} }
@@ -294,7 +295,7 @@ window.addEventListener('resize',_fixNavTop);
 </script>
 <nav style="top:42px;">
   <a href="/#classes" class="back-btn">← Back</a>
-  <div style="display:flex;align-items:center;gap:8px;"><a href="/"><img src="logo.png" alt="Luana English School"></a>
+  <div style="display:flex;align-items:center;gap:8px;"><a href="/"><img src="logo.png" alt="Luana English School" width="144" height="144"></a>
     <ul class="nav-links">
     <li><a href="/#about">About</a></li>
     <li><a href="/#approach">Our Approach</a></li>
@@ -326,13 +327,13 @@ window.addEventListener('resize',_fixNavTop);
 <div class="content">
 
   <!-- TABS -->
-  <div class="tabs">
-    <button class="tab-btn active" onclick="showTab('k1', this)">🌱 K1・K2（年少・年中）15:00–16:00</button>
-    <button class="tab-btn" onclick="showTab('k2', this)">🌟 K2・K3（年中・年長）15:00–17:00</button>
+  <div class="tabs" role="tablist" aria-label="幼稚園児クラス">
+    <button id="k1-tab" class="tab-btn active" role="tab" aria-selected="true" aria-controls="k1" tabindex="0" onclick="showTab('k1', this)">🌱 K1・K2（年少・年中）15:00–16:00</button>
+    <button id="k2-tab" class="tab-btn" role="tab" aria-selected="false" aria-controls="k2" tabindex="-1" onclick="showTab('k2', this)">🌟 K2・K3（年中・年長）15:00–17:00</button>
   </div>
 
   <!-- K1/K2 Panel -->
-  <div id="k1" class="tab-panel active k1-panel">
+  <div id="k1" class="tab-panel active k1-panel" role="tabpanel" aria-labelledby="k1-tab">
 
     <div class="schedule-box k1">
       <h2>🕒 カリキュラム K1・K2（年少・年中）</h2>
@@ -388,7 +389,7 @@ window.addEventListener('resize',_fixNavTop);
 
 
   <!-- K2/K3 Panel -->
-  <div id="k2" class="tab-panel k2-panel">
+  <div id="k2" class="tab-panel k2-panel" role="tabpanel" aria-labelledby="k2-tab" hidden>
 
     <div class="schedule-box k2">
       <h2>🕒 カリキュラム K2・K3（年中・年長）</h2>
@@ -468,7 +469,7 @@ window.addEventListener('resize',_fixNavTop);
   <div class="cta-box">
     <h3>✨ 体験レッスン受付中！</h3>
     <p>はじめての英語でも安心。まずはお気軽にご体験ください。</p>
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSe1fLxRno8bzY1DzSxAqpGnieWfcCrWDZJTVNnzL8yoUu-zdQ/viewform?usp=header" target="_blank" onclick="gtag('event','trial_lesson_kinder')" class="cta-btn">体験レッスンを申し込む</a>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSe1fLxRno8bzY1DzSxAqpGnieWfcCrWDZJTVNnzL8yoUu-zdQ/viewform?usp=header" target="_blank" onclick="gtag('event','trial_lesson_kinder')" class="cta-btn" rel="noopener noreferrer">体験レッスンを申し込む</a>
   </div>
 
 </div>
@@ -480,16 +481,31 @@ window.addEventListener('resize',_fixNavTop);
 </div>
 <script>
 function showTab(id, btn) {
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.tab-panel').forEach(p => { p.classList.remove('active'); p.hidden = true; });
+  document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); b.tabIndex = -1; });
+  const panel = document.getElementById(id);
+  panel.classList.add('active');
+  panel.hidden = false;
   btn.classList.add('active');
+  btn.setAttribute('aria-selected', 'true');
+  btn.tabIndex = 0;
 }
+document.querySelector('.tabs').addEventListener('keydown', event => {
+  if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+  const tabs = Array.from(document.querySelectorAll('.tab-btn'));
+  const current = tabs.indexOf(document.activeElement);
+  let next = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 :
+    (current + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+  event.preventDefault();
+  tabs[next].focus();
+  tabs[next].click();
+});
 document.querySelectorAll(".nav-links a").forEach(link => {
   link.addEventListener("click", () => document.querySelector(".nav-links").classList.remove("open"));
 });
 </script>
 
+<script src="/site.js"></script>
 </body>
 </html>
 
