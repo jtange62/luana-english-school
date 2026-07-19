@@ -22,6 +22,13 @@
 })();
 
 document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    const target = new URL(link.href, window.location.href);
+    if (target.pathname === window.location.pathname && !target.hash) {
+      link.setAttribute('aria-current', 'page');
+    }
+  });
+
   document.querySelectorAll('a[target="_blank"]').forEach(link => {
     const rel = new Set((link.getAttribute('rel') || '').split(/\s+/).filter(Boolean));
     rel.add('noopener');
