@@ -289,8 +289,11 @@
     display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px;
     max-width:1000px; margin:28px auto 22px;
   }
+  .moments-grid a {
+    display:block; aspect-ratio:4/3; overflow:hidden; border-radius:8px;
+  }
   .moments-grid img {
-    width:100%; aspect-ratio:4/3; object-fit:cover; display:block; border-radius:8px;
+    width:100%; height:100%; object-fit:cover; display:block;
   }
   .moments-link { color:#136E94; font-weight:800; text-decoration:none; }
   @keyframes popIn {
@@ -762,8 +765,7 @@
     }
     .trial-actions { grid-template-columns: 1fr; gap: 12px; }
     .moments-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
-    .moments-grid a:first-child { grid-column:1 / -1; }
-    .moments-grid a:first-child img { aspect-ratio:16/9; }
+    .moments-grid a:first-child { grid-column:1 / -1; aspect-ratio:16/9; }
 
     /* About */
     .about-grid { grid-template-columns: 1fr; gap: 24px; }
