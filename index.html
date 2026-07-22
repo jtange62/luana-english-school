@@ -284,6 +284,24 @@
   .trial-action:hover { transform: translateY(-2px); box-shadow: 0 7px 0 rgba(91,200,245,0.28); }
   .trial-note { margin-top: 18px; color: #666; font-size: 0.92rem; }
 
+  /* ── TRUST PROOF ── */
+  .trust-proof { background:#FFF9EE; padding:56px 20px 64px; text-align:center; }
+  .trust-proof-grid {
+    display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px;
+    max-width:1040px; margin:30px auto 0;
+  }
+  .trust-proof-card {
+    display:flex; flex-direction:column; align-items:center; min-height:190px;
+    padding:24px 18px; border:2px solid rgba(91,200,245,0.5); border-radius:22px;
+    background:#fff; color:var(--dark); text-decoration:none;
+    box-shadow:0 5px 0 rgba(91,200,245,0.18); transition:transform 0.15s,box-shadow 0.15s;
+  }
+  .trust-proof-card:hover { transform:translateY(-3px); box-shadow:0 8px 0 rgba(91,200,245,0.22); }
+  .trust-proof-icon { font-size:2rem; line-height:1; margin-bottom:12px; }
+  .trust-proof-card h3 { font-size:1.05rem; color:#7A4A0A; margin-bottom:8px; }
+  .trust-proof-card p { font-size:0.9rem; line-height:1.65; color:#555; }
+  .trust-proof-link { margin-top:auto; padding-top:12px; color:#9E3524; font-weight:800; }
+
   .moments { background:#EAF8FE; padding:64px 20px; text-align:center; }
   .moments-grid {
     display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px;
@@ -737,6 +755,8 @@
   @media(max-width: 600px) {
     /* Typography */
     body { font-size: 15px; }
+    .hero-school-name, .hero-catchphrase, .hero-badge, .hero h1,
+    .hero-sub, .hero-trust, .hero-cta, .hero-cta-2 { animation: none; }
     .hero h1 { font-size: 2rem; Line-height: 1.2; }
     .hero { padding-left: 16px; padding-right: 16px; }
     .hero-school-name {
@@ -764,6 +784,8 @@
       margin: 8px 0 !important; font-size: 0.95rem;
     }
     .trial-actions { grid-template-columns: 1fr; gap: 12px; }
+    .trust-proof-grid { grid-template-columns:1fr 1fr; }
+    .trust-proof-card { min-height:170px; padding:20px 14px; }
     .moments-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
     .moments-grid a:first-child { grid-column:1 / -1; aspect-ratio:16/9; }
 
@@ -830,6 +852,11 @@
     .banner { font-size: 0.8rem; padding: 8px 12px; }
   }
 
+  @media(max-width: 420px) {
+    .trust-proof-grid { grid-template-columns:1fr; }
+    .trust-proof-card { min-height:0; }
+  }
+
 </style>
 <!-- Google Analytics -->
 <script>
@@ -844,8 +871,6 @@
 <div id="summer-banner" style="
   position:fixed; top:0; left:0; width:100%; z-index:200;
   background: linear-gradient(90deg, #FF7F6E, #FFD95A, #FF7F6E);
-  background-size: 200% 100%;
-  animation: shimmer 3s linear infinite;
   text-align:center; padding:10px 20px;
   font-family:'Baloo 2',cursive; font-weight:800; font-size:0.95rem;
   color: #7A4A0A; letter-spacing:0.5px;
@@ -853,9 +878,6 @@
   ☀️ Summer School 2026 受付中！&nbsp;
   <a href="https://docs.google.com/forms/d/e/1FAIpQLSdOMr6tBK_ql0omv56ILcO3X_gxkgirsDRfkBSVzMbuwPGG7A/viewform?usp=header" target="_blank" onclick="gtag('event','summer_signup')" style="color:#7A4A0A; text-decoration:underline; font-weight:800;" rel="noopener noreferrer">申し込む →</a>
 </div>
-<style>
-@keyframes shimmer { 0%{background-position:0% 50%} 100%{background-position:200% 50%} }
-</style>
 <script>
 function _fixNavTop(){var b=document.getElementById('summer-banner'),n=document.querySelector('nav');if(b&&n){n.style.top=b.offsetHeight+'px';document.documentElement.style.setProperty('--header-h',(b.offsetHeight+n.offsetHeight+12)+'px');}}
 document.addEventListener('DOMContentLoaded',_fixNavTop);
@@ -943,6 +965,41 @@ document.querySelectorAll(".nav-links a").forEach(link => {
       <a class="trial-action" href="https://docs.google.com/forms/d/e/1FAIpQLSc-GqYR10IOEfLaSN1hieuvVi3gziH-jySSuas-caJ3-MEclw/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_afterschool')">🎒 小学生クラス</a>
     </div>
     <p class="trial-note">どのクラスか迷う場合は、下のお問い合わせからお気軽にご相談ください。</p>
+  </div>
+</section>
+
+<!-- TRUST PROOF -->
+<section class="trust-proof" aria-labelledby="trust-proof-title">
+  <div class="container">
+    <div class="section-tag">安心してご検討いただくために</div>
+    <h2 class="section-title" id="trust-proof-title">通う前に、きちんと確認できます</h2>
+    <p class="section-sub" style="margin:0 auto;">料金・教室の様子・場所を公開しています。クラス選びで迷ったときは、LINEやメールでお気軽にご相談ください。</p>
+    <div class="trust-proof-grid">
+      <a class="trust-proof-card" href="/fees">
+        <span class="trust-proof-icon" aria-hidden="true">💴</span>
+        <h3>料金を公開</h3>
+        <p>各クラスの月謝や入会時に必要な費用を事前に確認できます。</p>
+        <span class="trust-proof-link">料金を見る →</span>
+      </a>
+      <a class="trust-proof-card" href="/gallery">
+        <span class="trust-proof-icon" aria-hidden="true">📷</span>
+        <h3>実際の教室・活動写真</h3>
+        <p>教室の環境や、子どもたちが英語で活動する普段の様子をご覧いただけます。</p>
+        <span class="trust-proof-link">写真を見る →</span>
+      </a>
+      <a class="trust-proof-card" href="#access">
+        <span class="trust-proof-icon" aria-hidden="true">📍</span>
+        <h3>府中市中河原の教室</h3>
+        <p>東京都府中市住吉町1-24-19 1F。地図と電話番号を掲載しています。</p>
+        <span class="trust-proof-link">アクセスを見る →</span>
+      </a>
+      <a class="trust-proof-card" href="#contact">
+        <span class="trust-proof-icon" aria-hidden="true">💬</span>
+        <h3>入会前の相談に対応</h3>
+        <p>保育士在籍。初心者の方やクラス選びについてLINE・メールでご相談いただけます。</p>
+        <span class="trust-proof-link">相談方法を見る →</span>
+      </a>
+    </div>
   </div>
 </section>
 
