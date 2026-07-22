@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://luanaenglishschool.jp/</loc><priority>1.0</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://luanaenglishschool.jp/preschool</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://luanaenglishschool.jp/afterschool</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://luanaenglishschool.jp/kinder</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://luanaenglishschool.jp/summer</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-  <url><loc>https://luanaenglishschool.jp/fees</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://luanaenglishschool.jp/gallery</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://luanaenglishschool.jp/newsletter</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://luanaenglishschool.jp/privacy</loc><priority>0.3</priority><changefreq>yearly</changefreq></url>
+  <url><loc>https://luanaenglishschool.jp/</loc><lastmod>2026-07-19</lastmod></url>
+  <url><loc>https://luanaenglishschool.jp/preschool</loc><lastmod>2026-07-22</lastmod></url>
+  <url><loc>https://luanaenglishschool.jp/afterschool</loc><lastmod>2026-07-22</lastmod></url>
+  <url><loc>https://luanaenglishschool.jp/kinder</loc><lastmod>2026-07-22</lastmod></url>
+  <url><loc>https://luanaenglishschool.jp/summer</loc><lastmod>2026-07-19</lastmod></url>
+  <url><loc>https://luanaenglishschool.jp/fees</loc><lastmod>2026-07-19</lastmod></url>
+  <url><loc>https://luanaenglishschool.jp/gallery</loc><lastmod>2026-07-19</lastmod></url>
+  <url><loc>https://luanaenglishschool.jp/newsletter</loc><lastmod>2026-07-19</lastmod></url>
+  <url><loc>https://luanaenglishschool.jp/privacy</loc><lastmod>2026-07-18</lastmod></url>
 </urlset>
