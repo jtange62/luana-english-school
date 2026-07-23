@@ -163,18 +163,6 @@
   }
   .hero-copy { min-width: 0; }
 
-  .hero-badge {
-    display: inLine-block;
-    background: var(--sun);
-    color: var(--dark);
-    font-weight: 800; font-size: 0.8rem;
-    letter-spacing: 2px; text-transform: uppercase;
-    padding: 6px 18px; border-radius: 30px;
-    margin-bottom: 24px;
-    box-shadow: 3px 3px 0 var(--coral);
-    animation: popIn 0.6s ease both;
-  }
-
   .hero h1 {
     font-family: 'Baloo 2', cursive;
     font-size: clamp(2.6rem, 5vw, 4.2rem);
@@ -197,7 +185,7 @@
 
   .hero-trust {
     display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 8px;
-    margin: 0 0 12px;
+    margin: 24px 0 0;
     animation: popIn 0.7s 0.28s ease both;
   }
   .hero-trust span {
@@ -221,19 +209,6 @@
   }
   .hero-cta:hover { transform: translateY(-3px); box-shadow: 0 9px 0 #9E3524; }
   .hero-cta:active { transform: translateY(2px); box-shadow: 0 4px 0 #9E3524; }
-
-  .hero-cta-2 {
-    display: inLine-flex; align-items: center; gap: 10px;
-    background: transparent;
-    color: var(--sky);
-    font-weight: 800; font-size: 1rem;
-    padding: 16px 28px; border-radius: 40px;
-    text-decoration: none; margin: 10px 0 0 12px;
-    border: 3px solid var(--sky);
-    transition: all 0.15s;
-    animation: popIn 0.7s 0.45s ease both;
-  }
-  .hero-cta-2:hover { background: var(--sky); color: var(--white); }
 
   .hero-photo {
     position: relative; width: 100%; max-width: 430px;
@@ -260,25 +235,6 @@
     transform: rotate(-2deg);
   }
 
-
-  .hero-school-name {
-    font-family: 'Baloo 2', cursive;
-    font-size: clamp(2rem, 3.6vw, 3.4rem);
-    font-weight: 800;
-    color: #7A4A0A;
-    background: #B8F0E6;
-    display: inline-block;
-    width: fit-content;
-    max-width: 100%;
-    white-space: nowrap;
-    padding: 8px clamp(18px, 2.2vw, 32px);
-    border-radius: 20px;
-    margin-bottom: 8px;
-    letter-spacing: -0.5px;
-    animation: popIn 0.6s ease both;
-    box-shadow: 0 4px 0 rgba(0,0,0,0.08);
-  }
-
   @media(max-width: 900px) {
     .hero-content { grid-template-columns: 1fr; text-align: center; gap: 40px; }
     .hero-sub { margin-left: auto; margin-right: auto; }
@@ -287,16 +243,6 @@
   }
 
   .mobile-signup-bar { display: none; }
-  .hero-catchphrase {
-    color: #704814;
-    font-family: 'Baloo 2', cursive;
-    font-size: 1.15rem;
-    font-weight: 800;
-    line-height: 1.35;
-    margin-bottom: 18px;
-    animation: popIn 0.6s 0.08s ease both;
-  }
-
   /* ── TRIAL CHOICE ── */
   .trial-choice {
     background: #ffffff;
@@ -330,24 +276,6 @@
   .trial-action:nth-child(3) { background: #F5F0FF; border-color: var(--lavender); box-shadow: 0 5px 0 rgba(201,167,240,0.35); }
   .trial-action:hover { transform: translateY(-2px); box-shadow: 0 7px 0 rgba(91,200,245,0.28); }
   .trial-note { margin-top: 18px; color: #666; font-size: 0.92rem; }
-
-  /* ── TRUST PROOF ── */
-  .trust-proof { background:#FFF9EE; padding:56px 20px 64px; text-align:center; }
-  .trust-proof-grid {
-    display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px;
-    max-width:1040px; margin:30px auto 0;
-  }
-  .trust-proof-card {
-    display:flex; flex-direction:column; align-items:center; min-height:190px;
-    padding:24px 18px; border:2px solid rgba(91,200,245,0.5); border-radius:22px;
-    background:#fff; color:var(--dark); text-decoration:none;
-    box-shadow:0 5px 0 rgba(91,200,245,0.18); transition:transform 0.15s,box-shadow 0.15s;
-  }
-  .trust-proof-card:hover { transform:translateY(-3px); box-shadow:0 8px 0 rgba(91,200,245,0.22); }
-  .trust-proof-icon { font-size:2rem; line-height:1; margin-bottom:12px; }
-  .trust-proof-card h3 { font-size:1.05rem; color:#7A4A0A; margin-bottom:8px; }
-  .trust-proof-card p { font-size:0.9rem; line-height:1.65; color:#555; }
-  .trust-proof-link { margin-top:auto; padding-top:12px; color:#9E3524; font-weight:800; }
 
   .moments { background:#EAF8FE; padding:64px 20px; text-align:center; }
   .moments-grid {
@@ -808,15 +736,9 @@
   @media(max-width: 600px) {
     /* Typography */
     body { font-size: 15px; }
-    .hero-school-name, .hero-catchphrase, .hero-badge, .hero h1,
-    .hero-sub, .hero-trust, .hero-cta, .hero-cta-2 { animation: none; }
+    .hero h1, .hero-sub, .hero-trust, .hero-cta { animation: none; }
     .hero h1 { font-size: 2rem; Line-height: 1.2; }
     .hero { padding-left: 16px; padding-right: 16px; }
-    .hero-school-name {
-      max-width: 100%; font-size: 1.55rem; padding: 8px 12px;
-      white-space: nowrap;
-    }
-    .hero-catchphrase { font-size: 0.98rem; padding: 0 8px; }
     .hero-sub { font-size: 0.95rem; padding: 0 8px; }
     .hero-trust { gap: 6px; }
     .hero-trust span { font-size: 0.76rem; padding: 6px 9px; }
@@ -832,13 +754,11 @@
     nav img { height: 54px !important; width: 54px !important; }
 
     /* Hero buttons - stack on mobile */
-    .hero-cta, .hero-cta-2 { 
+    .hero-cta {
       display: block; width: 100%; text-align: center;
       margin: 8px 0 !important; font-size: 0.95rem;
     }
     .trial-actions { grid-template-columns: 1fr; gap: 12px; }
-    .trust-proof-grid { grid-template-columns:1fr 1fr; }
-    .trust-proof-card { min-height:170px; padding:20px 14px; }
     .moments-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
     .moments-grid a:first-child { grid-column:1 / -1; aspect-ratio:16/9; }
 
@@ -903,11 +823,6 @@
 
     /* Banner */
     .banner { font-size: 0.8rem; padding: 8px 12px; }
-  }
-
-  @media(max-width: 420px) {
-    .trust-proof-grid { grid-template-columns:1fr; }
-    .trust-proof-card { min-height:0; }
   }
 
 </style>
@@ -984,22 +899,17 @@ document.querySelectorAll(".nav-links a").forEach(link => {
   <div class="blob blob-4"></div>
   <div class="hero-content">
     <div class="hero-copy">
-      <div class="hero-school-name">Luana English School</div>
-      <p class="hero-catchphrase">Learn, Play and Shine in English!</p>
-      <div class="hero-badge">🌸 中河原・府中市｜体験レッスン受付中</div>
       <h1><em>府中市中河原の<br>子ども英語スクール</em></h1>
       <p class="hero-sub">
-        1〜2歳・幼稚園児・小学生が対象。インターナショナルスクール経験のある保育士とネイティブ講師が、All Englishの環境で「英語って楽しい！」を育てます。
+        遊びや体験を通して、英語を「勉強」ではなく自然に使える力へ。
       </p>
-      <div class="hero-trust" aria-label="スクールの特徴">
-        <span>ネイティブ講師</span>
-        <span>保育士在籍</span>
-        <span>初心者歓迎</span>
-        <span>お迎え相談可</span>
-      </div>
       <div>
-        <a href="#trial" class="hero-cta">✨ 体験レッスンを申し込む</a>
-        <a href="#classes" class="hero-cta-2">クラスを見る →</a>
+        <a href="#trial" class="hero-cta">体験レッスンを予約する</a>
+      </div>
+      <div class="hero-trust" aria-label="スクールの特徴">
+        <span>少人数制</span>
+        <span>中河原駅から徒歩圏内</span>
+        <span>初めての英語でも安心</span>
       </div>
     </div>
     <div class="hero-photo">
@@ -1016,50 +926,15 @@ document.querySelectorAll(".nav-links a").forEach(link => {
 <!-- TRIAL CHOICE -->
 <section class="trial-choice" id="trial">
   <div class="container">
-    <div class="section-tag">✨ Trial Lesson</div>
-    <h2 class="section-title">お子さまに合う体験レッスン</h2>
-    <p class="section-sub">年齢に合うクラスを選ぶと、申込フォームが開きます。はじめての英語でも安心してご参加ください。</p>
+    <div class="section-tag">Classes &amp; Trial Lesson</div>
+    <h2 class="section-title">年齢からクラスを選ぶ</h2>
+    <p class="section-sub">お子さまの年齢に合うクラスから、体験レッスンを予約できます。</p>
     <div class="trial-actions">
       <a class="trial-action" href="https://docs.google.com/forms/d/e/1FAIpQLScj5WNaLAc5Z9DxK1OZVFvbwyybkOBnePVofcUGATNvIcAJnQ/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_preschool')">🐣 1〜2歳児クラス</a>
       <a class="trial-action" href="https://docs.google.com/forms/d/e/1FAIpQLSe1fLxRno8bzY1DzSxAqpGnieWfcCrWDZJTVNnzL8yoUu-zdQ/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_kinder')">🌻 幼稚園児クラス</a>
       <a class="trial-action" href="https://docs.google.com/forms/d/e/1FAIpQLSc-GqYR10IOEfLaSN1hieuvVi3gziH-jySSuas-caJ3-MEclw/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_afterschool')">🎒 小学生クラス</a>
     </div>
     <p class="trial-note">どのクラスか迷う場合は、下のお問い合わせからお気軽にご相談ください。</p>
-  </div>
-</section>
-
-<!-- TRUST PROOF -->
-<section class="trust-proof" aria-labelledby="trust-proof-title">
-  <div class="container">
-    <div class="section-tag">安心してご検討いただくために</div>
-    <h2 class="section-title" id="trust-proof-title">通う前に、きちんと確認できます</h2>
-    <p class="section-sub" style="margin:0 auto;">料金・教室の様子・場所を公開しています。クラス選びで迷ったときは、LINEやメールでお気軽にご相談ください。</p>
-    <div class="trust-proof-grid">
-      <a class="trust-proof-card" href="/fees">
-        <span class="trust-proof-icon" aria-hidden="true">💴</span>
-        <h3>料金を公開</h3>
-        <p>各クラスの月謝や入会時に必要な費用を事前に確認できます。</p>
-        <span class="trust-proof-link">料金を見る →</span>
-      </a>
-      <a class="trust-proof-card" href="/gallery">
-        <span class="trust-proof-icon" aria-hidden="true">📷</span>
-        <h3>実際の教室・活動写真</h3>
-        <p>教室の環境や、子どもたちが英語で活動する普段の様子をご覧いただけます。</p>
-        <span class="trust-proof-link">写真を見る →</span>
-      </a>
-      <a class="trust-proof-card" href="#access">
-        <span class="trust-proof-icon" aria-hidden="true">📍</span>
-        <h3>府中市中河原の教室</h3>
-        <p>東京都府中市住吉町1-24-19 1F。地図と電話番号を掲載しています。</p>
-        <span class="trust-proof-link">アクセスを見る →</span>
-      </a>
-      <a class="trust-proof-card" href="#contact">
-        <span class="trust-proof-icon" aria-hidden="true">💬</span>
-        <h3>入会前の相談に対応</h3>
-        <p>保育士在籍。初心者の方やクラス選びについてLINE・メールでご相談いただけます。</p>
-        <span class="trust-proof-link">相談方法を見る →</span>
-      </a>
-    </div>
   </div>
 </section>
 
