@@ -76,6 +76,13 @@
     transition: all 0.2s; display: block;
   }
   .nav-links a:hover { background: var(--sun); color: var(--dark); }
+  .nav-links a.nav-trial {
+    background: #CC4632; color: var(--white); text-align: center;
+    box-shadow: 0 3px 0 #9E3524;
+  }
+  .nav-links a.nav-trial:hover {
+    background: #B83B29; color: var(--white); transform: translateY(-1px);
+  }
   .hamburger {
     display: none; flex-direction: column;
     gap: 5px; cursor: pointer; padding: 8px;
@@ -735,6 +742,12 @@
     margin-bottom: 10px;
   }
   footer a { color: var(--sky); text-decoration: none; }
+  .footer-links {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 22px;
+    margin: 18px 0 8px;
+  }
+  .footer-links a { font-weight: 800; }
+  .footer-links a:hover { text-decoration: underline; }
 
   /* ── RESPONSIVE ── */
   @media(max-width: 860px) {
@@ -944,15 +957,12 @@ window.addEventListener('load',function(){
   <div style="display:flex;align-items:center;gap:8px;"><a href="/"><img src="images/optimized/logo-128.webp" srcset="images/optimized/logo-128.webp 128w, images/optimized/logo-256.webp 256w" sizes="100px" alt="Luana English School" style="height:100px;width:100px;object-fit:contain;margin-bottom:12px;" width="128" height="128"></a>
   <button class="hamburger" onclick="this.nextElementSibling.classList.toggle('open')" aria-label="Menu"><span></span><span></span><span></span></button>
   <ul class="nav-links">
-    <li><a href="/">ホーム</a></li>
-    <li><a href="/#about">スクールについて</a></li>
+    <li><a href="/#about">スクール紹介</a></li>
     <li><a href="/#classes">クラス</a></li>
     <li><a href="/fees">料金</a></li>
     <li><a href="/gallery">写真</a></li>
-    <li><a href="/newsletter">お知らせ</a></li>
     <li><a href="/#access">アクセス</a></li>
-    <li><a href="/#contact">お問い合わせ</a></li>
-    <li><a href="/summer" class="nav-summer">サマースクール</a></li>
+    <li><a class="nav-trial" href="/#trial">体験予約</a></li>
   </ul>
   </div>
 </nav>
@@ -1389,6 +1399,11 @@ document.querySelectorAll(".nav-links a").forEach(link => {
   <div class="footer-logo">🌺 Luana English School</div>
   <p style="font-size:0.9rem; opacity:0.7; margin-top:4px;">ルアナイングリッシュスクール</p>
   <p>「Learn, Play and Shine in English」</p>
+  <div class="footer-links" role="navigation" aria-label="フッターナビゲーション">
+    <a href="/summer">サマースクール</a>
+    <a href="/newsletter">ニュースレター</a>
+    <a href="/#contact">お問い合わせ</a>
+  </div>
   <p style="margin-top:12px;">
     <a href="mailto:luanaenglishschool@gmail.com">luanaenglishschool@gmail.com</a>
   </p>

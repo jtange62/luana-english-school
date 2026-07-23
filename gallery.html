@@ -46,6 +46,8 @@
     color:var(--brown); text-decoration:none; padding:8px 14px; border-radius:20px; transition:all 0.2s; display:block;
   }
   .nav-links a:hover { background:var(--sun); }
+  .nav-links a.nav-trial { background:#CC4632; color:#fff; text-align:center; box-shadow:0 3px 0 #9E3524; }
+  .nav-links a.nav-trial:hover { background:#B83B29; color:#fff; transform:translateY(-1px); }
   .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:8px; background:none; border:none; position:absolute; right:16px; }
   .hamburger span { display:block; width:26px; height:3px; background:var(--brown); border-radius:3px; }
   @media(max-width:760px) {
@@ -204,15 +206,12 @@ window.addEventListener('resize',_fixNavTop);
   <div class="nav-inner">
     <a href="/"><img src="logo.png" alt="Luana English School" style="height:70px;width:auto;" width="144" height="144"></a>
     <ul class="nav-links">
-      <li><a href="/">ホーム</a></li>
-      <li><a href="/#about">スクールについて</a></li>
+      <li><a href="/#about">スクール紹介</a></li>
       <li><a href="/#classes">クラス</a></li>
       <li><a href="/fees">料金</a></li>
       <li><a href="/gallery">写真</a></li>
-      <li><a href="/newsletter">お知らせ</a></li>
       <li><a href="/#access">アクセス</a></li>
-      <li><a href="/#contact">お問い合わせ</a></li>
-      <li><a href="/summer" class="nav-summer">サマースクール</a></li>
+      <li><a class="nav-trial" href="/#trial">体験予約</a></li>
     </ul>
   </div>
   <button class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">
