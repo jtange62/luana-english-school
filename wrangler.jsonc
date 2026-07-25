@@ -19,7 +19,8 @@
     ]
   },
   "assets": {
-    "directory": "."
+    "directory": ".",
+    "binding": "ASSETS"
   },
   "d1_databases": [
     {
