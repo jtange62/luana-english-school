@@ -191,7 +191,7 @@ async function parentFeed(request, env) {
   const groupPlaceholders = groups.map(() => "?").join(",");
   const weekPlaceholders = weeks.map(() => "?").join(",");
   const posts = await env.DB.prepare(
-    `SELECT p.id, p.post_date, p.title, p.body, p.group_key, p.week_slug
+    `SELECT p.id, p.post_date, p.title, p.body, p.activities, p.group_key, p.week_slug
      FROM posts p
      WHERE p.status = 'published'
        AND p.group_key IN (${groupPlaceholders})
@@ -225,6 +225,7 @@ async function parentFeed(request, env) {
       date: post.post_date,
       title: post.title,
       body: post.body,
+      activities: parseActivities(post.activities),
       group: post.group_key,
       week: validSummerWeek(post.week_slug),
       photos: photos.get(post.id) || []
@@ -244,7 +245,7 @@ async function listStaffPosts(request, env) {
   requireSetup(env, ["DB"]);
   await requireSession(request, env, "staff");
   const rows = await env.DB.prepare(
-    `SELECT p.id, p.group_key, p.week_slug, p.post_date, p.title, p.body, p.status, p.created_at,
+    `SELECT p.id, p.group_key, p.week_slug, p.post_date, p.title, p.body, p.activities, p.status, p.created_at,
       COUNT(pp.photo_id) AS photo_count
      FROM posts p
      LEFT JOIN post_photos pp ON pp.post_id = p.id
@@ -266,6 +267,7 @@ async function listStaffPosts(request, env) {
       date: post.post_date,
       title: post.title,
       body: post.body,
+      activities: parseActivities(post.activities),
       status: post.status,
       photoCount: post.photo_count || 0,
       photos: photos.get(post.id) || []
@@ -308,6 +310,7 @@ async function createStaffPost(request, env) {
   const date = String(form.get("date") || "").trim();
   const title = String(form.get("title") || "Luana day").trim();
   const body = String(form.get("body") || "").trim();
+  const activities = normalizeActivities(form.get("activities"));
   const status = form.get("status") === "published" ? "published" : "draft";
   const weekSlug = validSummerWeek(String(form.get("week") || form.get("album") || "").trim());
   const albumSlug = weekSlug;
@@ -318,8 +321,8 @@ async function createStaffPost(request, env) {
   const postId = crypto.randomUUID();
   const now = new Date().toISOString();
   await env.DB.prepare(
-    "INSERT INTO posts (id, group_key, week_slug, post_date, title, body, status, created_by, created_at, updated_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)"
-  ).bind(postId, group, weekSlug, date, title, body, status, session.email || session.subject || "staff", now, now).run();
+    "INSERT INTO posts (id, group_key, week_slug, post_date, title, body, activities, status, created_by, created_at, updated_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)"
+  ).bind(postId, group, weekSlug, date, title, body, activities, status, session.email || session.subject || "staff", now, now).run();
 
   for (let index = 0; index < files.length; index += 1) {
     const file = files[index];
@@ -350,6 +353,7 @@ async function updateStaffPost(request, env, url) {
   const date = String(body.date || "").trim();
   const title = String(body.title || "Luana day").trim();
   const note = String(body.body || "").trim();
+  const activities = normalizeActivities(body.activities);
   const status = body.status === "published" ? "published" : "draft";
   const weekSlug = validSummerWeek(String(body.week || "").trim());
 
@@ -360,8 +364,8 @@ async function updateStaffPost(request, env, url) {
   if (!existing) return json({ error: "Post not found" }, 404);
 
   await env.DB.prepare(
-    "UPDATE posts SET group_key = ?1, week_slug = ?2, post_date = ?3, title = ?4, body = ?5, status = ?6, updated_at = ?7 WHERE id = ?8"
-  ).bind(group, weekSlug, date, title, note, status, new Date().toISOString(), postId).run();
+    "UPDATE posts SET group_key = ?1, week_slug = ?2, post_date = ?3, title = ?4, body = ?5, activities = ?6, status = ?7, updated_at = ?8 WHERE id = ?9"
+  ).bind(group, weekSlug, date, title, note, activities, status, new Date().toISOString(), postId).run();
 
   if (existing.week_slug !== weekSlug) {
     await movePostPhotosToWeek(env, postId, group, weekSlug);
@@ -492,6 +496,20 @@ async function movePostPhotosToWeek(env, postId, group, weekSlug) {
      )
      WHERE slug IN ('week-1-festivals', 'week-2-ocean', 'week-3-adventure')`
   ).run();
+}
+
+function parseActivities(value) {
+  return String(value || "")
+    .split(/[,、\n•]+/)
+    .map(activity => activity.trim())
+    .filter(Boolean)
+    .slice(0, 8);
+}
+
+function normalizeActivities(value) {
+  return parseActivities(value)
+    .map(activity => activity.slice(0, 40))
+    .join(", ");
 }
 
 function validSummerWeek(value) {

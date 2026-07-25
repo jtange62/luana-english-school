@@ -1,0 +1,1 @@
+ALTER TABLE posts ADD COLUMN activities TEXT NOT NULL DEFAULT '';

@@ -77,12 +77,16 @@
         </label>
       </div>
       <label>
-        Activity title
-        <input name="title" type="text" maxlength="120" required placeholder="Water gun fight">
+        Daily theme <span class="optional-label">(English)</span>
+        <input name="title" type="text" maxlength="120" required placeholder="Brazil — Carnival">
       </label>
       <label>
-        Short note <span class="optional-label">(optional)</span>
-        <textarea name="body" rows="4" placeholder="A quick note for families about today&apos;s activity."></textarea>
+        Parent summary <span class="optional-label">(Japanese)</span>
+        <textarea name="body" rows="4" maxlength="600" required placeholder="カーニバルの音楽やダンスを楽しみ、カラフルなマスクを作りました。"></textarea>
+      </label>
+      <label>
+        Activities <span class="optional-label">(comma separated)</span>
+        <input name="activities" type="text" maxlength="240" placeholder="Music, Dancing, Mask Making">
       </label>
       <label class="drop-zone">
         <input name="photos" type="file" accept="image/*" multiple>
@@ -113,7 +117,10 @@
 
 <div class="lightbox" id="lightbox" hidden>
   <button type="button" id="lightbox-close" aria-label="Close photo">&times;</button>
+  <button type="button" class="lightbox-nav lightbox-prev" id="lightbox-prev" aria-label="Previous photo">&lsaquo;</button>
   <img id="lightbox-image" alt="">
+  <button type="button" class="lightbox-nav lightbox-next" id="lightbox-next" aria-label="Next photo">&rsaquo;</button>
+  <p class="lightbox-counter" id="lightbox-counter" aria-live="polite"></p>
 </div>
 
 <script src="/portal.js"></script>

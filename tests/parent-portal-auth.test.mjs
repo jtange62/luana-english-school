@@ -12,6 +12,7 @@ const posts = [
     post_date: "2026-07-20",
     title: "Week one",
     body: "",
+    activities: "Music, Dancing",
     group_key: "summer-2026",
     week_slug: "week-1-festivals",
     created_at: "2026-07-20T00:00:00.000Z"
@@ -21,6 +22,7 @@ const posts = [
     post_date: "2026-07-27",
     title: "Week two",
     body: "",
+    activities: "",
     group_key: "summer-2026",
     week_slug: "week-2-ocean",
     created_at: "2026-07-27T00:00:00.000Z"
@@ -113,6 +115,7 @@ test("parent week codes filter feeds and direct photo access", async () => {
   const weekOneData = await weekOneFeed.json();
   assert.deepEqual(weekOneData.weeks, ["week-1-festivals"]);
   assert.deepEqual(weekOneData.posts.map(post => post.title), ["Week one"]);
+  assert.deepEqual(weekOneData.posts[0].activities, ["Music", "Dancing"]);
 
   const blockedPhoto = await worker.fetch(apiRequest("/api/photos/photo-week-2", {
     headers: { cookie: weekOneLogin.cookie }

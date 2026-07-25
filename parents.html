@@ -73,13 +73,17 @@
 
     <nav class="week-tabs" id="week-tabs" aria-label="サマースクールの参加週"></nav>
     <div class="week-heading" id="week-heading"></div>
+    <nav class="day-tabs" id="day-tabs" aria-label="日にちから選ぶ"></nav>
     <div class="post-list" id="post-list"></div>
   </section>
 </main>
 
 <div class="lightbox" id="lightbox" hidden>
   <button type="button" id="lightbox-close" aria-label="写真を閉じる">&times;</button>
+  <button type="button" class="lightbox-nav lightbox-prev" id="lightbox-prev" aria-label="前の写真">&lsaquo;</button>
   <img id="lightbox-image" alt="">
+  <button type="button" class="lightbox-nav lightbox-next" id="lightbox-next" aria-label="次の写真">&rsaquo;</button>
+  <p class="lightbox-counter" id="lightbox-counter" aria-live="polite"></p>
 </div>
 
 <script src="/portal.js"></script>

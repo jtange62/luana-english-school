@@ -71,6 +71,16 @@ test("parent weekly themes match the English Summer School campaign", async () =
   }
 });
 
+test("daily stories keep parent navigation and staff context fields", async () => {
+  const parents = await source("parents.html");
+  const staff = await source("staff.html");
+  const portal = await source("portal.js");
+  assert.match(parents, /id="day-tabs"/);
+  assert.match(staff, /name="activities"/);
+  assert.match(staff, /Parent summary/);
+  assert.match(portal, /写真をすべて見る/);
+});
+
 test("private implementation files cannot become static assets", async () => {
   const ignored = new Set(
     (await source(".assetsignore"))

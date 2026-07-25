@@ -41,8 +41,9 @@ const demoPosts = [
     id: "demo-water-fight",
     date: "2026-07-24",
     week: "week-1-festivals",
-    title: "Water gun fight",
-    body: "We cooled down outside with water games and plenty of teamwork.",
+    title: "Brazil — Carnival",
+    body: "カーニバルの音楽やダンスを楽しみ、カラフルなマスクを作りました。",
+    activities: ["Music", "Dancing", "Mask Making"],
     status: "published",
     photos: [
       { url: "/photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-35.webp", alt: "Summer activity" },
@@ -59,6 +60,12 @@ function formatDate(dateText) {
     day: "numeric",
     year: "numeric"
   }).format(new Date(`${dateText}T00:00:00`));
+}
+
+function formatDailyDate(dateText, weekday = "long") {
+  const date = new Date(`${dateText}T00:00:00`);
+  const dayName = new Intl.DateTimeFormat("en-US", { weekday }).format(date).toUpperCase();
+  return `${dayName} • ${date.getMonth() + 1}/${date.getDate()}`;
 }
 
 function escapeText(value) {
@@ -102,18 +109,38 @@ function showSetupBanner(id) {
   if (banner) banner.hidden = false;
 }
 
-function openLightbox(photo) {
+let lightboxPhotos = [];
+let lightboxIndex = 0;
+
+function updateLightbox() {
   const box = document.getElementById("lightbox");
   const image = document.getElementById("lightbox-image");
-  if (!box || !image) return;
+  const counter = document.getElementById("lightbox-counter");
+  const previous = document.getElementById("lightbox-prev");
+  const next = document.getElementById("lightbox-next");
+  const photo = lightboxPhotos[lightboxIndex];
+  if (!box || !image || !photo) return;
   image.src = photo.url;
   image.alt = photo.alt || "";
+  if (counter) counter.textContent = `${lightboxIndex + 1} / ${lightboxPhotos.length}`;
+  if (previous) previous.hidden = lightboxPhotos.length < 2;
+  if (next) next.hidden = lightboxPhotos.length < 2;
+}
+
+function openGallery(photos, startIndex = 0) {
+  const box = document.getElementById("lightbox");
+  if (!box || !photos?.length) return;
+  lightboxPhotos = photos;
+  lightboxIndex = Math.max(0, Math.min(startIndex, photos.length - 1));
+  updateLightbox();
   box.hidden = false;
 }
 
 function setupLightbox() {
   const box = document.getElementById("lightbox");
   const close = document.getElementById("lightbox-close");
+  const previous = document.getElementById("lightbox-prev");
+  const next = document.getElementById("lightbox-next");
   if (!box || !close) return;
   close.addEventListener("click", () => {
     box.hidden = true;
@@ -121,8 +148,18 @@ function setupLightbox() {
   box.addEventListener("click", event => {
     if (event.target === box) box.hidden = true;
   });
+  previous?.addEventListener("click", () => {
+    lightboxIndex = (lightboxIndex - 1 + lightboxPhotos.length) % lightboxPhotos.length;
+    updateLightbox();
+  });
+  next?.addEventListener("click", () => {
+    lightboxIndex = (lightboxIndex + 1) % lightboxPhotos.length;
+    updateLightbox();
+  });
   document.addEventListener("keydown", event => {
     if (event.key === "Escape") box.hidden = true;
+    if (!box.hidden && event.key === "ArrowLeft") previous?.click();
+    if (!box.hidden && event.key === "ArrowRight") next?.click();
   });
 }
 
@@ -165,27 +202,47 @@ function renderWeekHeading(container, selectedSlug) {
 function appendPhotoGrid(card, photos) {
   const grid = card.querySelector(".photo-grid");
   const photoList = photos || [];
-  grid.classList.add(`photo-count-${Math.min(photoList.length, 3)}`);
-  photoList.forEach(photo => {
+  const previewPhotos = photoList.slice(0, 4);
+  grid.classList.add(`photo-count-${previewPhotos.length}`);
+  previewPhotos.forEach((photo, index) => {
     const button = document.createElement("button");
     button.className = "portal-photo";
     button.type = "button";
+    button.setAttribute("aria-label", `${appKind === "parents" ? "写真を開く" : "Open photo"} ${index + 1}`);
     button.innerHTML = `<img src="${escapeAttribute(photo.url)}" alt="${escapeAttribute(photo.alt || "")}" loading="lazy">`;
-    button.addEventListener("click", () => openLightbox(photo));
+    if (index === previewPhotos.length - 1 && photoList.length > previewPhotos.length) {
+      button.insertAdjacentHTML("beforeend", `<span class="photo-more">+${photoList.length - previewPhotos.length}</span>`);
+    }
+    button.addEventListener("click", () => openGallery(photoList, index));
     grid.append(button);
   });
-  if (!photos?.length) grid.hidden = true;
+  if (!photoList.length) {
+    grid.hidden = true;
+    return;
+  }
+  const galleryButton = document.createElement("button");
+  galleryButton.type = "button";
+  galleryButton.className = "view-gallery";
+  galleryButton.textContent = appKind === "parents"
+    ? `写真をすべて見る（${photoList.length}枚）`
+    : `View all photos (${photoList.length})`;
+  galleryButton.addEventListener("click", () => openGallery(photoList));
+  grid.insertAdjacentElement("afterend", galleryButton);
 }
 
 function activityCard(post) {
   const card = document.createElement("article");
+  const parentView = appKind === "parents";
+  const activities = Array.isArray(post.activities) ? post.activities : [];
   card.className = "post-card activity-card";
   card.id = `activity-${post.id}`;
+  card.tabIndex = -1;
   card.innerHTML = `
     <div class="post-text">
-      <p class="post-date">${formatDate(post.date)}</p>
-      <h3>${escapeText(post.title || (appKind === "parents" ? "サマースクールの活動" : "Summer activity"))}</h3>
-      ${post.body ? `<p>${escapeText(post.body)}</p>` : ""}
+      <p class="post-date">${parentView ? formatDailyDate(post.date) : formatDate(post.date)}</p>
+      <h3>${escapeText(post.title || (parentView ? "サマースクールの活動" : "Summer activity"))}</h3>
+      ${post.body ? `<p class="daily-summary">${escapeText(post.body)}</p>` : ""}
+      ${activities.length ? `<div class="activity-tags" aria-label="${parentView ? "今日の活動" : "Activities"}">${activities.map(activity => `<span>${escapeText(activity)}</span>`).join("")}</div>` : ""}
     </div>
     <div class="photo-grid"></div>
   `;
@@ -193,12 +250,34 @@ function activityCard(post) {
   return card;
 }
 
+function renderDayTabs(container, posts) {
+  container.innerHTML = "";
+  posts.forEach(post => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "day-tab";
+    button.innerHTML = `
+      <span>${formatDailyDate(post.date, "short")}</span>
+      <strong>${escapeText(post.title || "Today")}</strong>
+    `;
+    button.addEventListener("click", () => {
+      const card = document.getElementById(`activity-${post.id}`);
+      card?.scrollIntoView({ behavior: "smooth", block: "start" });
+      card?.focus({ preventScroll: true });
+    });
+    container.append(button);
+  });
+  container.hidden = posts.length < 2;
+}
+
 function renderParentActivities(posts, selectedWeek) {
   const list = document.getElementById("post-list");
   const heading = document.getElementById("week-heading");
+  const dayTabs = document.getElementById("day-tabs");
   renderWeekHeading(heading, selectedWeek);
   list.innerHTML = "";
   const weekPosts = posts.filter(post => post.week === selectedWeek);
+  renderDayTabs(dayTabs, weekPosts);
   if (!weekPosts.length) {
     list.innerHTML = `
       <div class="empty-week">
@@ -494,7 +573,7 @@ async function initStaff() {
         <input name="date" type="date" value="${escapeAttribute(post.date)}">
       </label>
       <label>
-        Activity title
+        Daily theme
         <input name="title" type="text" maxlength="120" value="${escapeAttribute(post.title || "")}">
       </label>
       <label>
@@ -505,8 +584,12 @@ async function initStaff() {
         </select>
       </label>
       <label class="full-width">
-        Short note
+        Parent summary
         <textarea name="body" rows="4">${escapeText(post.body || "")}</textarea>
+      </label>
+      <label class="full-width">
+        Activities
+        <input name="activities" type="text" maxlength="240" value="${escapeAttribute((post.activities || []).join(", "))}">
       </label>
       <div class="manage-card-actions full-width">
         <button type="button" class="save-post">Save changes</button>
@@ -537,7 +620,8 @@ async function initStaff() {
       date: editor.querySelector('[name="date"]').value,
       status: editor.querySelector('[name="status"]').value,
       title: editor.querySelector('[name="title"]').value,
-      body: editor.querySelector('[name="body"]').value
+      body: editor.querySelector('[name="body"]').value,
+      activities: editor.querySelector('[name="activities"]').value
     };
     manageNote.textContent = "Saving changes...";
     try {
