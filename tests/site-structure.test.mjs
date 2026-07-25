@@ -59,6 +59,15 @@ test("the parent landing page clearly uses Japanese access-code wording", async 
   assert.doesNotMatch(html, />\s*Week code\s*</);
 });
 
+test("the parent portal gently links to regular programs without changing portal separation", async () => {
+  const parents = await source("parents.html");
+  const staff = await source("staff.html");
+  assert.match(parents, /id="main-site-invitation"/);
+  assert.match(parents, /もっとLuanaで英語を楽しみたい方へ/);
+  assert.match(parents, /<a href="\/" target="_blank" rel="noopener">/);
+  assert.doesNotMatch(staff, /もっとLuanaで英語を楽しみたい方へ/);
+});
+
 test("parent weekly themes match the English Summer School campaign", async () => {
   const portal = await source("portal.js");
   for (const [dates, theme] of [
@@ -71,14 +80,50 @@ test("parent weekly themes match the English Summer School campaign", async () =
   }
 });
 
-test("daily stories keep parent navigation and staff context fields", async () => {
+test("photo albums keep parent navigation and a simple staff upload flow", async () => {
   const parents = await source("parents.html");
   const staff = await source("staff.html");
   const portal = await source("portal.js");
   assert.match(parents, /id="day-tabs"/);
-  assert.match(staff, /name="activities"/);
-  assert.match(staff, /Parent summary/);
+  assert.match(staff, /id="staff-day-tabs"/);
+  assert.match(staff, />Add pictures</);
+  assert.match(staff, />\s*Album title\s*</);
+  assert.match(staff, /name="photos"[^>]*required/);
+  assert.match(staff, />Publish photo album</);
+  assert.doesNotMatch(staff, /name="activities"/);
   assert.match(portal, /写真をすべて見る/);
+  assert.match(portal, /Edit this album/);
+  assert.match(portal, /isParentPresentation/);
+  assert.match(portal, /renderDailyCollections/);
+  assert.match(portal, /groupPostsByDate/);
+});
+
+test("each summer week has a distinct lightweight collection theme", async () => {
+  const portal = await source("portal.js");
+  const styles = await source("portal.css");
+  for (const theme of ["festivals", "ocean", "adventure"]) {
+    assert.match(portal, new RegExp(`theme: "${theme}"`));
+    assert.match(styles, new RegExp(`data-week-theme="${theme}"`));
+  }
+  for (const motif of [
+    "Carnival",
+    "Holi",
+    "Songkran",
+    "Matsuri",
+    "Field Trip: teamLab",
+    "Ocean Life",
+    "Coral Reef",
+    "Tides & Waves",
+    "Conservation & Climate",
+    "Field Trip: Enoshima Aquarium",
+    "Survival Priorities",
+    "Preparation & Teamwork",
+    "Navigation",
+    "Resource Management",
+    "Field Trip: HUGTRATOPS"
+  ]) {
+    assert.ok(portal.includes(motif), `Parent portal is missing the ${motif} motif`);
+  }
 });
 
 test("private implementation files cannot become static assets", async () => {

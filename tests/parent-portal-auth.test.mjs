@@ -72,6 +72,7 @@ function environment() {
       }
     },
     SESSION_SECRET: "test-session-secret",
+    STAFF_PORTAL_PASSWORD: "staff-test-password",
     SUMMER_WEEK_1_CODE: "sunny-one",
     SUMMER_WEEK_2_CODE: "ocean-two",
     SUMMER_WEEK_3_CODE: "camp-three"
@@ -142,4 +143,31 @@ test("incorrect week codes are rejected", async () => {
   const result = await login(environment(), "wrong-code");
   assert.equal(result.response.status, 401);
   assert.deepEqual(await result.response.json(), { error: "Incorrect access code" });
+});
+
+test("staff photo albums require at least one picture", async () => {
+  const env = environment();
+  const loginResponse = await worker.fetch(apiRequest("/api/auth/password", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ audience: "staff", password: "staff-test-password" })
+  }), env);
+  const cookie = loginResponse.headers.get("set-cookie")?.split(";")[0] || "";
+  const form = new FormData();
+  form.set("group", "summer-2026");
+  form.set("week", "week-1-festivals");
+  form.set("date", "2026-07-27");
+  form.set("title", "Making Carnival Masks");
+  form.set("status", "published");
+
+  const response = await worker.fetch(apiRequest("/api/staff/posts", {
+    method: "POST",
+    headers: { cookie },
+    body: form
+  }), env);
+
+  assert.equal(response.status, 400);
+  assert.deepEqual(await response.json(), {
+    error: "Add at least one photo to publish an album"
+  });
 });

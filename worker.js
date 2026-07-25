@@ -308,7 +308,7 @@ async function createStaffPost(request, env) {
   const form = await request.formData();
   const group = String(form.get("group") || "").trim();
   const date = String(form.get("date") || "").trim();
-  const title = String(form.get("title") || "Luana day").trim();
+  const title = String(form.get("title") || "").trim();
   const body = String(form.get("body") || "").trim();
   const activities = normalizeActivities(form.get("activities"));
   const status = form.get("status") === "published" ? "published" : "draft";
@@ -316,7 +316,8 @@ async function createStaffPost(request, env) {
   const albumSlug = weekSlug;
   const files = form.getAll("photos").filter(value => value && typeof value === "object" && value.size);
 
-  if (!group || !date || !title) return json({ error: "Week, date, and activity title are required" }, 400);
+  if (!group || !date || !title) return json({ error: "Week, date, and album title are required" }, 400);
+  if (!files.length) return json({ error: "Add at least one photo to publish an album" }, 400);
 
   const postId = crypto.randomUUID();
   const now = new Date().toISOString();
@@ -351,17 +352,19 @@ async function updateStaffPost(request, env, url) {
   const body = await request.json();
   const group = String(body.group || "").trim();
   const date = String(body.date || "").trim();
-  const title = String(body.title || "Luana day").trim();
+  const title = String(body.title || "").trim();
   const note = String(body.body || "").trim();
-  const activities = normalizeActivities(body.activities);
   const status = body.status === "published" ? "published" : "draft";
   const weekSlug = validSummerWeek(String(body.week || "").trim());
 
   if (!postId) return json({ error: "Post not found" }, 404);
-  if (!group || !date || !title) return json({ error: "Week, date, and activity title are required" }, 400);
+  if (!group || !date || !title) return json({ error: "Week, date, and album title are required" }, 400);
 
-  const existing = await env.DB.prepare("SELECT id, week_slug FROM posts WHERE id = ?1").bind(postId).first();
+  const existing = await env.DB.prepare("SELECT id, week_slug, activities FROM posts WHERE id = ?1").bind(postId).first();
   if (!existing) return json({ error: "Post not found" }, 404);
+  const activities = body.activities === undefined
+    ? String(existing.activities || "")
+    : normalizeActivities(body.activities);
 
   await env.DB.prepare(
     "UPDATE posts SET group_key = ?1, week_slug = ?2, post_date = ?3, title = ?4, body = ?5, activities = ?6, status = ?7, updated_at = ?8 WHERE id = ?9"

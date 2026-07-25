@@ -1,11 +1,23 @@
 const appKind = document.body.dataset.app;
 
+function isParentPresentation() {
+  return appKind === "parents" || document.body.classList.contains("staff-parent-preview");
+}
+
 const SUMMER_WEEKS = [
   {
     slug: "week-1-festivals",
     shortTitle: "Week 1",
     dateRange: "7/27 – 7/31",
     emoji: "🌎",
+    theme: "festivals",
+    days: [
+      { date: "2026-07-27", title: "Brazil — Carnival", badge: "🎭 Carnival" },
+      { date: "2026-07-28", title: "India — Holi", badge: "🎨 Holi" },
+      { date: "2026-07-29", title: "Thailand — Songkran", badge: "💦 Songkran" },
+      { date: "2026-07-30", title: "Japan — Matsuri", badge: "🏮 Matsuri" },
+      { date: "2026-07-31", title: "Field Trip — teamLab", badge: "🚌 Field Trip: teamLab" }
+    ],
     title: "Festivals of the World",
     description: "Celebrations, games, crafts, and traditions from around the world.",
     shortTitleJa: "第1週",
@@ -17,6 +29,14 @@ const SUMMER_WEEKS = [
     shortTitle: "Week 2",
     dateRange: "8/3 – 8/7",
     emoji: "🐠",
+    theme: "ocean",
+    days: [
+      { date: "2026-08-03", title: "Ocean Life", badge: "🐠 Ocean Life" },
+      { date: "2026-08-04", title: "Coral Reef", badge: "🪸 Coral Reef" },
+      { date: "2026-08-05", title: "Tides & Waves", badge: "🌊 Tides & Waves" },
+      { date: "2026-08-06", title: "Conservation & Climate", badge: "🌍 Conservation & Climate" },
+      { date: "2026-08-07", title: "Field Trip — Enoshima Aquarium", badge: "🚌 Field Trip: Enoshima Aquarium" }
+    ],
     title: "Ocean Explorers",
     description: "Ocean activities, crafts, games, and discoveries.",
     shortTitleJa: "第2週",
@@ -28,6 +48,14 @@ const SUMMER_WEEKS = [
     shortTitle: "Week 3",
     dateRange: "8/17 – 8/21",
     emoji: "🧭",
+    theme: "adventure",
+    days: [
+      { date: "2026-08-17", title: "Survival Priorities", badge: "🧰 Survival Priorities" },
+      { date: "2026-08-18", title: "Preparation & Teamwork", badge: "🤝 Preparation & Teamwork" },
+      { date: "2026-08-19", title: "Navigation", badge: "🧭 Navigation" },
+      { date: "2026-08-20", title: "Resource Management", badge: "🎒 Resource Management" },
+      { date: "2026-08-21", title: "Field Trip — HUGTRATOPS", badge: "🚌 Field Trip: HUGTRATOPS" }
+    ],
     title: "Adventure Survival",
     description: "Adventure skills, survival challenges, and teamwork.",
     shortTitleJa: "第3週",
@@ -39,9 +67,9 @@ const SUMMER_WEEKS = [
 const demoPosts = [
   {
     id: "demo-water-fight",
-    date: "2026-07-24",
+    date: "2026-07-27",
     week: "week-1-festivals",
-    title: "Brazil — Carnival",
+    title: "Making Carnival Masks",
     body: "カーニバルの音楽やダンスを楽しみ、カラフルなマスクを作りました。",
     activities: ["Music", "Dancing", "Mask Making"],
     status: "published",
@@ -81,6 +109,26 @@ function escapeAttribute(value) {
 
 function weekFor(slug) {
   return SUMMER_WEEKS.find(week => week.slug === slug) || SUMMER_WEEKS[0];
+}
+
+function scheduledDay(date, weekSlug) {
+  const week = weekFor(weekSlug);
+  return week.days.find(day => day.date === date) || {
+    date,
+    title: "Summer School",
+    badge: "📷 Summer School"
+  };
+}
+
+function weekForDate(date) {
+  return SUMMER_WEEKS.find(week => week.days.some(day => day.date === date));
+}
+
+function localDateValue(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 function initialWeek(posts, availableWeeks = SUMMER_WEEKS) {
@@ -165,17 +213,18 @@ function setupLightbox() {
 
 function renderWeekTabs(container, selectedSlug, counts, onSelect, availableWeeks = SUMMER_WEEKS) {
   container.innerHTML = "";
-  const parentView = appKind === "parents";
+  const parentView = isParentPresentation();
   availableWeeks.forEach(week => {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "week-tab";
+    button.dataset.weekTheme = week.theme;
     button.classList.toggle("is-active", week.slug === selectedSlug);
     button.setAttribute("aria-pressed", String(week.slug === selectedSlug));
     button.innerHTML = `
       <span>${week.shortTitle}${parentView ? ` • ${week.dateRange}` : ""}</span>
       <strong>${parentView ? `${week.emoji} ${week.title}` : week.title}</strong>
-      <small>${counts.get(week.slug) || 0}${parentView ? "件のお知らせ" : " activities"}</small>
+      <small>${counts.get(week.slug) || 0}${parentView ? "件のアルバム" : " albums"}</small>
     `;
     button.addEventListener("click", () => onSelect(week.slug));
     container.append(button);
@@ -184,11 +233,14 @@ function renderWeekTabs(container, selectedSlug, counts, onSelect, availableWeek
 
 function renderWeekHeading(container, selectedSlug) {
   const week = weekFor(selectedSlug);
-  const parentView = appKind === "parents";
+  const parentView = isParentPresentation();
   if (parentView) {
     container.innerHTML = `
       <p class="week-campaign-line">${week.shortTitle} • ${week.dateRange}</p>
       <h3 class="week-campaign-theme"><span aria-hidden="true">${week.emoji}</span> ${week.title}</h3>
+      <div class="week-motifs" aria-label="${week.title} themes">
+        ${week.days.map(day => `<span>${day.badge}</span>`).join("")}
+      </div>
     `;
     return;
   }
@@ -201,6 +253,7 @@ function renderWeekHeading(container, selectedSlug) {
 
 function appendPhotoGrid(card, photos) {
   const grid = card.querySelector(".photo-grid");
+  const parentView = isParentPresentation();
   const photoList = photos || [];
   const previewPhotos = photoList.slice(0, 4);
   grid.classList.add(`photo-count-${previewPhotos.length}`);
@@ -208,7 +261,7 @@ function appendPhotoGrid(card, photos) {
     const button = document.createElement("button");
     button.className = "portal-photo";
     button.type = "button";
-    button.setAttribute("aria-label", `${appKind === "parents" ? "写真を開く" : "Open photo"} ${index + 1}`);
+    button.setAttribute("aria-label", `${parentView ? "写真を開く" : "Open photo"} ${index + 1}`);
     button.innerHTML = `<img src="${escapeAttribute(photo.url)}" alt="${escapeAttribute(photo.alt || "")}" loading="lazy">`;
     if (index === previewPhotos.length - 1 && photoList.length > previewPhotos.length) {
       button.insertAdjacentHTML("beforeend", `<span class="photo-more">+${photoList.length - previewPhotos.length}</span>`);
@@ -223,24 +276,25 @@ function appendPhotoGrid(card, photos) {
   const galleryButton = document.createElement("button");
   galleryButton.type = "button";
   galleryButton.className = "view-gallery";
-  galleryButton.textContent = appKind === "parents"
+  galleryButton.textContent = parentView
     ? `写真をすべて見る（${photoList.length}枚）`
     : `View all photos (${photoList.length})`;
   galleryButton.addEventListener("click", () => openGallery(photoList));
   grid.insertAdjacentElement("afterend", galleryButton);
 }
 
-function activityCard(post) {
+function activityCard(post, { showDate = true } = {}) {
   const card = document.createElement("article");
-  const parentView = appKind === "parents";
+  const parentView = isParentPresentation();
   const activities = Array.isArray(post.activities) ? post.activities : [];
   card.className = "post-card activity-card";
+  card.dataset.weekTheme = weekFor(post.week).theme;
   card.id = `activity-${post.id}`;
   card.tabIndex = -1;
   card.innerHTML = `
     <div class="post-text">
-      <p class="post-date">${parentView ? formatDailyDate(post.date) : formatDate(post.date)}</p>
-      <h3>${escapeText(post.title || (parentView ? "サマースクールの活動" : "Summer activity"))}</h3>
+      ${showDate ? `<p class="post-date">${parentView ? formatDailyDate(post.date) : formatDate(post.date)}</p>` : ""}
+      <h3>${escapeText(post.title || (parentView ? "フォトアルバム" : "Photo album"))}</h3>
       ${post.body ? `<p class="daily-summary">${escapeText(post.body)}</p>` : ""}
       ${activities.length ? `<div class="activity-tags" aria-label="${parentView ? "今日の活動" : "Activities"}">${activities.map(activity => `<span>${escapeText(activity)}</span>`).join("")}</div>` : ""}
     </div>
@@ -250,24 +304,66 @@ function activityCard(post) {
   return card;
 }
 
+function groupPostsByDate(posts) {
+  const groups = [];
+  const groupsByDate = new Map();
+  posts.forEach(post => {
+    if (!groupsByDate.has(post.date)) {
+      const group = { date: post.date, week: post.week, posts: [] };
+      groupsByDate.set(post.date, group);
+      groups.push(group);
+    }
+    groupsByDate.get(post.date).posts.push(post);
+  });
+  return groups;
+}
+
 function renderDayTabs(container, posts) {
   container.innerHTML = "";
-  posts.forEach(post => {
+  const groups = groupPostsByDate(posts);
+  groups.forEach(group => {
+    const day = scheduledDay(group.date, group.week);
     const button = document.createElement("button");
     button.type = "button";
     button.className = "day-tab";
     button.innerHTML = `
-      <span>${formatDailyDate(post.date, "short")}</span>
-      <strong>${escapeText(post.title || "Today")}</strong>
+      <span>${formatDailyDate(group.date, "short")}</span>
+      <strong>${escapeText(day.title)}</strong>
     `;
     button.addEventListener("click", () => {
-      const card = document.getElementById(`activity-${post.id}`);
-      card?.scrollIntoView({ behavior: "smooth", block: "start" });
-      card?.focus({ preventScroll: true });
+      const collection = document.getElementById(`day-${group.date}`);
+      collection?.scrollIntoView({ behavior: "smooth", block: "start" });
+      collection?.focus({ preventScroll: true });
     });
     container.append(button);
   });
-  container.hidden = posts.length < 2;
+  container.hidden = groups.length < 2;
+}
+
+function renderDailyCollections(container, posts, decorateCard) {
+  groupPostsByDate(posts).forEach(group => {
+    const day = scheduledDay(group.date, group.week);
+    const collection = document.createElement("section");
+    collection.className = "daily-collection";
+    collection.id = `day-${group.date}`;
+    collection.tabIndex = -1;
+    collection.innerHTML = `
+      <header class="daily-collection-heading">
+        <p>${formatDailyDate(group.date)}</p>
+        <h3>${escapeText(day.title)}</h3>
+        <span>${group.posts.length}${isParentPresentation() ? "件のフォトアルバム" : group.posts.length === 1 ? " photo album" : " photo albums"}</span>
+      </header>
+      <div class="daily-albums"></div>
+    `;
+    const albums = collection.querySelector(".daily-albums");
+    group.posts.forEach(post => {
+      const card = activityCard(post, { showDate: false });
+      card.classList.add("daily-album");
+      decorateCard?.(card, post);
+      albums.append(card);
+    });
+    container.append(collection);
+  });
 }
 
 function renderParentActivities(posts, selectedWeek) {
@@ -287,7 +383,7 @@ function renderParentActivities(posts, selectedWeek) {
     `;
     return;
   }
-  weekPosts.forEach(post => list.append(activityCard(post)));
+  renderDailyCollections(list, weekPosts);
 }
 
 async function initParents() {
@@ -304,6 +400,8 @@ async function initParents() {
   let selectedWeek = SUMMER_WEEKS[0].slug;
 
   function render() {
+    document.body.dataset.weekTheme = weekFor(selectedWeek).theme;
+    document.getElementById("main-site-invitation").hidden = !posts.length;
     const counts = new Map(availableWeeks.map(week => [
       week.slug,
       posts.filter(post => post.week === week.slug).length
@@ -399,13 +497,44 @@ async function initStaff() {
   const refreshPosts = document.getElementById("refresh-posts");
   const preview = document.getElementById("upload-preview");
   const tabs = document.getElementById("staff-week-tabs");
+  const dayTabs = document.getElementById("staff-day-tabs");
   const parentViewToggle = document.getElementById("parent-view-toggle");
+  const postingContext = document.getElementById("posting-context");
   let posts = [];
   let selectedWeek = SUMMER_WEEKS[0].slug;
   let parentPreview = false;
 
-  postForm.elements.date.valueAsDate = new Date();
-  postForm.elements.week.value = selectedWeek;
+  function updatePostingContext() {
+    const date = postForm.elements.date.value;
+    const week = weekFor(postForm.elements.week.value);
+    const day = scheduledDay(date, week.slug);
+    postingContext.innerHTML = `<strong>${formatDailyDate(date)}</strong> · ${escapeText(day.title)}`;
+  }
+
+  function setPostingContextForWeek(weekSlug, preferToday = true) {
+    const week = weekFor(weekSlug);
+    const today = localDateValue();
+    const todayWeek = weekForDate(today);
+    postForm.elements.week.value = week.slug;
+    postForm.elements.date.value = preferToday && todayWeek?.slug === week.slug
+      ? today
+      : week.days[0].date;
+    updatePostingContext();
+  }
+
+  setPostingContextForWeek(selectedWeek);
+  postForm.elements.date.addEventListener("change", () => {
+    const matchedWeek = weekForDate(postForm.elements.date.value);
+    if (matchedWeek) {
+      selectedWeek = matchedWeek.slug;
+      postForm.elements.week.value = matchedWeek.slug;
+    }
+    updatePostingContext();
+  });
+  postForm.elements.week.addEventListener("change", () => {
+    selectedWeek = postForm.elements.week.value;
+    setPostingContextForWeek(selectedWeek, false);
+  });
 
   function showStaffPanel(view) {
     document.querySelectorAll("[data-staff-view]").forEach(item => {
@@ -422,6 +551,7 @@ async function initStaff() {
       updatePreviewMode();
       showStaffPanel(button.dataset.staffView);
       if (button.dataset.staffView === "manage") loadStaffPosts();
+      if (button.dataset.staffView === "new") setPostingContextForWeek(selectedWeek);
     });
   });
 
@@ -431,8 +561,8 @@ async function initStaff() {
     parentViewToggle.textContent = parentPreview ? "Exit parent view" : "Parent view";
     document.getElementById("staff-mode-label").textContent = parentPreview ? "Parent view" : "Staff view";
     document.getElementById("staff-mode-description").textContent = parentPreview
-      ? "This is exactly how published activities appear to summer families."
-      : "This is the family timeline with edit controls added. Use Parent view to hide every staff control.";
+      ? "Published family content and photo layout, without decorative week themes. Edit directly from any album."
+      : "Fast editing view for every photo album, including drafts. Use Parent view to review published family content.";
     renderStaffActivities();
   }
 
@@ -476,7 +606,7 @@ async function initStaff() {
 
   postForm.addEventListener("submit", async event => {
     event.preventDefault();
-    postNote.textContent = "Publishing activity...";
+    postNote.textContent = "Publishing photo album...";
     try {
       const form = new FormData(postForm);
       form.set("group", "summer-2026");
@@ -485,10 +615,9 @@ async function initStaff() {
       await api("/api/staff/posts", { method: "POST", body: form });
       selectedWeek = String(form.get("week"));
       postForm.reset();
-      postForm.elements.date.valueAsDate = new Date();
-      postForm.elements.week.value = selectedWeek;
+      setPostingContextForWeek(selectedWeek);
       preview.innerHTML = "";
-      postNote.textContent = "Published. Families can see this activity now.";
+      postNote.textContent = "Published. Families can see this photo album now.";
       await loadStaffPosts();
       showStaffPanel("manage");
     } catch (error) {
@@ -499,13 +628,13 @@ async function initStaff() {
   });
 
   async function loadStaffPosts() {
-    manageNote.textContent = "Loading activities...";
+    manageNote.textContent = "Loading photo albums...";
     try {
       const data = await api("/api/staff/posts");
       posts = data.posts || [];
       if (!SUMMER_WEEKS.some(week => week.slug === selectedWeek)) selectedWeek = initialWeek(posts);
       renderStaffActivities();
-      manageNote.textContent = posts.length ? "" : "No activities yet.";
+      manageNote.textContent = posts.length ? "" : "No photo albums yet.";
     } catch (error) {
       manageNote.textContent = error.data?.setupRequired
         ? "Backend setup is needed before management works."
@@ -521,41 +650,57 @@ async function initStaff() {
     ]));
     renderWeekTabs(tabs, selectedWeek, counts, slug => {
       selectedWeek = slug;
-      postForm.elements.week.value = slug;
+      setPostingContextForWeek(slug);
       renderStaffActivities();
     });
     renderWeekHeading(document.getElementById("staff-week-heading"), selectedWeek);
     manageList.innerHTML = "";
     const weekPosts = visiblePosts.filter(post => post.week === selectedWeek);
+    if (parentPreview) {
+      renderDayTabs(dayTabs, weekPosts);
+    } else {
+      dayTabs.innerHTML = "";
+      dayTabs.hidden = true;
+    }
     if (!weekPosts.length) {
       manageList.innerHTML = `
         <div class="empty-week">
-          <h3>No activities in this week yet</h3>
-          <p>${parentPreview ? "Families will see this message until an activity is published." : "Use Add activity to share the first photos for this week."}</p>
+          <h3>No photo albums in this week yet</h3>
+          <p>${parentPreview ? "Families will see this message until an album is published." : "Use Add pictures to create the first album for this week."}</p>
         </div>
       `;
+      return;
+    }
+    if (parentPreview) {
+      renderDailyCollections(manageList, weekPosts, (card, post) => {
+        card.classList.add("manage-card");
+        card.dataset.postId = post.id;
+        appendStaffControls(card, post, true);
+      });
       return;
     }
     weekPosts.forEach(post => {
       const card = activityCard(post);
       card.classList.add("manage-card");
       card.dataset.postId = post.id;
-      if (!parentPreview) appendStaffControls(card, post);
+      appendStaffControls(card, post);
       manageList.append(card);
     });
   }
 
-  function appendStaffControls(card, post) {
-    const status = document.createElement("span");
-    status.className = `manage-status ${post.status}`;
-    status.textContent = post.status;
-    card.querySelector(".post-text").prepend(status);
+  function appendStaffControls(card, post, previewMode = false) {
+    if (!previewMode) {
+      const status = document.createElement("span");
+      status.className = `manage-status ${post.status}`;
+      status.textContent = post.status;
+      card.querySelector(".post-text").prepend(status);
+    }
 
     const controls = document.createElement("div");
-    controls.className = "manage-card-actions";
+    controls.className = `manage-card-actions${previewMode ? " preview-edit-actions" : ""}`;
     controls.innerHTML = `
-      <button type="button" class="toggle-edit">Edit activity</button>
-      <button type="button" class="delete-post">Delete</button>
+      <button type="button" class="toggle-edit">${previewMode ? "Edit this album" : "Edit album"}</button>
+      ${previewMode ? "" : '<button type="button" class="delete-post">Delete</button>'}
     `;
 
     const editor = document.createElement("div");
@@ -573,7 +718,7 @@ async function initStaff() {
         <input name="date" type="date" value="${escapeAttribute(post.date)}">
       </label>
       <label>
-        Daily theme
+        Album title
         <input name="title" type="text" maxlength="120" value="${escapeAttribute(post.title || "")}">
       </label>
       <label>
@@ -584,12 +729,8 @@ async function initStaff() {
         </select>
       </label>
       <label class="full-width">
-        Parent summary
+        Note for parents <span class="optional-label">(optional)</span>
         <textarea name="body" rows="4">${escapeText(post.body || "")}</textarea>
-      </label>
-      <label class="full-width">
-        Activities
-        <input name="activities" type="text" maxlength="240" value="${escapeAttribute((post.activities || []).join(", "))}">
       </label>
       <div class="manage-card-actions full-width">
         <button type="button" class="save-post">Save changes</button>
@@ -610,7 +751,7 @@ async function initStaff() {
       controls.hidden = false;
     });
     editor.querySelector(".save-post").addEventListener("click", () => saveManagedPost(card, editor));
-    controls.querySelector(".delete-post").addEventListener("click", () => deleteManagedPost(card, post.title));
+    controls.querySelector(".delete-post")?.addEventListener("click", () => deleteManagedPost(card, post.title));
   }
 
   async function saveManagedPost(card, editor) {
@@ -620,8 +761,7 @@ async function initStaff() {
       date: editor.querySelector('[name="date"]').value,
       status: editor.querySelector('[name="status"]').value,
       title: editor.querySelector('[name="title"]').value,
-      body: editor.querySelector('[name="body"]').value,
-      activities: editor.querySelector('[name="activities"]').value
+      body: editor.querySelector('[name="body"]').value
     };
     manageNote.textContent = "Saving changes...";
     try {
@@ -631,19 +771,19 @@ async function initStaff() {
       });
       selectedWeek = body.week;
       await loadStaffPosts();
-      manageNote.textContent = "Activity updated.";
+      manageNote.textContent = "Photo album updated.";
     } catch (error) {
       manageNote.textContent = error.message;
     }
   }
 
   async function deleteManagedPost(card, title) {
-    if (!window.confirm(`Delete "${title || "this activity"}" and all of its photos?`)) return;
-    manageNote.textContent = "Deleting activity...";
+    if (!window.confirm(`Delete "${title || "this album"}" and all of its photos?`)) return;
+    manageNote.textContent = "Deleting photo album...";
     try {
       await api(`/api/staff/posts/${encodeURIComponent(card.dataset.postId)}`, { method: "DELETE" });
       await loadStaffPosts();
-      manageNote.textContent = "Activity deleted.";
+      manageNote.textContent = "Photo album deleted.";
     } catch (error) {
       manageNote.textContent = error.message;
     }
@@ -658,7 +798,7 @@ async function initStaff() {
     showStaffPanel("manage");
     await loadStaffPosts();
     selectedWeek = initialWeek(posts);
-    postForm.elements.week.value = selectedWeek;
+    setPostingContextForWeek(selectedWeek);
     renderStaffActivities();
   } catch (error) {
     if (error.data?.setupRequired) {
