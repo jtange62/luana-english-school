@@ -6,8 +6,8 @@
 <link rel="stylesheet" href="/site.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex,nofollow">
-<title>Summer Check-in | Luana English School</title>
-<meta name="description" content="Luana English School summer program check-in for daily photos and updates.">
+<title>サマースクール ご家族専用ページ | Luana English School</title>
+<meta name="description" content="Luana English School サマースクール参加者のご家族専用ページです。写真やお知らせをご覧いただけます。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap">
@@ -16,25 +16,25 @@
 <body class="portal-body" data-app="parents">
 <main class="portal-shell">
   <section class="portal-hero">
-    <a class="portal-logo" href="/" aria-label="Luana English School home">
+    <a class="portal-logo" href="/" aria-label="Luana English School ホーム">
       <img src="/images/optimized/logo-128.webp" alt="" width="72" height="72">
-      <span>Luana Summer Check-in</span>
+      <span>Luana サマースクール</span>
     </a>
     <div class="portal-hero-grid">
       <div>
-        <p class="portal-kicker">Summer School families</p>
-        <h1>Check in on today&apos;s summer program.</h1>
-        <p class="portal-lead">サマープログラム参加者専用ページです。参加する週のコードで、日々の写真とお知らせを確認できます。</p>
+        <p class="portal-kicker">参加者・ご家族専用</p>
+        <h1>サマースクール<br>ご家族専用ページ</h1>
+        <p class="portal-lead">お子さまが参加する週の写真や、スクールからのお知らせをご覧いただけます。</p>
       </div>
       <form class="login-card" id="parent-login">
-        <h2>Summer week code</h2>
-        <p>Enter the code for the week your child is attending. You can share this code with members of your family.</p>
+        <h2>アクセスコードを入力</h2>
+        <p>スクールからお知らせした、お子さまが参加する週のアクセスコードを入力してください。ご家族や祖父母の方とも共有していただけます。</p>
         <label>
-          Week code
-          <input name="password" type="password" autocomplete="current-password" required placeholder="Summer week code">
+          アクセスコード
+          <input name="password" type="password" autocomplete="current-password" required placeholder="アクセスコードを入力">
         </label>
-        <button type="submit">Open check-in</button>
-        <p class="form-note" id="login-note">You will stay signed in on this device for 30 days.</p>
+        <button type="submit">写真とお知らせを見る</button>
+        <p class="form-note" id="login-note">この端末では、次回から30日間コードの入力は不要です。</p>
       </form>
     </div>
   </section>
@@ -42,43 +42,43 @@
   <section class="portal-content" id="portal-app" hidden>
     <div class="portal-toolbar">
       <div>
-        <p class="portal-kicker">Summer check-in</p>
-        <h2>Summer activities</h2>
+        <p class="portal-kicker">サマースクール</p>
+        <h2>写真とお知らせ</h2>
       </div>
       <div class="portal-actions">
-        <button type="button" id="unlock-week">Add another week</button>
-        <button type="button" id="signout">Sign out</button>
+        <button type="button" id="unlock-week">別のアクセスコードを追加</button>
+        <button type="button" id="signout">ログアウト</button>
       </div>
     </div>
 
     <form class="unlock-card" id="unlock-form" hidden>
       <div>
-        <h3>Add another summer week</h3>
-        <p>Enter another week code to add it to this device.</p>
+        <h3>別の参加週を追加</h3>
+        <p>追加する参加週のアクセスコードを入力してください。</p>
       </div>
       <label>
-        Week code
-        <input name="password" type="password" autocomplete="current-password" required placeholder="Summer week code">
+        アクセスコード
+        <input name="password" type="password" autocomplete="current-password" required placeholder="アクセスコードを入力">
       </label>
       <div class="unlock-actions">
-        <button type="submit">Add week</button>
-        <button type="button" id="unlock-cancel">Cancel</button>
+        <button type="submit">追加する</button>
+        <button type="button" id="unlock-cancel">キャンセル</button>
       </div>
       <p class="form-note" id="unlock-note"></p>
     </form>
 
     <div class="setup-banner" id="setup-banner" hidden>
-      Backend setup is not connected yet. Once D1, R2, and the summer week codes are wired, this page will load real summer updates.
+      現在準備中です。公開までしばらくお待ちください。
     </div>
 
-    <nav class="week-tabs" id="week-tabs" aria-label="Summer program weeks"></nav>
+    <nav class="week-tabs" id="week-tabs" aria-label="サマースクールの参加週"></nav>
     <div class="week-heading" id="week-heading"></div>
     <div class="post-list" id="post-list"></div>
   </section>
 </main>
 
 <div class="lightbox" id="lightbox" hidden>
-  <button type="button" id="lightbox-close" aria-label="Close photo">&times;</button>
+  <button type="button" id="lightbox-close" aria-label="写真を閉じる">&times;</button>
   <img id="lightbox-image" alt="">
 </div>
 

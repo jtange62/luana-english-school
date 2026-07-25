@@ -88,6 +88,12 @@
   font-size: clamp(2.45rem, 6vw, 4.9rem);
 }
 
+.portal-body[data-app="parents"] .portal-hero h1 {
+  font-size: clamp(2.25rem, 4.8vw, 4rem);
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+}
+
 .portal-lead {
   max-width: 650px;
   margin: 20px 0 0;
@@ -246,6 +252,10 @@ button:disabled {
   margin: 14px 0 0;
   color: #6a5a48;
   font-size: 0.92rem;
+}
+
+.login-card .form-note {
+  margin: 16px 0 0;
 }
 
 .portal-content {

@@ -5,19 +5,28 @@ const SUMMER_WEEKS = [
     slug: "week-1-festivals",
     shortTitle: "Week 1",
     title: "Festivals of the World",
-    description: "Celebrations, games, crafts, and traditions from around the world."
+    description: "Celebrations, games, crafts, and traditions from around the world.",
+    shortTitleJa: "第1週",
+    titleJa: "世界のお祭り",
+    descriptionJa: "世界のお祭りや文化を、ゲームや工作を通して楽しみます。"
   },
   {
     slug: "week-2-ocean",
     shortTitle: "Week 2",
     title: "Ocean Explorers",
-    description: "Ocean activities, crafts, games, and discoveries."
+    description: "Ocean activities, crafts, games, and discoveries.",
+    shortTitleJa: "第2週",
+    titleJa: "海の探検",
+    descriptionJa: "海をテーマにしたアクティビティや工作、ゲームに挑戦します。"
   },
   {
     slug: "week-3-adventure",
     shortTitle: "Week 3",
     title: "Adventure & Survival",
-    description: "Adventure skills, survival challenges, and teamwork."
+    description: "Adventure skills, survival challenges, and teamwork.",
+    shortTitleJa: "第3週",
+    titleJa: "冒険＆サバイバル",
+    descriptionJa: "冒険やサバイバル体験を通して、チームワークを育みます。"
   }
 ];
 
@@ -37,9 +46,10 @@ const demoPosts = [
 ];
 
 function formatDate(dateText) {
-  return new Intl.DateTimeFormat("en", {
-    weekday: "short",
-    month: "short",
+  const parentView = appKind === "parents";
+  return new Intl.DateTimeFormat(parentView ? "ja-JP" : "en", {
+    weekday: parentView ? "long" : "short",
+    month: parentView ? "long" : "short",
     day: "numeric",
     year: "numeric"
   }).format(new Date(`${dateText}T00:00:00`));
@@ -112,6 +122,7 @@ function setupLightbox() {
 
 function renderWeekTabs(container, selectedSlug, counts, onSelect, availableWeeks = SUMMER_WEEKS) {
   container.innerHTML = "";
+  const parentView = appKind === "parents";
   availableWeeks.forEach(week => {
     const button = document.createElement("button");
     button.type = "button";
@@ -119,9 +130,9 @@ function renderWeekTabs(container, selectedSlug, counts, onSelect, availableWeek
     button.classList.toggle("is-active", week.slug === selectedSlug);
     button.setAttribute("aria-pressed", String(week.slug === selectedSlug));
     button.innerHTML = `
-      <span>${week.shortTitle}</span>
-      <strong>${week.title}</strong>
-      <small>${counts.get(week.slug) || 0} activities</small>
+      <span>${parentView ? week.shortTitleJa : week.shortTitle}</span>
+      <strong>${parentView ? week.titleJa : week.title}</strong>
+      <small>${counts.get(week.slug) || 0}${parentView ? "件のお知らせ" : " activities"}</small>
     `;
     button.addEventListener("click", () => onSelect(week.slug));
     container.append(button);
@@ -130,10 +141,11 @@ function renderWeekTabs(container, selectedSlug, counts, onSelect, availableWeek
 
 function renderWeekHeading(container, selectedSlug) {
   const week = weekFor(selectedSlug);
+  const parentView = appKind === "parents";
   container.innerHTML = `
-    <p>${week.shortTitle}</p>
-    <h3>${week.title}</h3>
-    <span>${week.description}</span>
+    <p>${parentView ? week.shortTitleJa : week.shortTitle}</p>
+    <h3>${parentView ? week.titleJa : week.title}</h3>
+    <span>${parentView ? week.descriptionJa : week.description}</span>
   `;
 }
 
@@ -175,8 +187,8 @@ function renderParentActivities(posts, selectedWeek) {
   if (!weekPosts.length) {
     list.innerHTML = `
       <div class="empty-week">
-        <h3>Activities will appear here</h3>
-        <p>Check back once this week begins and staff have shared the first photos.</p>
+        <h3>写真やお知らせはここに表示されます</h3>
+        <p>サマースクールが始まり、最初の投稿が公開されるまでお待ちください。</p>
       </div>
     `;
     return;
@@ -215,9 +227,9 @@ async function initParents() {
     window.location.reload();
   });
 
-  async function submitWeekCode(form, formNote, successMessage) {
+  async function submitAccessCode(form, formNote, successMessage) {
     const password = new FormData(form).get("password");
-    formNote.textContent = "Checking week code...";
+    formNote.textContent = "アクセスコードを確認しています…";
     try {
       await api("/api/auth/password", {
         method: "POST",
@@ -227,14 +239,14 @@ async function initParents() {
       window.location.reload();
     } catch (error) {
       formNote.textContent = error.data?.setupRequired
-        ? "Backend setup is needed before summer week codes work."
-        : error.message;
+        ? "現在準備中です。しばらくしてから、もう一度お試しください。"
+        : "アクセスコードが正しくありません。コードを確認して、もう一度お試しください。";
     }
   }
 
   login.addEventListener("submit", async event => {
     event.preventDefault();
-    await submitWeekCode(login, note, "Code accepted. Opening your week...");
+    await submitAccessCode(login, note, "確認できました。ページを開いています…");
   });
 
   unlockButton.addEventListener("click", () => {
@@ -252,7 +264,7 @@ async function initParents() {
 
   unlockForm.addEventListener("submit", async event => {
     event.preventDefault();
-    await submitWeekCode(unlockForm, unlockNote, "Week added. Refreshing your check-in...");
+    await submitAccessCode(unlockForm, unlockNote, "アクセスコードを追加しました。ページを更新しています…");
   });
 
   try {

@@ -138,5 +138,5 @@ test("parent week codes filter feeds and direct photo access", async () => {
 test("incorrect week codes are rejected", async () => {
   const result = await login(environment(), "wrong-code");
   assert.equal(result.response.status, 401);
-  assert.deepEqual(await result.response.json(), { error: "Incorrect week code" });
+  assert.deepEqual(await result.response.json(), { error: "Incorrect access code" });
 });

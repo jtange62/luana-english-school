@@ -66,13 +66,13 @@ async function passwordLogin(request, env) {
   }
 
   const configuredWeeks = SUMMER_WEEKS.filter(week => env[week.secret]);
-  if (!configuredWeeks.length) throw setupError("Summer week codes are not configured yet");
+  if (!configuredWeeks.length) throw setupError("Summer access codes are not configured yet");
 
   const matchedWeeks = [];
   for (const week of configuredWeeks) {
     if (password && await constantEqual(password, env[week.secret])) matchedWeeks.push(week.slug);
   }
-  if (!matchedWeeks.length) return json({ error: "Incorrect week code" }, 401);
+  if (!matchedWeeks.length) return json({ error: "Incorrect access code" }, 401);
 
   const existing = await optionalSession(request, env, "parent");
   const weeks = validSessionWeeks([...(existing?.weeks || []), ...matchedWeeks]);

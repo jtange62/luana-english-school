@@ -51,6 +51,14 @@ test("portal pages remain excluded from search engines", async () => {
   }
 });
 
+test("the parent landing page clearly uses Japanese access-code wording", async () => {
+  const html = await source("parents.html");
+  assert.match(html, /<h1>サマースクール<br>ご家族専用ページ<\/h1>/);
+  assert.match(html, /<h2>アクセスコードを入力<\/h2>/);
+  assert.match(html, /ご家族や祖父母の方とも共有していただけます。/);
+  assert.doesNotMatch(html, />\s*Week code\s*</);
+});
+
 test("private implementation files cannot become static assets", async () => {
   const ignored = new Set(
     (await source(".assetsignore"))
