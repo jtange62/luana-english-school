@@ -24,17 +24,17 @@
       <div>
         <p class="portal-kicker">Summer School families</p>
         <h1>Check in on today&apos;s summer program.</h1>
-        <p class="portal-lead">サマープログラム参加者専用ページです。共有されたパスワードで、日々の写真とお知らせを確認できます。</p>
+        <p class="portal-lead">サマープログラム参加者専用ページです。参加する週のコードで、日々の写真とお知らせを確認できます。</p>
       </div>
       <form class="login-card" id="parent-login">
-        <h2>Summer password</h2>
-        <p>Enter the password shared with summer program families. You will stay signed in on this device for 30 days.</p>
+        <h2>Summer week code</h2>
+        <p>Enter the code for the week your child is attending. You can share this code with members of your family.</p>
         <label>
-          Password
-          <input name="password" type="password" autocomplete="current-password" required placeholder="Summer password">
+          Week code
+          <input name="password" type="password" autocomplete="current-password" required placeholder="Summer week code">
         </label>
         <button type="submit">Open check-in</button>
-        <p class="form-note" id="login-note">Access is limited to summer program families.</p>
+        <p class="form-note" id="login-note">You will stay signed in on this device for 30 days.</p>
       </form>
     </div>
   </section>
@@ -46,12 +46,29 @@
         <h2>Summer activities</h2>
       </div>
       <div class="portal-actions">
+        <button type="button" id="unlock-week">Add another week</button>
         <button type="button" id="signout">Sign out</button>
       </div>
     </div>
 
+    <form class="unlock-card" id="unlock-form" hidden>
+      <div>
+        <h3>Add another summer week</h3>
+        <p>Enter another week code to add it to this device.</p>
+      </div>
+      <label>
+        Week code
+        <input name="password" type="password" autocomplete="current-password" required placeholder="Summer week code">
+      </label>
+      <div class="unlock-actions">
+        <button type="submit">Add week</button>
+        <button type="button" id="unlock-cancel">Cancel</button>
+      </div>
+      <p class="form-note" id="unlock-note"></p>
+    </form>
+
     <div class="setup-banner" id="setup-banner" hidden>
-      Backend setup is not connected yet. Once D1, R2, and portal passwords are wired, this page will load real summer updates.
+      Backend setup is not connected yet. Once D1, R2, and the summer week codes are wired, this page will load real summer updates.
     </div>
 
     <nav class="week-tabs" id="week-tabs" aria-label="Summer program weeks"></nav>

@@ -9,6 +9,15 @@
   "vars": {
     "LOGIN_FROM_EMAIL": "Luana English School <portal@luanaenglishschool.jp>"
   },
+  "secrets": {
+    "required": [
+      "SESSION_SECRET",
+      "STAFF_PORTAL_PASSWORD",
+      "SUMMER_WEEK_1_CODE",
+      "SUMMER_WEEK_2_CODE",
+      "SUMMER_WEEK_3_CODE"
+    ]
+  },
   "assets": {
     "directory": "."
   },

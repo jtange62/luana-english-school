@@ -102,6 +102,7 @@
 .album-card,
 .manage-panel,
 .manage-card,
+.unlock-card,
 .setup-banner {
   border: 3px solid rgba(91, 200, 245, 0.45);
   border-radius: 8px;
@@ -113,6 +114,52 @@
 .upload-panel,
 .manage-panel {
   padding: 24px;
+}
+
+.unlock-card {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(220px, 0.8fr) auto;
+  align-items: end;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding: 18px 20px;
+}
+
+.unlock-card[hidden] {
+  display: none;
+}
+
+.unlock-card h3,
+.unlock-card p {
+  margin: 0;
+}
+
+.unlock-card h3 {
+  color: var(--portal-brown);
+  font-family: "Baloo 2", cursive;
+  font-size: 1.4rem;
+}
+
+.unlock-card > div > p {
+  margin-top: 4px;
+  color: #6a5a48;
+}
+
+.unlock-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.unlock-actions #unlock-cancel {
+  background: #fff;
+  color: var(--portal-brown);
+  box-shadow: none;
+  border: 2px solid rgba(112, 72, 20, 0.18);
+}
+
+.unlock-card .form-note {
+  grid-column: 1 / -1;
+  margin: 0;
 }
 
 .login-card h2 {
@@ -260,7 +307,7 @@ button:disabled {
   top: 0;
   z-index: 20;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 10px;
   margin: 0 0 20px;
   padding: 10px 0;
@@ -657,6 +704,10 @@ button:disabled {
 }
 
 @media (max-width: 820px) {
+  .unlock-card {
+    grid-template-columns: 1fr;
+  }
+
   .portal-hero-grid,
   .field-grid,
   .manage-edit {

@@ -4,10 +4,12 @@ This is the intended production setup for the Luana parent photo portal.
 
 ## Access model
 
-- Parents log in with the shared parent portal password.
+- Each summer week has its own family-friendly access code.
+- Parents see only the weeks whose codes they have entered.
+- Families attending more than one week can add another code without signing out.
 - Staff log in with a separate staff password.
 - Login creates a signed 30-day session cookie.
-- Parent password access shows published posts for the configured parent groups.
+- Week codes may be shared with grandparents and other family members.
 
 ## Cloudflare resources
 
@@ -16,9 +18,21 @@ Create these resources before production use:
 - D1 database: `luana_parent_portal`
 - R2 bucket: `luana-parent-photos`
 - Worker secret: `SESSION_SECRET`
-- Worker secret: `PARENT_PORTAL_PASSWORD`
+- Worker secret: `SUMMER_WEEK_1_CODE`
+- Worker secret: `SUMMER_WEEK_2_CODE`
+- Worker secret: `SUMMER_WEEK_3_CODE`
 - Worker secret: `STAFF_PORTAL_PASSWORD`
 - Optional Worker variable: `PARENT_PORTAL_GROUPS`
+
+Set each code as a Worker secret:
+
+```sh
+npx wrangler versions secret put SUMMER_WEEK_1_CODE
+npx wrangler versions secret put SUMMER_WEEK_2_CODE
+npx wrangler versions secret put SUMMER_WEEK_3_CODE
+npx wrangler versions secret put STAFF_PORTAL_PASSWORD
+npx wrangler versions secret put SESSION_SECRET
+```
 
 Bind them in `wrangler.jsonc`:
 
@@ -73,5 +87,7 @@ Useful group keys for v1:
 
 Both pages are marked `noindex` and should stay out of `sitemap.xml`.
 
-Password login is the active portal flow. Magic-link code is retained as a
-fallback, but the UI does not use it.
+Weekly code login is the active parent portal flow. Each code authorizes its
+matching `week_slug`, and direct photo requests enforce the same week access.
+The older magic-link code is retained for future use, but does not grant access
+to parent weeks and the UI does not use it.

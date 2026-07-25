@@ -60,9 +60,10 @@ function weekFor(slug) {
   return SUMMER_WEEKS.find(week => week.slug === slug) || SUMMER_WEEKS[0];
 }
 
-function initialWeek(posts) {
-  const latest = posts.find(post => SUMMER_WEEKS.some(week => week.slug === post.week));
-  return latest?.week || SUMMER_WEEKS[0].slug;
+function initialWeek(posts, availableWeeks = SUMMER_WEEKS) {
+  const allowed = new Set(availableWeeks.map(week => week.slug));
+  const latest = posts.find(post => allowed.has(post.week));
+  return latest?.week || availableWeeks[0]?.slug || SUMMER_WEEKS[0].slug;
 }
 
 async function api(path, options = {}) {
@@ -109,9 +110,9 @@ function setupLightbox() {
   });
 }
 
-function renderWeekTabs(container, selectedSlug, counts, onSelect) {
+function renderWeekTabs(container, selectedSlug, counts, onSelect, availableWeeks = SUMMER_WEEKS) {
   container.innerHTML = "";
-  SUMMER_WEEKS.forEach(week => {
+  availableWeeks.forEach(week => {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "week-tab";
@@ -189,19 +190,24 @@ async function initParents() {
   const note = document.getElementById("login-note");
   const portal = document.getElementById("portal-app");
   const tabs = document.getElementById("week-tabs");
+  const unlockButton = document.getElementById("unlock-week");
+  const unlockForm = document.getElementById("unlock-form");
+  const unlockNote = document.getElementById("unlock-note");
   let posts = [];
+  let availableWeeks = [];
   let selectedWeek = SUMMER_WEEKS[0].slug;
 
   function render() {
-    const counts = new Map(SUMMER_WEEKS.map(week => [
+    const counts = new Map(availableWeeks.map(week => [
       week.slug,
       posts.filter(post => post.week === week.slug).length
     ]));
     renderWeekTabs(tabs, selectedWeek, counts, slug => {
       selectedWeek = slug;
       render();
-    });
+    }, availableWeeks);
     renderParentActivities(posts, selectedWeek);
+    tabs.hidden = availableWeeks.length < 2;
   }
 
   document.getElementById("signout").addEventListener("click", async () => {
@@ -209,34 +215,59 @@ async function initParents() {
     window.location.reload();
   });
 
-  login.addEventListener("submit", async event => {
-    event.preventDefault();
-    const password = new FormData(login).get("password");
-    note.textContent = "Checking access...";
+  async function submitWeekCode(form, formNote, successMessage) {
+    const password = new FormData(form).get("password");
+    formNote.textContent = "Checking week code...";
     try {
       await api("/api/auth/password", {
         method: "POST",
         body: JSON.stringify({ password, audience: "parent" })
       });
+      formNote.textContent = successMessage;
       window.location.reload();
     } catch (error) {
-      note.textContent = error.data?.setupRequired
-        ? "Backend setup is needed before summer password login works."
+      formNote.textContent = error.data?.setupRequired
+        ? "Backend setup is needed before summer week codes work."
         : error.message;
     }
+  }
+
+  login.addEventListener("submit", async event => {
+    event.preventDefault();
+    await submitWeekCode(login, note, "Code accepted. Opening your week...");
+  });
+
+  unlockButton.addEventListener("click", () => {
+    unlockForm.hidden = false;
+    unlockButton.hidden = true;
+    unlockForm.elements.password.focus();
+  });
+
+  document.getElementById("unlock-cancel").addEventListener("click", () => {
+    unlockForm.reset();
+    unlockNote.textContent = "";
+    unlockForm.hidden = true;
+    unlockButton.hidden = false;
+  });
+
+  unlockForm.addEventListener("submit", async event => {
+    event.preventDefault();
+    await submitWeekCode(unlockForm, unlockNote, "Week added. Refreshing your check-in...");
   });
 
   try {
     const data = await api("/api/parent/feed");
     posts = data.posts || [];
-    selectedWeek = initialWeek(posts);
+    availableWeeks = SUMMER_WEEKS.filter(week => (data.weeks || []).includes(week.slug));
+    selectedWeek = initialWeek(posts, availableWeeks);
     login.hidden = true;
     portal.hidden = false;
     render();
   } catch (error) {
     if (error.data?.setupRequired) {
       posts = demoPosts;
-      selectedWeek = initialWeek(posts);
+      availableWeeks = [SUMMER_WEEKS[0]];
+      selectedWeek = initialWeek(posts, availableWeeks);
       portal.hidden = false;
       showSetupBanner("setup-banner");
       render();

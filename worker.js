@@ -1,5 +1,10 @@
 const COOKIE_NAME = "luana_portal";
 const SESSION_DAYS = 30;
+const SUMMER_WEEKS = [
+  { slug: "week-1-festivals", secret: "SUMMER_WEEK_1_CODE" },
+  { slug: "week-2-ocean", secret: "SUMMER_WEEK_2_CODE" },
+  { slug: "week-3-adventure", secret: "SUMMER_WEEK_3_CODE" }
+];
 
 export default {
   async fetch(request, env) {
@@ -14,7 +19,7 @@ export default {
       ) return text("Not found", 404);
       if (url.pathname === "/parents") return asset(request, env, "/parents.html");
       if (url.pathname === "/staff") return asset(request, env, "/staff.html");
-      if (url.pathname.startsWith("/api/")) return handleApi(request, env, url);
+      if (url.pathname.startsWith("/api/")) return await handleApi(request, env, url);
       return asset(request, env);
     } catch (error) {
       return json({
@@ -45,29 +50,54 @@ async function passwordLogin(request, env) {
   const body = await request.json();
   const audience = body.audience === "staff" ? "staff" : "parent";
   const password = String(body.password || "");
-  const expected = audience === "staff" ? env.STAFF_PORTAL_PASSWORD : env.PARENT_PORTAL_PASSWORD;
 
-  if (!expected) {
-    const error = new Error(`${audience === "staff" ? "Staff" : "Parent"} password is not configured yet`);
-    error.status = 503;
-    error.setupRequired = true;
-    throw error;
+  if (audience === "staff") {
+    if (!env.STAFF_PORTAL_PASSWORD) throw setupError("Staff password is not configured yet");
+    if (!password || !(await constantEqual(password, env.STAFF_PORTAL_PASSWORD))) {
+      return json({ error: "Incorrect password" }, 401);
+    }
+
+    const session = await signSession(env, {
+      role: "staff",
+      subject: "staff-password",
+      exp: Math.floor(Date.now() / 1000) + SESSION_DAYS * 86400
+    });
+    return sessionResponse(session);
   }
 
-  if (!password || !(await constantEqual(password, expected))) {
-    return json({ error: "Incorrect password" }, 401);
-  }
+  const configuredWeeks = SUMMER_WEEKS.filter(week => env[week.secret]);
+  if (!configuredWeeks.length) throw setupError("Summer week codes are not configured yet");
 
+  const matchedWeeks = [];
+  for (const week of configuredWeeks) {
+    if (password && await constantEqual(password, env[week.secret])) matchedWeeks.push(week.slug);
+  }
+  if (!matchedWeeks.length) return json({ error: "Incorrect week code" }, 401);
+
+  const existing = await optionalSession(request, env, "parent");
+  const weeks = validSessionWeeks([...(existing?.weeks || []), ...matchedWeeks]);
   const session = await signSession(env, {
-    role: audience,
-    subject: `${audience}-password`,
-    groups: audience === "parent" ? parentPortalGroups(env) : [],
+    role: "parent",
+    subject: "parent-week-code",
+    groups: parentPortalGroups(env),
+    weeks,
     exp: Math.floor(Date.now() / 1000) + SESSION_DAYS * 86400
   });
 
-  return json({ ok: true }, 200, {
+  return sessionResponse(session, { weeks });
+}
+
+function sessionResponse(session, body = {}) {
+  return json({ ok: true, ...body }, 200, {
     "set-cookie": `${COOKIE_NAME}=${session}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${SESSION_DAYS * 86400}`
   });
+}
+
+function setupError(message) {
+  const error = new Error(message);
+  error.status = 503;
+  error.setupRequired = true;
+  return error;
 }
 
 async function requestLogin(request, env) {
@@ -154,17 +184,21 @@ function signout() {
 async function parentFeed(request, env) {
   requireSetup(env, ["DB"]);
   const session = await requireSession(request, env, "parent");
-  const groups = session.subject === "parent-password" ? parentPortalGroups(env) : session.groups?.length ? session.groups : await parentGroups(env, session.email);
-  if (!groups.length) return json({ posts: [], albums: [] });
+  const groups = session.groups?.length ? session.groups : await parentGroups(env, session.email);
+  const weeks = parentSessionWeeks(session);
+  if (!groups.length || !weeks.length) return json({ posts: [], albums: [], weeks });
 
-  const placeholders = groups.map((_, index) => `?${index + 1}`).join(",");
+  const groupPlaceholders = groups.map(() => "?").join(",");
+  const weekPlaceholders = weeks.map(() => "?").join(",");
   const posts = await env.DB.prepare(
     `SELECT p.id, p.post_date, p.title, p.body, p.group_key, p.week_slug
      FROM posts p
-     WHERE p.status = 'published' AND p.group_key IN (${placeholders})
+     WHERE p.status = 'published'
+       AND p.group_key IN (${groupPlaceholders})
+       AND p.week_slug IN (${weekPlaceholders})
      ORDER BY p.post_date DESC, p.created_at DESC
      LIMIT 80`
-  ).bind(...groups).all();
+  ).bind(...groups, ...weeks).all();
 
   const postIds = posts.results.map(post => post.id);
   const photos = postIds.length ? await photosForPosts(env, postIds) : new Map();
@@ -173,9 +207,10 @@ async function parentFeed(request, env) {
     `SELECT DISTINCT a.id, a.slug, a.title, a.description, a.cover_photo_id
      FROM albums a
      JOIN album_groups ag ON ag.album_id = a.id
-     WHERE ag.group_key IN (${placeholders})
+     WHERE ag.group_key IN (${groupPlaceholders})
+       AND a.slug IN (${weekPlaceholders})
      ORDER BY a.created_at DESC`
-  ).bind(...groups).all();
+  ).bind(...groups, ...weeks).all();
 
   const albumList = await Promise.all(albums.results.map(async album => ({
     id: album.slug,
@@ -194,7 +229,8 @@ async function parentFeed(request, env) {
       week: validSummerWeek(post.week_slug),
       photos: photos.get(post.id) || []
     })),
-    albums: albumList
+    albums: albumList,
+    weeks
   });
 }
 
@@ -374,16 +410,21 @@ async function getPhoto(request, env, url) {
   if (session.role === "staff") {
     photo = await env.DB.prepare("SELECT r2_key, content_type FROM photos WHERE id = ?1").bind(photoId).first();
   } else {
-    const groups = session.subject === "parent-password" ? parentPortalGroups(env) : session.groups?.length ? session.groups : await parentGroups(env, session.email);
-    if (!groups.length) return json({ error: "Photo not found" }, 404);
-    const placeholders = groups.map((_, index) => `?${index + 2}`).join(",");
+    const groups = session.groups?.length ? session.groups : await parentGroups(env, session.email);
+    const weeks = parentSessionWeeks(session);
+    if (!groups.length || !weeks.length) return json({ error: "Photo not found" }, 404);
+    const groupPlaceholders = groups.map(() => "?").join(",");
+    const weekPlaceholders = weeks.map(() => "?").join(",");
     photo = await env.DB.prepare(
       `SELECT DISTINCT ph.r2_key, ph.content_type
        FROM photos ph
        JOIN post_photos pp ON pp.photo_id = ph.id
        JOIN posts p ON p.id = pp.post_id
-       WHERE ph.id = ?1 AND p.status = 'published' AND p.group_key IN (${placeholders})`
-    ).bind(photoId, ...groups).first();
+       WHERE ph.id = ?
+         AND p.status = 'published'
+         AND p.group_key IN (${groupPlaceholders})
+         AND p.week_slug IN (${weekPlaceholders})`
+    ).bind(photoId, ...groups, ...weeks).first();
   }
 
   if (!photo) return json({ error: "Photo not found" }, 404);
@@ -454,12 +495,18 @@ async function movePostPhotosToWeek(env, postId, group, weekSlug) {
 }
 
 function validSummerWeek(value) {
-  const weeks = new Set([
-    "week-1-festivals",
-    "week-2-ocean",
-    "week-3-adventure"
-  ]);
+  const weeks = new Set(SUMMER_WEEKS.map(week => week.slug));
   return weeks.has(value) ? value : "week-1-festivals";
+}
+
+function validSessionWeeks(values) {
+  const allowed = new Set(SUMMER_WEEKS.map(week => week.slug));
+  return [...new Set(values)].filter(value => allowed.has(value));
+}
+
+function parentSessionWeeks(session) {
+  if (Array.isArray(session.weeks)) return validSessionWeeks(session.weeks);
+  return [];
 }
 
 function summerAlbumTheme(slug) {
@@ -550,12 +597,23 @@ async function sendEmail(env, to, subject, textBody) {
 }
 
 async function requireSession(request, env, role) {
+  const session = await optionalSession(request, env, role);
+  if (!session) throw authError();
+  return session;
+}
+
+async function optionalSession(request, env, role) {
   const cookie = request.headers.get("cookie") || "";
   const match = cookie.match(new RegExp(`${COOKIE_NAME}=([^;]+)`));
-  if (!match) throw authError();
-  const session = await verifySession(env, match[1]);
-  if (!session || session.exp < Math.floor(Date.now() / 1000)) throw authError();
-  if (role && session.role !== role) throw authError();
+  if (!match) return null;
+  let session = null;
+  try {
+    session = await verifySession(env, match[1]);
+  } catch {
+    return null;
+  }
+  if (!session || session.exp < Math.floor(Date.now() / 1000)) return null;
+  if (role && session.role !== role) return null;
   return session;
 }
 
@@ -576,7 +634,7 @@ async function verifySession(env, value) {
   const [encoded, signature] = value.split(".");
   if (!encoded || !signature) return null;
   const expected = await hmac(env.SESSION_SECRET, encoded);
-  if (expected !== signature) return null;
+  if (!(await constantEqual(expected, signature))) return null;
   return JSON.parse(atobUrl(encoded));
 }
 
@@ -598,12 +656,19 @@ async function sha256(value) {
 }
 
 async function constantEqual(left, right) {
-  const leftHash = await sha256(left);
-  const rightHash = await sha256(right);
-  if (leftHash.length !== rightHash.length) return false;
+  const encoder = new TextEncoder();
+  const [leftHash, rightHash] = await Promise.all([
+    crypto.subtle.digest("SHA-256", encoder.encode(left)),
+    crypto.subtle.digest("SHA-256", encoder.encode(right))
+  ]);
+  if (typeof crypto.subtle.timingSafeEqual === "function") {
+    return crypto.subtle.timingSafeEqual(leftHash, rightHash);
+  }
+  const leftBytes = new Uint8Array(leftHash);
+  const rightBytes = new Uint8Array(rightHash);
   let diff = 0;
-  for (let index = 0; index < leftHash.length; index += 1) {
-    diff |= leftHash.charCodeAt(index) ^ rightHash.charCodeAt(index);
+  for (let index = 0; index < leftBytes.length; index += 1) {
+    diff |= leftBytes[index] ^ rightBytes[index];
   }
   return diff === 0;
 }
