@@ -151,7 +151,9 @@ function renderWeekHeading(container, selectedSlug) {
 
 function appendPhotoGrid(card, photos) {
   const grid = card.querySelector(".photo-grid");
-  (photos || []).forEach(photo => {
+  const photoList = photos || [];
+  grid.classList.add(`photo-count-${Math.min(photoList.length, 3)}`);
+  photoList.forEach(photo => {
     const button = document.createElement("button");
     button.className = "portal-photo";
     button.type = "button";
@@ -169,7 +171,7 @@ function activityCard(post) {
   card.innerHTML = `
     <div class="post-text">
       <p class="post-date">${formatDate(post.date)}</p>
-      <h3>${escapeText(post.title || "Summer activity")}</h3>
+      <h3>${escapeText(post.title || (appKind === "parents" ? "サマースクールの活動" : "Summer activity"))}</h3>
       ${post.body ? `<p>${escapeText(post.body)}</p>` : ""}
     </div>
     <div class="photo-grid"></div>
@@ -272,6 +274,7 @@ async function initParents() {
     posts = data.posts || [];
     availableWeeks = SUMMER_WEEKS.filter(week => (data.weeks || []).includes(week.slug));
     selectedWeek = initialWeek(posts, availableWeeks);
+    document.body.classList.add("parent-authenticated");
     login.hidden = true;
     portal.hidden = false;
     render();
@@ -280,11 +283,13 @@ async function initParents() {
       posts = demoPosts;
       availableWeeks = [SUMMER_WEEKS[0]];
       selectedWeek = initialWeek(posts, availableWeeks);
+      document.body.classList.add("parent-authenticated");
       portal.hidden = false;
       showSetupBanner("setup-banner");
       render();
       return;
     }
+    document.body.classList.remove("parent-authenticated");
     login.hidden = false;
     portal.hidden = true;
   }

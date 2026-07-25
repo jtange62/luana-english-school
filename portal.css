@@ -264,6 +264,151 @@ button:disabled {
   padding: 8px clamp(16px, 4vw, 36px) 80px;
 }
 
+.parent-authenticated .portal-hero {
+  padding: 10px clamp(18px, 4vw, 54px);
+  border-bottom: 1px solid rgba(112, 72, 20, 0.1);
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(12px);
+}
+
+.parent-authenticated .portal-logo {
+  display: flex;
+  max-width: 900px;
+  margin: 0 auto;
+  font-size: 1.05rem;
+}
+
+.parent-authenticated .portal-logo img {
+  width: 54px;
+  height: 54px;
+}
+
+.parent-authenticated .portal-hero-grid {
+  display: none;
+}
+
+.parent-authenticated .portal-content {
+  max-width: 900px;
+  padding-top: 30px;
+}
+
+.parent-authenticated .portal-toolbar {
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 22px 24px;
+  border: 1px solid rgba(112, 72, 20, 0.11);
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(255, 248, 220, 0.9));
+  box-shadow: 0 12px 30px rgba(84, 62, 45, 0.08);
+}
+
+.parent-authenticated .portal-toolbar .portal-kicker {
+  margin-bottom: 7px;
+}
+
+.parent-authenticated .portal-toolbar h2 {
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+}
+
+.parent-authenticated .portal-actions button {
+  padding: 11px 14px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+}
+
+.parent-authenticated .portal-actions #unlock-week {
+  border-color: rgba(69, 185, 140, 0.3);
+  background: #e4f8ef;
+}
+
+.parent-authenticated .portal-actions #signout {
+  border-color: transparent;
+  background: transparent;
+  color: #7d6c58;
+}
+
+.parent-authenticated .week-heading {
+  max-width: 720px;
+  margin: 0 auto 16px;
+  padding: 20px 22px;
+  border: 1px solid rgba(69, 185, 140, 0.23);
+  border-radius: 18px;
+  background: linear-gradient(135deg, #e7f9f1, #f4fcf8);
+}
+
+.parent-authenticated .week-heading h3 {
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+}
+
+.parent-authenticated .post-list {
+  max-width: 720px;
+  margin: 0 auto;
+  gap: 24px;
+}
+
+.parent-authenticated .post-card {
+  border: 1px solid rgba(112, 72, 20, 0.12);
+  border-radius: 20px;
+  box-shadow: 0 14px 34px rgba(84, 62, 45, 0.1);
+}
+
+.parent-authenticated .post-text {
+  padding: 22px 24px 18px;
+}
+
+.parent-authenticated .post-date {
+  display: inline-flex;
+  margin-bottom: 8px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: #fff3c6;
+  color: #6f521e;
+  font-size: 0.8rem;
+}
+
+.parent-authenticated .post-card h3 {
+  font-size: clamp(1.5rem, 4vw, 1.9rem);
+}
+
+.parent-authenticated .post-card .post-text > p:last-child:not(.post-date) {
+  margin-bottom: 0;
+}
+
+.parent-authenticated .photo-grid {
+  gap: 6px;
+  padding: 0;
+  background: #f3eee6;
+}
+
+.parent-authenticated .photo-grid.photo-count-1 {
+  display: flex;
+  justify-content: center;
+}
+
+.parent-authenticated .photo-count-1 .portal-photo {
+  width: auto;
+  max-width: 100%;
+  border-radius: 0;
+  aspect-ratio: auto;
+}
+
+.parent-authenticated .photo-count-1 .portal-photo img {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 720px;
+  margin: 0 auto;
+  object-fit: contain;
+}
+
+.parent-authenticated .photo-grid.photo-count-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.parent-authenticated .photo-grid.photo-count-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .portal-toolbar {
   display: flex;
   align-items: flex-end;
@@ -743,6 +888,50 @@ button:disabled {
 @media (max-width: 520px) {
   .portal-hero {
     padding-top: 16px;
+  }
+
+  .parent-authenticated .portal-hero {
+    padding: 8px 16px;
+  }
+
+  .parent-authenticated .portal-content {
+    width: 100%;
+    padding: 24px 16px 60px;
+    overflow: hidden;
+  }
+
+  .parent-authenticated .portal-toolbar {
+    width: 100%;
+    min-width: 0;
+    align-items: stretch;
+    padding: 18px;
+    text-align: center;
+  }
+
+  .parent-authenticated .portal-actions {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .parent-authenticated .week-heading,
+  .parent-authenticated .post-list,
+  .parent-authenticated .post-card {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .parent-authenticated .week-heading {
+    padding: 18px 20px;
+  }
+
+  .parent-authenticated .week-heading span {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    overflow-wrap: anywhere;
+  }
+
+  .parent-authenticated .post-text {
+    padding: 20px 24px 18px;
   }
 
   .portal-logo img {
