@@ -1,9 +1,11 @@
 .git
+.github
 .wrangler
 .claude
 .agents
 .sixth
 node_modules
+scripts
 worker.js
 wrangler.jsonc
 migrations

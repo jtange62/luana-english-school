@@ -1,0 +1,41 @@
+name: Validate website
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Run portal and website tests
+        run: node --test tests/*.test.mjs
+
+      - name: Check browser JavaScript syntax
+        run: node --check portal.js
+
+      - name: Check Worker syntax
+        run: node --input-type=module --check < worker.js
+
+      - name: Validate Cloudflare deployment package
+        run: npx --yes wrangler@4.114.0 deploy --dry-run
