@@ -2,3 +2,5 @@ User-agent: *
 Allow: /
 
 Sitemap: https://luanaenglishschool.jp/sitemap.xml
+Disallow: /parents
+Disallow: /staff

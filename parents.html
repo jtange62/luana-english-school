@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="stylesheet" href="/site.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Summer Check-in | Luana English School</title>
+<meta name="description" content="Luana English School summer program check-in for daily photos and updates.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="/portal.css">
+</head>
+<body class="portal-body" data-app="parents">
+<main class="portal-shell">
+  <section class="portal-hero">
+    <a class="portal-logo" href="/" aria-label="Luana English School home">
+      <img src="/images/optimized/logo-128.webp" alt="" width="72" height="72">
+      <span>Luana Summer Check-in</span>
+    </a>
+    <div class="portal-hero-grid">
+      <div>
+        <p class="portal-kicker">Summer School families</p>
+        <h1>Check in on today&apos;s summer program.</h1>
+        <p class="portal-lead">サマープログラム参加者専用ページです。共有されたパスワードで、日々の写真とお知らせを確認できます。</p>
+      </div>
+      <form class="login-card" id="parent-login">
+        <h2>Summer password</h2>
+        <p>Enter the password shared with summer program families. You will stay signed in on this device for 30 days.</p>
+        <label>
+          Password
+          <input name="password" type="password" autocomplete="current-password" required placeholder="Summer password">
+        </label>
+        <button type="submit">Open check-in</button>
+        <p class="form-note" id="login-note">Access is limited to summer program families.</p>
+      </form>
+    </div>
+  </section>
+
+  <section class="portal-content" id="portal-app" hidden>
+    <div class="portal-toolbar">
+      <div>
+        <p class="portal-kicker">Summer check-in</p>
+        <h2>Summer activities</h2>
+      </div>
+      <div class="portal-actions">
+        <button type="button" id="signout">Sign out</button>
+      </div>
+    </div>
+
+    <div class="setup-banner" id="setup-banner" hidden>
+      Backend setup is not connected yet. Once D1, R2, and portal passwords are wired, this page will load real summer updates.
+    </div>
+
+    <nav class="week-tabs" id="week-tabs" aria-label="Summer program weeks"></nav>
+    <div class="week-heading" id="week-heading"></div>
+    <div class="post-list" id="post-list"></div>
+  </section>
+</main>
+
+<div class="lightbox" id="lightbox" hidden>
+  <button type="button" id="lightbox-close" aria-label="Close photo">&times;</button>
+  <img id="lightbox-image" alt="">
+</div>
+
+<script src="/portal.js"></script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="stylesheet" href="/site.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Summer Staff Upload | Luana English School</title>
+<meta name="description" content="Luana English School summer program staff photo dashboard.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="/portal.css">
+</head>
+<body class="portal-body" data-app="staff">
+<main class="portal-shell staff-shell">
+  <section class="portal-hero">
+    <a class="portal-logo" href="/" aria-label="Luana English School home">
+      <img src="/images/optimized/logo-128.webp" alt="" width="72" height="72">
+      <span>Luana Summer Staff</span>
+    </a>
+    <div class="portal-hero-grid">
+      <div>
+        <p class="portal-kicker">Summer staff dashboard</p>
+        <h1>Post today&apos;s summer check-in.</h1>
+        <p class="portal-lead">Add each activity and its photos, then review the same weekly timeline that families see.</p>
+      </div>
+      <form class="login-card" id="staff-login">
+        <h2>Staff login</h2>
+        <p>Use the private staff password to open the summer upload dashboard.</p>
+        <label>
+          Password
+          <input name="password" type="password" autocomplete="current-password" required placeholder="Staff password">
+        </label>
+        <button type="submit">Open dashboard</button>
+        <p class="form-note" id="staff-login-note">Staff access is protected by a separate password.</p>
+      </form>
+    </div>
+  </section>
+
+  <section class="portal-content" id="staff-app" hidden>
+    <div class="portal-toolbar">
+      <div>
+        <p class="portal-kicker">Summer tools</p>
+        <h2>Summer activities</h2>
+      </div>
+      <div class="portal-actions">
+        <button type="button" data-staff-view="manage" class="is-active">Activities</button>
+        <button type="button" data-staff-view="new">Add activity</button>
+        <button type="button" id="parent-view-toggle" aria-pressed="false">Parent view</button>
+        <button type="button" id="staff-signout">Sign out</button>
+      </div>
+    </div>
+
+    <div class="setup-banner" id="staff-setup-banner" hidden>
+      Backend setup is not connected yet. The dashboard UI is ready, but uploads need D1, R2, and staff password settings.
+    </div>
+
+    <form class="upload-panel" id="post-form" data-staff-panel="new" hidden>
+      <div class="panel-intro">
+        <h3>Add an activity</h3>
+        <p>Choose the week, name the activity, add photos, and publish. It will appear newest first.</p>
+      </div>
+      <div class="field-grid">
+        <label>
+          Date
+          <input name="date" type="date" required>
+        </label>
+        <label>
+          Summer week
+          <select name="week" required>
+            <option value="week-1-festivals">Week 1: Festivals of the World</option>
+            <option value="week-2-ocean">Week 2: Ocean Explorers</option>
+            <option value="week-3-adventure">Week 3: Adventure &amp; Survival</option>
+          </select>
+        </label>
+      </div>
+      <label>
+        Activity title
+        <input name="title" type="text" maxlength="120" required placeholder="Water gun fight">
+      </label>
+      <label>
+        Short note <span class="optional-label">(optional)</span>
+        <textarea name="body" rows="4" placeholder="A quick note for families about today&apos;s activity."></textarea>
+      </label>
+      <label class="drop-zone">
+        <input name="photos" type="file" accept="image/*" multiple>
+        <span>Tap to select photos</span>
+        <small>Multiple uploads from a phone are supported.</small>
+      </label>
+      <div class="preview-grid" id="upload-preview"></div>
+      <button type="submit">Publish activity</button>
+      <p class="form-note" id="post-note"></p>
+    </form>
+
+    <section class="manage-panel" aria-labelledby="manage-title" data-staff-panel="manage">
+      <div class="manage-heading">
+        <div>
+          <p class="portal-kicker" id="staff-mode-label">Staff view</p>
+          <h2 id="manage-title">Weekly activities</h2>
+          <p id="staff-mode-description">This is the family timeline with edit controls added. Use Parent view to hide every staff control.</p>
+        </div>
+        <button type="button" id="refresh-posts">Refresh</button>
+      </div>
+      <nav class="week-tabs" id="staff-week-tabs" aria-label="Summer program weeks"></nav>
+      <div class="week-heading" id="staff-week-heading"></div>
+      <div class="manage-list" id="manage-list"></div>
+      <p class="form-note" id="manage-note"></p>
+    </section>
+  </section>
+</main>
+
+<div class="lightbox" id="lightbox" hidden>
+  <button type="button" id="lightbox-close" aria-label="Close photo">&times;</button>
+  <img id="lightbox-image" alt="">
+</div>
+
+<script src="/portal.js"></script>
+</body>
+</html>

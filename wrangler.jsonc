@@ -1,13 +1,30 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "luana-english-school",
+  "main": "worker.js",
   "compatibility_date": "2026-07-08",
   "observability": {
     "enabled": true
   },
+  "vars": {
+    "LOGIN_FROM_EMAIL": "Luana English School <portal@luanaenglishschool.jp>"
+  },
   "assets": {
     "directory": "."
   },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "luana_parent_portal",
+      "database_id": "90df8f89-990a-46cc-803f-9c1cfc86682d"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "PHOTOS",
+      "bucket_name": "luana-parent-photos"
+    }
+  ],
   "compatibility_flags": [
     "nodejs_compat"
   ]
