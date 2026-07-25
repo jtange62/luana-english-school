@@ -59,6 +59,18 @@ test("the parent landing page clearly uses Japanese access-code wording", async 
   assert.doesNotMatch(html, />\s*Week code\s*</);
 });
 
+test("parent weekly themes match the English Summer School campaign", async () => {
+  const portal = await source("portal.js");
+  for (const [dates, theme] of [
+    ["7/27 – 7/31", "Festivals of the World"],
+    ["8/3 – 8/7", "Ocean Explorers"],
+    ["8/17 – 8/21", "Adventure Survival"]
+  ]) {
+    assert.ok(portal.includes(dates), `Parent portal is missing ${dates}`);
+    assert.ok(portal.includes(theme), `Parent portal is missing ${theme}`);
+  }
+});
+
 test("private implementation files cannot become static assets", async () => {
   const ignored = new Set(
     (await source(".assetsignore"))

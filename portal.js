@@ -4,6 +4,8 @@ const SUMMER_WEEKS = [
   {
     slug: "week-1-festivals",
     shortTitle: "Week 1",
+    dateRange: "7/27 – 7/31",
+    emoji: "🌎",
     title: "Festivals of the World",
     description: "Celebrations, games, crafts, and traditions from around the world.",
     shortTitleJa: "第1週",
@@ -13,6 +15,8 @@ const SUMMER_WEEKS = [
   {
     slug: "week-2-ocean",
     shortTitle: "Week 2",
+    dateRange: "8/3 – 8/7",
+    emoji: "🐠",
     title: "Ocean Explorers",
     description: "Ocean activities, crafts, games, and discoveries.",
     shortTitleJa: "第2週",
@@ -22,7 +26,9 @@ const SUMMER_WEEKS = [
   {
     slug: "week-3-adventure",
     shortTitle: "Week 3",
-    title: "Adventure & Survival",
+    dateRange: "8/17 – 8/21",
+    emoji: "🧭",
+    title: "Adventure Survival",
     description: "Adventure skills, survival challenges, and teamwork.",
     shortTitleJa: "第3週",
     titleJa: "冒険＆サバイバル",
@@ -130,8 +136,8 @@ function renderWeekTabs(container, selectedSlug, counts, onSelect, availableWeek
     button.classList.toggle("is-active", week.slug === selectedSlug);
     button.setAttribute("aria-pressed", String(week.slug === selectedSlug));
     button.innerHTML = `
-      <span>${parentView ? week.shortTitleJa : week.shortTitle}</span>
-      <strong>${parentView ? week.titleJa : week.title}</strong>
+      <span>${week.shortTitle}${parentView ? ` • ${week.dateRange}` : ""}</span>
+      <strong>${parentView ? `${week.emoji} ${week.title}` : week.title}</strong>
       <small>${counts.get(week.slug) || 0}${parentView ? "件のお知らせ" : " activities"}</small>
     `;
     button.addEventListener("click", () => onSelect(week.slug));
@@ -142,10 +148,17 @@ function renderWeekTabs(container, selectedSlug, counts, onSelect, availableWeek
 function renderWeekHeading(container, selectedSlug) {
   const week = weekFor(selectedSlug);
   const parentView = appKind === "parents";
+  if (parentView) {
+    container.innerHTML = `
+      <p class="week-campaign-line">${week.shortTitle} • ${week.dateRange}</p>
+      <h3 class="week-campaign-theme"><span aria-hidden="true">${week.emoji}</span> ${week.title}</h3>
+    `;
+    return;
+  }
   container.innerHTML = `
-    <p>${parentView ? week.shortTitleJa : week.shortTitle}</p>
-    <h3>${parentView ? week.titleJa : week.title}</h3>
-    <span>${parentView ? week.descriptionJa : week.description}</span>
+    <p>${week.shortTitle}</p>
+    <h3>${week.title}</h3>
+    <span>${week.description}</span>
   `;
 }
 
