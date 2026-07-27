@@ -144,6 +144,8 @@ test("album browser supports selecting and sharing up to ten photos", async () =
   assert.match(portal, /MAX_SELECTED_PHOTOS = 10/);
   assert.match(portal, /navigator\.share/);
   assert.match(portal, /navigator\.canShare/);
+  assert.match(portal, /URL\.createObjectURL/);
+  assert.match(portal, /Downloads started/);
   assert.match(portal, /share=1/);
   assert.match(worker, /shareRequested/);
 });

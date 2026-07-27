@@ -167,6 +167,7 @@ const MAX_SELECTED_PHOTOS = 10;
 let albumSelectionMode = false;
 let selectedPhotoIndexes = new Set();
 let selectedPhotoFiles = [];
+let nativeFileShareAvailable = false;
 let shareFilePromises = new Map();
 let shareReadinessRevision = 0;
 
@@ -268,6 +269,7 @@ function setAlbumSelectionMode(enabled) {
   if (!enabled) {
     selectedPhotoIndexes.clear();
     selectedPhotoFiles = [];
+    nativeFileShareAvailable = false;
     shareFilePromises.clear();
     shareReadinessRevision += 1;
   }
@@ -347,6 +349,7 @@ async function updateShareReadiness() {
   const help = document.getElementById("album-selection-help");
   const parentView = isParentPresentation();
   selectedPhotoFiles = [];
+  nativeFileShareAvailable = false;
   if (button) button.disabled = true;
   if (!selectedPhotoIndexes.size) {
     if (help) help.textContent = parentView
@@ -360,13 +363,18 @@ async function updateShareReadiness() {
     const files = await Promise.all(indexes.map(prepareShareFile));
     if (revision !== shareReadinessRevision) return;
     selectedPhotoFiles = files;
-    const canShare = typeof navigator.share === "function" &&
+    nativeFileShareAvailable = typeof navigator.share === "function" &&
       (!navigator.canShare || navigator.canShare({ files }));
-    if (!canShare) throw new Error("File sharing is not supported");
     if (button) button.disabled = false;
-    if (help) help.textContent = parentView
-      ? "次の画面で「画像を保存」を選びます"
-      : "Choose “Save Images” on the next screen";
+    if (help) {
+      help.textContent = nativeFileShareAvailable
+        ? parentView
+          ? "次の画面で「画像を保存」を選びます"
+          : "Choose “Save Images” on the next screen"
+        : parentView
+          ? "選んだ写真を端末にダウンロードします"
+          : "The selected photos will download to this device";
+    }
   } catch {
     if (revision !== shareReadinessRevision) return;
     if (help) help.textContent = parentView
@@ -378,19 +386,37 @@ async function updateShareReadiness() {
 function shareSelectedPhotos() {
   const help = document.getElementById("album-selection-help");
   const parentView = isParentPresentation();
-  if (!selectedPhotoFiles.length || typeof navigator.share !== "function") return;
-  navigator.share({
-    files: selectedPhotoFiles,
-    title: parentView ? "Luanaの写真" : "Luana photos"
-  }).then(() => {
-    if (help) help.textContent = parentView
-      ? "共有画面で保存先を選べます"
-      : "Choose where to save from the share sheet";
-  }).catch(error => {
-    if (error.name !== "AbortError" && help) {
-      help.textContent = parentView ? "保存できませんでした。もう一度お試しください" : "Could not save. Please try again";
-    }
+  if (!selectedPhotoFiles.length) return;
+  if (nativeFileShareAvailable) {
+    navigator.share({
+      files: selectedPhotoFiles,
+      title: parentView ? "Luanaの写真" : "Luana photos"
+    }).then(() => {
+      if (help) help.textContent = parentView
+        ? "共有画面で保存先を選べます"
+        : "Choose where to save from the share sheet";
+    }).catch(error => {
+      if (error.name !== "AbortError" && help) {
+        help.textContent = parentView ? "保存できませんでした。もう一度お試しください" : "Could not save. Please try again";
+      }
+    });
+    return;
+  }
+
+  selectedPhotoFiles.forEach(file => {
+    const objectUrl = URL.createObjectURL(file);
+    const link = document.createElement("a");
+    link.href = objectUrl;
+    link.download = file.name;
+    link.hidden = true;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60000);
   });
+  if (help) help.textContent = parentView
+    ? "ダウンロードが始まりました"
+    : "Downloads started";
 }
 
 function showAlbumBrowser(reset = false) {
