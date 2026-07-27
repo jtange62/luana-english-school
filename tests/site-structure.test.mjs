@@ -61,11 +61,17 @@ test("the parent landing page clearly uses Japanese access-code wording", async 
 
 test("the parent portal gently links to regular programs without changing portal separation", async () => {
   const parents = await source("parents.html");
+  const portal = await source("portal.js");
   const staff = await source("staff.html");
   assert.match(parents, /id="main-site-invitation"/);
-  assert.match(parents, /もっとLuanaで英語を楽しみたい方へ/);
-  assert.match(parents, /<a href="\/" target="_blank" rel="noopener">/);
-  assert.doesNotMatch(staff, /もっとLuanaで英語を楽しみたい方へ/);
+  assert.match(parents, /夏の思い出の、その先も。/);
+  assert.match(parents, /Luanaでは通常クラスも開講しています。/);
+  assert.match(parents, /href="\/" target="_blank" rel="noopener"/);
+  assert.match(parents, /luanaenglishschool\.jp/);
+  assert.doesNotMatch(parents, /通常クラスを見る/);
+  assert.doesNotMatch(parents, /id="main-site-invitation"[^>]*hidden/);
+  assert.doesNotMatch(portal, /main-site-invitation"\)\.hidden/);
+  assert.doesNotMatch(staff, /夏の思い出の、その先も。/);
 });
 
 test("parent weekly themes match the English Summer School campaign", async () => {

@@ -401,7 +401,6 @@ async function initParents() {
 
   function render() {
     document.body.dataset.weekTheme = weekFor(selectedWeek).theme;
-    document.getElementById("main-site-invitation").hidden = !posts.length;
     const counts = new Map(availableWeeks.map(week => [
       week.slug,
       posts.filter(post => post.week === week.slug).length

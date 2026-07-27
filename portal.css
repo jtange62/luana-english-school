@@ -521,24 +521,28 @@ button:disabled {
 }
 
 .main-site-invitation {
-  display: flex;
   max-width: 720px;
-  align-items: center;
+  margin: 46px auto 0;
+  padding-top: 26px;
+  border-top: 1px solid rgba(112, 72, 20, 0.14);
+}
+
+.main-site-link {
+  display: flex;
+  align-items: flex-end;
   justify-content: space-between;
-  gap: 24px;
-  margin: 58px auto 0;
-  padding: 22px 24px;
-  border: 1px solid rgba(69, 185, 140, 0.24);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.76);
+  gap: 28px;
+  padding: 4px 3px;
+  color: inherit;
+  text-decoration: none;
 }
 
-.main-site-invitation p,
-.main-site-invitation h2 {
-  margin: 0;
+.main-site-copy {
+  display: grid;
+  gap: 5px;
 }
 
-.main-site-invitation p {
+.main-site-kicker {
   color: #438169;
   font-size: 0.7rem;
   font-weight: 900;
@@ -546,41 +550,42 @@ button:disabled {
   text-transform: uppercase;
 }
 
-.portal-content .main-site-invitation h2 {
-  margin-top: 5px;
+.main-site-copy strong {
   color: #3f3b36;
   font-family: "Nunito", system-ui, sans-serif;
   font-size: clamp(1.15rem, 3vw, 1.38rem);
   line-height: 1.3;
 }
 
-.main-site-invitation div > span {
+.main-site-copy > span:last-child {
   display: block;
-  max-width: 470px;
-  margin-top: 7px;
+  max-width: 500px;
   color: #6b655e;
   font-size: 0.88rem;
   line-height: 1.65;
 }
 
-.main-site-invitation a {
-  display: inline-flex;
+.main-site-address {
   flex: 0 0 auto;
-  align-items: center;
-  gap: 7px;
-  border: 1px solid rgba(69, 185, 140, 0.42);
-  border-radius: 999px;
-  background: #eef9f4;
   color: #315f4d;
-  font-weight: 900;
-  padding: 11px 15px;
-  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  text-decoration: underline;
+  text-decoration-color: rgba(49, 95, 77, 0.35);
+  text-underline-offset: 4px;
 }
 
-.main-site-invitation a:hover,
-.main-site-invitation a:focus-visible {
-  border-color: #45b98c;
-  background: #def4e9;
+.main-site-link:hover .main-site-address,
+.main-site-link:focus-visible .main-site-address {
+  color: #1e6f53;
+  text-decoration-color: currentColor;
+}
+
+.main-site-link:focus-visible {
+  border-radius: 8px;
+  outline: 3px solid rgba(69, 185, 140, 0.3);
+  outline-offset: 6px;
 }
 
 .daily-collection {
@@ -1578,14 +1583,15 @@ button:disabled {
   }
 
   .main-site-invitation {
-    align-items: stretch;
-    flex-direction: column;
-    margin-top: 42px;
-    padding: 20px;
+    margin-top: 38px;
+    padding-top: 22px;
   }
 
-  .main-site-invitation a {
-    justify-content: center;
+  .main-site-link {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+    padding-inline: 4px;
   }
 
   .parent-authenticated .photo-count-1 .portal-photo img {
