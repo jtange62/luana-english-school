@@ -98,6 +98,10 @@ test("photo albums keep parent navigation and a simple staff upload flow", async
   assert.match(staff, />Publish photo album</);
   assert.doesNotMatch(staff, /name="activities"/);
   assert.match(portal, /写真をすべて見る/);
+  assert.match(portal, /IntersectionObserver/);
+  assert.match(portal, /touchstart/);
+  assert.match(portal, /touchend/);
+  assert.match(portal, /ALBUM_BATCH_SIZE/);
   assert.match(portal, /Edit this album/);
   assert.match(portal, /isParentPresentation/);
   assert.match(portal, /renderDailyCollections/);

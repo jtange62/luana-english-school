@@ -159,42 +159,122 @@ function showSetupBanner(id) {
 
 let lightboxPhotos = [];
 let lightboxIndex = 0;
+let albumRenderCount = 0;
+let albumObserver;
+let lightboxReturnFocus;
+const ALBUM_BATCH_SIZE = 12;
 
 function updateLightbox() {
-  const box = document.getElementById("lightbox");
   const image = document.getElementById("lightbox-image");
   const counter = document.getElementById("lightbox-counter");
   const previous = document.getElementById("lightbox-prev");
   const next = document.getElementById("lightbox-next");
   const photo = lightboxPhotos[lightboxIndex];
-  if (!box || !image || !photo) return;
+  if (!image || !photo) return;
   image.src = photo.url;
   image.alt = photo.alt || "";
   if (counter) counter.textContent = `${lightboxIndex + 1} / ${lightboxPhotos.length}`;
   if (previous) previous.hidden = lightboxPhotos.length < 2;
   if (next) next.hidden = lightboxPhotos.length < 2;
+  [lightboxIndex - 1, lightboxIndex + 1].forEach(index => {
+    const nearby = lightboxPhotos[(index + lightboxPhotos.length) % lightboxPhotos.length];
+    if (nearby) new Image().src = nearby.url;
+  });
 }
 
-function openGallery(photos, startIndex = 0) {
+function showPhotoViewer(startIndex = 0) {
+  const browser = document.getElementById("album-browser");
+  const viewer = document.getElementById("photo-viewer");
+  if (!viewer || !lightboxPhotos.length) return;
+  lightboxIndex = Math.max(0, Math.min(startIndex, lightboxPhotos.length - 1));
+  if (browser) browser.hidden = true;
+  viewer.hidden = false;
+  updateLightbox();
+  document.getElementById("viewer-close")?.focus();
+}
+
+function appendAlbumBatch() {
+  const grid = document.getElementById("album-browser-grid");
+  const sentinel = document.getElementById("album-browser-sentinel");
+  if (!grid || albumRenderCount >= lightboxPhotos.length) return;
+  const batchEnd = Math.min(albumRenderCount + ALBUM_BATCH_SIZE, lightboxPhotos.length);
+  lightboxPhotos.slice(albumRenderCount, batchEnd).forEach((photo, offset) => {
+    const index = albumRenderCount + offset;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "album-browser-photo";
+    button.setAttribute("aria-label", `写真 ${index + 1} を開く`);
+    button.innerHTML = `<img src="${escapeAttribute(photo.url)}" alt="${escapeAttribute(photo.alt || "")}" loading="lazy" decoding="async"><span>${index + 1}</span>`;
+    button.addEventListener("click", () => showPhotoViewer(index));
+    grid.append(button);
+  });
+  albumRenderCount = batchEnd;
+  if (sentinel) sentinel.hidden = albumRenderCount >= lightboxPhotos.length;
+}
+
+function showAlbumBrowser(reset = false) {
+  const browser = document.getElementById("album-browser");
+  const viewer = document.getElementById("photo-viewer");
+  const grid = document.getElementById("album-browser-grid");
+  const count = document.getElementById("album-browser-count");
+  const sentinel = document.getElementById("album-browser-sentinel");
+  if (!browser || !grid) return;
+  if (viewer) viewer.hidden = true;
+  browser.hidden = false;
+  if (count) count.textContent = `${lightboxPhotos.length}枚`;
+  if (reset || !grid.children.length) {
+    grid.innerHTML = "";
+    albumRenderCount = 0;
+    appendAlbumBatch();
+    albumObserver?.disconnect();
+    if ("IntersectionObserver" in window && sentinel) {
+      albumObserver = new IntersectionObserver(entries => {
+        if (entries.some(entry => entry.isIntersecting)) appendAlbumBatch();
+      }, { root: browser, rootMargin: "300px" });
+      albumObserver.observe(sentinel);
+    } else {
+      while (albumRenderCount < lightboxPhotos.length) appendAlbumBatch();
+    }
+    browser.scrollTop = 0;
+  }
+  document.getElementById("lightbox-close")?.focus();
+}
+
+function openGallery(photos, startIndex = null) {
   const box = document.getElementById("lightbox");
   if (!box || !photos?.length) return;
   lightboxPhotos = photos;
-  lightboxIndex = Math.max(0, Math.min(startIndex, photos.length - 1));
-  updateLightbox();
+  lightboxReturnFocus = document.activeElement;
   box.hidden = false;
+  document.body.classList.add("lightbox-open");
+  if (startIndex === null) showAlbumBrowser(true);
+  else showPhotoViewer(startIndex);
+}
+
+function closeGallery() {
+  const box = document.getElementById("lightbox");
+  if (!box || box.hidden) return;
+  box.hidden = true;
+  document.body.classList.remove("lightbox-open");
+  albumObserver?.disconnect();
+  document.getElementById("lightbox-image")?.removeAttribute("src");
+  lightboxReturnFocus?.focus?.();
 }
 
 function setupLightbox() {
   const box = document.getElementById("lightbox");
   const close = document.getElementById("lightbox-close");
+  const viewerClose = document.getElementById("viewer-close");
+  const viewerBack = document.getElementById("viewer-back");
+  const stage = document.getElementById("lightbox-image-stage");
   const previous = document.getElementById("lightbox-prev");
   const next = document.getElementById("lightbox-next");
   if (!box || !close) return;
-  close.addEventListener("click", () => {
-    box.hidden = true;
-  });
+  close.addEventListener("click", closeGallery);
+  viewerClose?.addEventListener("click", closeGallery);
+  viewerBack?.addEventListener("click", showAlbumBrowser);
   box.addEventListener("click", event => {
-    if (event.target === box) box.hidden = true;
+    if (event.target === box) closeGallery();
   });
   previous?.addEventListener("click", () => {
     lightboxIndex = (lightboxIndex - 1 + lightboxPhotos.length) % lightboxPhotos.length;
@@ -204,10 +284,24 @@ function setupLightbox() {
     lightboxIndex = (lightboxIndex + 1) % lightboxPhotos.length;
     updateLightbox();
   });
+  let touchStartX = 0;
+  let touchStartY = 0;
+  stage?.addEventListener("touchstart", event => {
+    touchStartX = event.changedTouches[0].clientX;
+    touchStartY = event.changedTouches[0].clientY;
+  }, { passive: true });
+  stage?.addEventListener("touchend", event => {
+    const distanceX = event.changedTouches[0].clientX - touchStartX;
+    const distanceY = event.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(distanceX) < 45 || Math.abs(distanceX) < Math.abs(distanceY)) return;
+    if (distanceX > 0) previous?.click();
+    else next?.click();
+  }, { passive: true });
   document.addEventListener("keydown", event => {
-    if (event.key === "Escape") box.hidden = true;
-    if (!box.hidden && event.key === "ArrowLeft") previous?.click();
-    if (!box.hidden && event.key === "ArrowRight") next?.click();
+    if (event.key === "Escape") closeGallery();
+    const viewer = document.getElementById("photo-viewer");
+    if (!box.hidden && viewer && !viewer.hidden && event.key === "ArrowLeft") previous?.click();
+    if (!box.hidden && viewer && !viewer.hidden && event.key === "ArrowRight") next?.click();
   });
 }
 
@@ -266,7 +360,13 @@ function appendPhotoGrid(card, photos) {
     if (index === previewPhotos.length - 1 && photoList.length > previewPhotos.length) {
       button.insertAdjacentHTML("beforeend", `<span class="photo-more">+${photoList.length - previewPhotos.length}</span>`);
     }
-    button.addEventListener("click", () => openGallery(photoList, index));
+    button.addEventListener("click", () => {
+      if (index === previewPhotos.length - 1 && photoList.length > previewPhotos.length) {
+        openGallery(photoList);
+      } else {
+        openGallery(photoList, index);
+      }
+    });
     grid.append(button);
   });
   if (!photoList.length) {

@@ -96,15 +96,33 @@
   </section>
 </main>
 
-<div class="lightbox" id="lightbox" hidden>
-  <button type="button" id="lightbox-close" aria-label="写真を閉じる">&times;</button>
-  <button type="button" class="lightbox-nav lightbox-prev" id="lightbox-prev" aria-label="前の写真">&lsaquo;</button>
-  <img id="lightbox-image" alt="">
-  <button type="button" class="lightbox-nav lightbox-next" id="lightbox-next" aria-label="次の写真">&rsaquo;</button>
-  <p class="lightbox-privacy-note">SNS等への投稿・共有時は、ほかのお子さまのプライバシーにご配慮ください。</p>
-  <p class="lightbox-counter" id="lightbox-counter" aria-live="polite"></p>
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-labelledby="album-browser-title" hidden>
+  <section class="album-browser" id="album-browser">
+    <header class="album-browser-header">
+      <div>
+        <p>Luana Photo Album</p>
+        <h2 id="album-browser-title">写真をすべて見る</h2>
+        <span id="album-browser-count"></span>
+      </div>
+      <button type="button" class="lightbox-close" id="lightbox-close" aria-label="アルバムを閉じる">&times;</button>
+    </header>
+    <div class="album-browser-grid" id="album-browser-grid"></div>
+    <div class="album-browser-sentinel" id="album-browser-sentinel" aria-hidden="true"></div>
+    <p class="album-browser-privacy">SNS等への投稿・共有時は、ほかのお子さまのプライバシーにご配慮ください。</p>
+  </section>
+  <section class="photo-viewer" id="photo-viewer" aria-label="写真ビューアー" hidden>
+    <button type="button" class="viewer-back" id="viewer-back">‹ アルバム</button>
+    <button type="button" class="lightbox-close" id="viewer-close" aria-label="写真を閉じる">&times;</button>
+    <button type="button" class="lightbox-nav lightbox-prev" id="lightbox-prev" aria-label="前の写真">&lsaquo;</button>
+    <div class="lightbox-image-stage" id="lightbox-image-stage">
+      <img id="lightbox-image" alt="">
+    </div>
+    <button type="button" class="lightbox-nav lightbox-next" id="lightbox-next" aria-label="次の写真">&rsaquo;</button>
+    <p class="lightbox-privacy-note">SNS等への投稿・共有時は、ほかのお子さまのプライバシーにご配慮ください。</p>
+    <p class="lightbox-counter" id="lightbox-counter" aria-live="polite"></p>
+  </section>
 </div>
 
-<script src="/portal.js?v=20260727-2"></script>
+<script src="/portal.js?v=20260727-3"></script>
 </body>
 </html>
