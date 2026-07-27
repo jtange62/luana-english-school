@@ -163,6 +163,17 @@ let albumRenderCount = 0;
 let albumObserver;
 let lightboxReturnFocus;
 const ALBUM_BATCH_SIZE = 12;
+const MAX_SELECTED_PHOTOS = 10;
+let albumSelectionMode = false;
+let selectedPhotoIndexes = new Set();
+let selectedPhotoFiles = [];
+let shareFilePromises = new Map();
+let shareReadinessRevision = 0;
+
+function photoUrlWithParameter(photo, parameter) {
+  const separator = photo.url.includes("?") ? "&" : "?";
+  return `${photo.url}${separator}${parameter}`;
+}
 
 function updateLightbox() {
   const image = document.getElementById("lightbox-image");
@@ -175,8 +186,7 @@ function updateLightbox() {
   image.src = photo.url;
   image.alt = photo.alt || "";
   if (download) {
-    const separator = photo.url.includes("?") ? "&" : "?";
-    download.href = `${photo.url}${separator}download=1`;
+    download.href = photoUrlWithParameter(photo, "download=1");
   }
   if (counter) counter.textContent = `${lightboxIndex + 1} / ${lightboxPhotos.length}`;
   if (previous) previous.hidden = lightboxPhotos.length < 2;
@@ -208,13 +218,179 @@ function appendAlbumBatch() {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "album-browser-photo";
+    button.dataset.photoIndex = String(index);
     button.setAttribute("aria-label", `写真 ${index + 1} を開く`);
-    button.innerHTML = `<img src="${escapeAttribute(photo.thumbnailUrl || photo.url)}" alt="${escapeAttribute(photo.alt || "")}" loading="lazy" decoding="async"><span>${index + 1}</span>`;
-    button.addEventListener("click", () => showPhotoViewer(index));
+    button.innerHTML = `<img src="${escapeAttribute(photo.thumbnailUrl || photo.url)}" alt="${escapeAttribute(photo.alt || "")}" loading="lazy" decoding="async"><span class="album-photo-number">${index + 1}</span><span class="album-photo-check" aria-hidden="true">✓</span>`;
+    let longPressTriggered = false;
+    let longPressTimer;
+    let pointerStart = null;
+    button.addEventListener("pointerdown", event => {
+      if (event.pointerType === "mouse" || albumSelectionMode) return;
+      pointerStart = { x: event.clientX, y: event.clientY };
+      longPressTimer = window.setTimeout(() => {
+        longPressTriggered = true;
+        setAlbumSelectionMode(true);
+        toggleSelectedPhoto(index);
+        navigator.vibrate?.(30);
+      }, 550);
+    });
+    button.addEventListener("pointermove", event => {
+      if (!pointerStart || !longPressTimer) return;
+      if (Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y) > 10) {
+        clearTimeout(longPressTimer);
+        longPressTimer = null;
+      }
+    });
+    ["pointerup", "pointercancel", "pointerleave"].forEach(type => {
+      button.addEventListener(type, () => {
+        clearTimeout(longPressTimer);
+        longPressTimer = null;
+        pointerStart = null;
+      });
+    });
+    button.addEventListener("click", () => {
+      if (longPressTriggered) {
+        longPressTriggered = false;
+        return;
+      }
+      if (albumSelectionMode) toggleSelectedPhoto(index);
+      else showPhotoViewer(index);
+    });
     grid.append(button);
   });
+  refreshAlbumSelection();
   albumRenderCount = batchEnd;
   if (sentinel) sentinel.hidden = albumRenderCount >= lightboxPhotos.length;
+}
+
+function setAlbumSelectionMode(enabled) {
+  albumSelectionMode = enabled;
+  if (!enabled) {
+    selectedPhotoIndexes.clear();
+    selectedPhotoFiles = [];
+    shareFilePromises.clear();
+    shareReadinessRevision += 1;
+  }
+  refreshAlbumSelection();
+  updateShareReadiness();
+}
+
+function toggleSelectedPhoto(index) {
+  const help = document.getElementById("album-selection-help");
+  if (selectedPhotoIndexes.has(index)) {
+    selectedPhotoIndexes.delete(index);
+    shareFilePromises.delete(index);
+  } else if (selectedPhotoIndexes.size < MAX_SELECTED_PHOTOS) {
+    selectedPhotoIndexes.add(index);
+  } else {
+    if (help) help.textContent = isParentPresentation()
+      ? "一度に保存できる写真は10枚までです"
+      : "You can save up to 10 photos at a time";
+    return;
+  }
+  refreshAlbumSelection();
+  updateShareReadiness();
+}
+
+function refreshAlbumSelection() {
+  const bar = document.getElementById("album-selection-bar");
+  const toggle = document.getElementById("album-select-toggle");
+  const count = document.getElementById("album-selection-count");
+  const parentView = isParentPresentation();
+  if (bar) bar.hidden = !albumSelectionMode;
+  if (toggle) {
+    toggle.textContent = albumSelectionMode
+      ? parentView ? "選択をやめる" : "Cancel selection"
+      : parentView ? "写真をまとめて保存" : "Save multiple";
+    toggle.setAttribute("aria-pressed", String(albumSelectionMode));
+  }
+  if (count) count.textContent = parentView
+    ? `${selectedPhotoIndexes.size} / ${MAX_SELECTED_PHOTOS}枚選択中`
+    : `${selectedPhotoIndexes.size} / ${MAX_SELECTED_PHOTOS} selected`;
+  document.querySelectorAll(".album-browser-photo").forEach(button => {
+    const index = Number(button.dataset.photoIndex);
+    const selected = selectedPhotoIndexes.has(index);
+    button.classList.toggle("is-selected", selected);
+    if (albumSelectionMode) {
+      button.setAttribute("aria-pressed", String(selected));
+      button.setAttribute("aria-label", parentView
+        ? `写真 ${index + 1} を${selected ? "選択解除" : "選択"}`
+        : `${selected ? "Deselect" : "Select"} photo ${index + 1}`);
+    } else {
+      button.removeAttribute("aria-pressed");
+      button.setAttribute("aria-label", parentView
+        ? `写真 ${index + 1} を開く`
+        : `Open photo ${index + 1}`);
+    }
+  });
+}
+
+function prepareShareFile(index) {
+  if (shareFilePromises.has(index)) return shareFilePromises.get(index);
+  const photo = lightboxPhotos[index];
+  const promise = fetch(photoUrlWithParameter(photo, "share=1"), {
+    credentials: "same-origin"
+  }).then(async response => {
+    if (!response.ok) throw new Error("Could not prepare photo");
+    const blob = await response.blob();
+    return new File([blob], `luana-photo-${String(index + 1).padStart(2, "0")}.jpg`, {
+      type: "image/jpeg"
+    });
+  });
+  shareFilePromises.set(index, promise);
+  return promise;
+}
+
+async function updateShareReadiness() {
+  const revision = ++shareReadinessRevision;
+  const button = document.getElementById("album-share-selected");
+  const help = document.getElementById("album-selection-help");
+  const parentView = isParentPresentation();
+  selectedPhotoFiles = [];
+  if (button) button.disabled = true;
+  if (!selectedPhotoIndexes.size) {
+    if (help) help.textContent = parentView
+      ? "保存したい写真をタップしてください"
+      : "Tap the photos you want to save";
+    return;
+  }
+  if (help) help.textContent = parentView ? "写真を準備しています…" : "Preparing photos…";
+  try {
+    const indexes = [...selectedPhotoIndexes].sort((a, b) => a - b);
+    const files = await Promise.all(indexes.map(prepareShareFile));
+    if (revision !== shareReadinessRevision) return;
+    selectedPhotoFiles = files;
+    const canShare = typeof navigator.share === "function" &&
+      (!navigator.canShare || navigator.canShare({ files }));
+    if (!canShare) throw new Error("File sharing is not supported");
+    if (button) button.disabled = false;
+    if (help) help.textContent = parentView
+      ? "次の画面で「画像を保存」を選びます"
+      : "Choose “Save Images” on the next screen";
+  } catch {
+    if (revision !== shareReadinessRevision) return;
+    if (help) help.textContent = parentView
+      ? "この端末では1枚ずつ保存してください"
+      : "Please save photos individually on this device";
+  }
+}
+
+function shareSelectedPhotos() {
+  const help = document.getElementById("album-selection-help");
+  const parentView = isParentPresentation();
+  if (!selectedPhotoFiles.length || typeof navigator.share !== "function") return;
+  navigator.share({
+    files: selectedPhotoFiles,
+    title: parentView ? "Luanaの写真" : "Luana photos"
+  }).then(() => {
+    if (help) help.textContent = parentView
+      ? "共有画面で保存先を選べます"
+      : "Choose where to save from the share sheet";
+  }).catch(error => {
+    if (error.name !== "AbortError" && help) {
+      help.textContent = parentView ? "保存できませんでした。もう一度お試しください" : "Could not save. Please try again";
+    }
+  });
 }
 
 function showAlbumBrowser(reset = false) {
@@ -226,6 +402,7 @@ function showAlbumBrowser(reset = false) {
   if (!browser || !grid) return;
   if (viewer) viewer.hidden = true;
   browser.hidden = false;
+  if (reset) setAlbumSelectionMode(false);
   if (count) count.textContent = `${lightboxPhotos.length}枚`;
   if (reset || !grid.children.length) {
     grid.innerHTML = "";
@@ -262,6 +439,7 @@ function closeGallery() {
   box.hidden = true;
   document.body.classList.remove("lightbox-open");
   albumObserver?.disconnect();
+  setAlbumSelectionMode(false);
   document.getElementById("lightbox-image")?.removeAttribute("src");
   document.getElementById("photo-download")?.removeAttribute("href");
   lightboxReturnFocus?.focus?.();
@@ -275,10 +453,14 @@ function setupLightbox() {
   const stage = document.getElementById("lightbox-image-stage");
   const previous = document.getElementById("lightbox-prev");
   const next = document.getElementById("lightbox-next");
+  const selectToggle = document.getElementById("album-select-toggle");
+  const shareSelected = document.getElementById("album-share-selected");
   if (!box || !close) return;
   close.addEventListener("click", closeGallery);
   viewerClose?.addEventListener("click", closeGallery);
   viewerBack?.addEventListener("click", showAlbumBrowser);
+  selectToggle?.addEventListener("click", () => setAlbumSelectionMode(!albumSelectionMode));
+  shareSelected?.addEventListener("click", shareSelectedPhotos);
   box.addEventListener("click", event => {
     if (event.target === box) closeGallery();
   });

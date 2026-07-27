@@ -166,6 +166,12 @@ test("parent week codes filter feeds and direct photo access", async () => {
   assert.equal(downloadedPhoto.status, 200);
   assert.match(downloadedPhoto.headers.get("content-disposition"), /^attachment;/);
   assert.match(downloadedPhoto.headers.get("content-disposition"), /\.webp/);
+
+  const sharedPhoto = await worker.fetch(apiRequest("/api/photos/photo-week-2?share=1", {
+    headers: { cookie: weekTwoLogin.cookie }
+  }), env);
+  assert.equal(sharedPhoto.status, 200);
+  assert.equal(sharedPhoto.headers.get("content-type"), "image/jpeg");
 });
 
 test("incorrect week codes are rejected", async () => {

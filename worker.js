@@ -516,9 +516,25 @@ async function getPhoto(request, env, url) {
 
   if (!photo) return json({ error: "Photo not found" }, 404);
   const thumbnailRequested = url.searchParams.get("variant") === "thumbnail";
+  const shareRequested = url.searchParams.get("share") === "1";
   const objectKey = thumbnailRequested && photo.thumbnail_r2_key ? photo.thumbnail_r2_key : photo.r2_key;
   const object = await env.PHOTOS.get(objectKey);
   if (!object) return json({ error: "Photo not found" }, 404);
+
+  if (shareRequested) {
+    const output = await env.IMAGES
+      .input(object.body)
+      .transform({ width: PHOTO_WIDTH, fit: "scale-down" })
+      .output({ format: "image/jpeg", quality: 85 });
+    const response = output.response();
+    if (!response.ok) throw new Error("Could not prepare photo for saving");
+    return new Response(response.body, {
+      headers: {
+        "content-type": "image/jpeg",
+        "cache-control": "private, max-age=86400"
+      }
+    });
+  }
 
   const headers = {
     "content-type": thumbnailRequested && photo.thumbnail_r2_key
@@ -656,6 +672,7 @@ async function photosForPosts(env, postIds) {
     map.get(row.post_id).push({
       url: `/api/photos/${row.id}`,
       thumbnailUrl: `/api/photos/${row.id}?variant=thumbnail`,
+      filename: row.filename || "",
       alt: row.filename || "Luana photo"
     });
   });

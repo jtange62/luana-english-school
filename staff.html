@@ -102,10 +102,20 @@
         <h2 id="album-browser-title">All photos</h2>
         <span id="album-browser-count"></span>
       </div>
-      <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Close photos">&times;</button>
+      <div class="album-header-actions">
+        <button type="button" class="album-select-toggle" id="album-select-toggle">Save multiple</button>
+        <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Close photos">&times;</button>
+      </div>
     </header>
     <div class="album-browser-grid" id="album-browser-grid"></div>
     <div class="album-browser-sentinel" id="album-browser-sentinel" aria-hidden="true"></div>
+    <div class="album-selection-bar" id="album-selection-bar" hidden>
+      <div>
+        <strong id="album-selection-count">0 / 10 selected</strong>
+        <span id="album-selection-help">Tap the photos you want to save</span>
+      </div>
+      <button type="button" id="album-share-selected" disabled>Save selected photos</button>
+    </div>
   </section>
   <section class="photo-viewer" id="photo-viewer" aria-label="Photo viewer" hidden>
     <button type="button" class="viewer-back" id="viewer-back">‹ All photos</button>
@@ -120,6 +130,6 @@
   </section>
 </div>
 
-<script src="/portal.js?v=20260728-save1"></script>
+<script src="/portal.js?v=20260728-multisave1"></script>
 </body>
 </html>

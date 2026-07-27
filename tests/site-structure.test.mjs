@@ -134,6 +134,20 @@ test("photo viewer offers a mobile-friendly authenticated save action", async ()
   assert.match(styles, /\.photo-download/);
 });
 
+test("album browser supports selecting and sharing up to ten photos", async () => {
+  const parents = await source("parents.html");
+  const portal = await source("portal.js");
+  const worker = await source("worker.js");
+  assert.match(parents, /写真をまとめて保存/);
+  assert.match(parents, /選んだ写真を保存/);
+  assert.match(portal, /画像を保存/);
+  assert.match(portal, /MAX_SELECTED_PHOTOS = 10/);
+  assert.match(portal, /navigator\.share/);
+  assert.match(portal, /navigator\.canShare/);
+  assert.match(portal, /share=1/);
+  assert.match(worker, /shareRequested/);
+});
+
 test("parent access codes remain visible while being entered", async () => {
   const parents = await source("parents.html");
   const worker = await source("worker.js");

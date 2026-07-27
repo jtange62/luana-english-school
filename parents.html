@@ -104,10 +104,20 @@
         <h2 id="album-browser-title">写真をすべて見る</h2>
         <span id="album-browser-count"></span>
       </div>
-      <button type="button" class="lightbox-close" id="lightbox-close" aria-label="アルバムを閉じる">&times;</button>
+      <div class="album-header-actions">
+        <button type="button" class="album-select-toggle" id="album-select-toggle">写真をまとめて保存</button>
+        <button type="button" class="lightbox-close" id="lightbox-close" aria-label="アルバムを閉じる">&times;</button>
+      </div>
     </header>
     <div class="album-browser-grid" id="album-browser-grid"></div>
     <div class="album-browser-sentinel" id="album-browser-sentinel" aria-hidden="true"></div>
+    <div class="album-selection-bar" id="album-selection-bar" hidden>
+      <div>
+        <strong id="album-selection-count">0 / 10枚選択中</strong>
+        <span id="album-selection-help">保存したい写真をタップしてください</span>
+      </div>
+      <button type="button" id="album-share-selected" disabled>選んだ写真を保存</button>
+    </div>
     <p class="album-browser-privacy">SNS等への投稿・共有時は、ほかのお子さまのプライバシーにご配慮ください。</p>
   </section>
   <section class="photo-viewer" id="photo-viewer" aria-label="写真ビューアー" hidden>
@@ -124,6 +134,6 @@
   </section>
 </div>
 
-<script src="/portal.js?v=20260728-save1"></script>
+<script src="/portal.js?v=20260728-multisave1"></script>
 </body>
 </html>
