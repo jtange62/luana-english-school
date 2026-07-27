@@ -54,7 +54,7 @@ const SUMMER_WEEKS = [
       { date: "2026-08-18", title: "Preparation & Teamwork", badge: "🤝 Preparation & Teamwork" },
       { date: "2026-08-19", title: "Navigation", badge: "🧭 Navigation" },
       { date: "2026-08-20", title: "Resource Management", badge: "🎒 Resource Management" },
-      { date: "2026-08-21", title: "Field Trip — HUGTRATOPS", badge: "🚌 Field Trip: HUGTRATOPS" }
+      { date: "2026-08-21", title: "Field Trip — Hug-Hug & Westrock Bouldering", badge: "🚌 Field Trip: Hug-Hug & Westrock Bouldering" }
     ],
     title: "Adventure Survival",
     description: "Adventure skills, survival challenges, and teamwork.",

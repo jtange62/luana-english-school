@@ -120,7 +120,7 @@ test("each summer week has a distinct lightweight collection theme", async () =>
     "Preparation & Teamwork",
     "Navigation",
     "Resource Management",
-    "Field Trip: HUGTRATOPS"
+    "Field Trip: Hug-Hug & Westrock Bouldering"
   ]) {
     assert.ok(portal.includes(motif), `Parent portal is missing the ${motif} motif`);
   }
