@@ -12,9 +12,9 @@ const SUMMER_WEEKS = [
     emoji: "🌎",
     theme: "festivals",
     days: [
-      { date: "2026-07-27", title: "Brazil — Carnival", badge: "🎭 Carnival" },
-      { date: "2026-07-28", title: "India — Holi", badge: "🎨 Holi" },
-      { date: "2026-07-29", title: "Thailand — Songkran", badge: "💦 Songkran" },
+      { date: "2026-07-27", title: "Thailand — Songkran", badge: "💦 Songkran" },
+      { date: "2026-07-28", title: "Brazil — Carnival", badge: "🎭 Carnival" },
+      { date: "2026-07-29", title: "India — Holi", badge: "🎨 Holi" },
       { date: "2026-07-30", title: "Japan — Matsuri", badge: "🏮 Matsuri" },
       { date: "2026-07-31", title: "Field Trip — teamLab", badge: "🚌 Field Trip: teamLab" }
     ],

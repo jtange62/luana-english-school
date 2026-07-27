@@ -101,6 +101,14 @@ test("photo albums keep parent navigation and a simple staff upload flow", async
 test("each summer week has a distinct lightweight collection theme", async () => {
   const portal = await source("portal.js");
   const styles = await source("portal.css");
+  for (const day of [
+    'date: "2026-07-27", title: "Thailand — Songkran"',
+    'date: "2026-07-28", title: "Brazil — Carnival"',
+    'date: "2026-07-29", title: "India — Holi"',
+    'date: "2026-07-30", title: "Japan — Matsuri"'
+  ]) {
+    assert.ok(portal.includes(day), `Week 1 schedule is missing ${day}`);
+  }
   for (const theme of ["festivals", "ocean", "adventure"]) {
     assert.match(portal, new RegExp(`theme: "${theme}"`));
     assert.match(styles, new RegExp(`data-week-theme="${theme}"`));
