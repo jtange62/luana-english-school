@@ -107,6 +107,17 @@ test("parent photo albums include persistent privacy guidance", async () => {
   assert.match(styles, /\.photo-privacy-notice/);
 });
 
+test("parent access codes remain visible while being entered", async () => {
+  const parents = await source("parents.html");
+  const accessCodeFields = parents.match(/<input name="password"[^>]+>/g) || [];
+  assert.equal(accessCodeFields.length, 2);
+  for (const field of accessCodeFields) {
+    assert.match(field, /type="text"/);
+    assert.match(field, /autocomplete="one-time-code"/);
+    assert.doesNotMatch(field, /type="password"/);
+  }
+});
+
 test("each summer week has a distinct lightweight collection theme", async () => {
   const portal = await source("portal.js");
   const styles = await source("portal.css");
