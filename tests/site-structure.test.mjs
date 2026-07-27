@@ -86,23 +86,28 @@ test("parent weekly themes match the English Summer School campaign", async () =
   }
 });
 
-test("photo albums keep parent navigation and a simple staff upload flow", async () => {
+test("daily photo collections keep parent navigation and a simple staff upload flow", async () => {
   const parents = await source("parents.html");
   const staff = await source("staff.html");
   const portal = await source("portal.js");
   assert.match(parents, /id="day-tabs"/);
   assert.match(staff, /id="staff-day-tabs"/);
-  assert.match(staff, />Add pictures</);
-  assert.match(staff, />\s*Album title\s*</);
+  assert.match(staff, />Add photos</);
+  assert.match(staff, /id="staff-day-select"/);
   assert.match(staff, /name="photos"[^>]*required/);
-  assert.match(staff, />Publish photo album</);
+  assert.match(staff, />Upload photos</);
+  assert.doesNotMatch(staff, /name="title"/);
+  assert.doesNotMatch(staff, /name="body"/);
   assert.doesNotMatch(staff, /name="activities"/);
   assert.match(portal, /写真をすべて見る/);
   assert.match(portal, /IntersectionObserver/);
   assert.match(portal, /touchstart/);
   assert.match(portal, /touchend/);
   assert.match(portal, /ALBUM_BATCH_SIZE/);
-  assert.match(portal, /Edit this album/);
+  assert.match(portal, /MAX_DAILY_UPLOAD|files\.length > 10/);
+  assert.match(portal, /Add more photos/);
+  assert.match(portal, /daily-photo-manage-card/);
+  assert.doesNotMatch(portal, /class="daily-photo-cover"/);
   assert.match(portal, /isParentPresentation/);
   assert.match(portal, /renderDailyCollections/);
   assert.match(portal, /groupPostsByDate/);

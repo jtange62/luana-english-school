@@ -145,7 +145,7 @@ test("incorrect week codes are rejected", async () => {
   assert.deepEqual(await result.response.json(), { error: "Incorrect access code" });
 });
 
-test("staff photo albums require at least one picture", async () => {
+test("staff daily uploads require at least one picture", async () => {
   const env = environment();
   const loginResponse = await worker.fetch(apiRequest("/api/auth/password", {
     method: "POST",
@@ -168,6 +168,66 @@ test("staff photo albums require at least one picture", async () => {
 
   assert.equal(response.status, 400);
   assert.deepEqual(await response.json(), {
-    error: "Add at least one photo to publish an album"
+    error: "Add at least one photo"
   });
+});
+
+test("staff uploads append photos to the existing scheduled day", async () => {
+  const writes = [];
+  const uploads = [];
+  const env = {
+    ...environment(),
+    DB: {
+      prepare(sql) {
+        return {
+          args: [],
+          bind(...args) {
+            this.args = args;
+            return this;
+          },
+          async first() {
+            if (sql.includes("SELECT id FROM posts")) return { id: "existing-songkran-day" };
+            if (sql.includes("MAX(sort_order)")) return { last_order: 68 };
+            return null;
+          },
+          async run() {
+            writes.push({ sql, args: this.args });
+            return { success: true };
+          }
+        };
+      }
+    },
+    PHOTOS: {
+      async put(key) {
+        uploads.push(key);
+      }
+    }
+  };
+  const loginResponse = await worker.fetch(apiRequest("/api/auth/password", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ audience: "staff", password: "staff-test-password" })
+  }), env);
+  const cookie = loginResponse.headers.get("set-cookie")?.split(";")[0] || "";
+  const form = new FormData();
+  form.set("date", "2026-07-27");
+  form.append("photos", new Blob(["new photo"], { type: "image/jpeg" }), "songkran.jpg");
+
+  const response = await worker.fetch(apiRequest("/api/staff/posts", {
+    method: "POST",
+    headers: { cookie },
+    body: form
+  }), env);
+  const data = await response.json();
+
+  assert.equal(response.status, 200, JSON.stringify(data));
+  assert.equal(data.postId, "existing-songkran-day");
+  assert.equal(data.added, 1);
+  assert.equal(uploads.length, 1);
+  assert.ok(writes.some(write =>
+    write.sql.includes("INSERT INTO post_photos") &&
+    write.args[0] === "existing-songkran-day" &&
+    write.args[2] === 69
+  ));
+  assert.ok(!writes.some(write => write.sql.includes("INSERT OR IGNORE INTO posts")));
 });

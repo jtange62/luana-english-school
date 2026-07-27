@@ -23,8 +23,8 @@
     <div class="portal-hero-grid">
       <div>
         <p class="portal-kicker">Summer staff dashboard</p>
-        <h1>Share today&apos;s summer photos.</h1>
-        <p class="portal-lead">Create a simple photo album, give it a clear title, and publish it for families.</p>
+        <h1>Add today&apos;s summer photos.</h1>
+        <p class="portal-lead">Choose the daily theme, select the pictures, and upload. Everyone&apos;s photos collect together for families.</p>
       </div>
       <form class="login-card" id="staff-login">
         <h2>Staff login</h2>
@@ -43,11 +43,11 @@
     <div class="portal-toolbar">
       <div>
         <p class="portal-kicker">Summer tools</p>
-        <h2>Summer photo albums</h2>
+        <h2>Daily photos</h2>
       </div>
       <div class="portal-actions">
-        <button type="button" data-staff-view="manage" class="is-active">Photo albums</button>
-        <button type="button" data-staff-view="new">Add pictures</button>
+        <button type="button" data-staff-view="manage" class="is-active">Photo days</button>
+        <button type="button" data-staff-view="new">Add photos</button>
         <button type="button" id="parent-view-toggle" aria-pressed="false">Parent view</button>
         <button type="button" id="staff-signout">Sign out</button>
       </div>
@@ -59,45 +59,20 @@
 
     <form class="upload-panel" id="post-form" data-staff-panel="new" hidden>
       <div class="panel-intro">
-        <h3>Add pictures</h3>
-        <p>Give this group of pictures a short album title, then publish.</p>
+        <h3>Add photos</h3>
+        <p>Photos from every staff member are added to the same daily theme.</p>
       </div>
       <label>
-        Album title
-        <input name="title" type="text" maxlength="120" required placeholder="Making Slime">
+        Daily theme
+        <select name="date" id="staff-day-select" required></select>
       </label>
       <label class="drop-zone">
         <input name="photos" type="file" accept="image/*" multiple required>
         <span>Tap to select photos</span>
-        <small>Select one or several pictures from your phone.</small>
+        <small>Choose up to 10 photos at a time.</small>
       </label>
       <div class="preview-grid" id="upload-preview"></div>
-      <label>
-        Note for parents <span class="optional-label">(optional)</span>
-        <textarea name="body" rows="3" maxlength="600" placeholder="Any short detail you would like families to know."></textarea>
-      </label>
-      <div class="posting-context">
-        <span>Posting under</span>
-        <p id="posting-context"></p>
-      </div>
-      <details class="upload-details">
-        <summary>Change date or summer week</summary>
-        <div class="field-grid">
-          <label>
-            Date
-            <input name="date" type="date" required>
-          </label>
-          <label>
-            Summer week
-            <select name="week" required>
-              <option value="week-1-festivals">Week 1: Festivals of the World</option>
-              <option value="week-2-ocean">Week 2: Ocean Explorers</option>
-              <option value="week-3-adventure">Week 3: Adventure &amp; Survival</option>
-            </select>
-          </label>
-        </div>
-      </details>
-      <button type="submit">Publish photo album</button>
+      <button type="submit" id="upload-submit">Upload photos</button>
       <p class="form-note" id="post-note"></p>
     </form>
 
@@ -105,8 +80,8 @@
       <div class="manage-heading">
         <div>
           <p class="portal-kicker" id="staff-mode-label">Staff view</p>
-          <h2 id="manage-title">Weekly photo albums</h2>
-          <p id="staff-mode-description">Fast editing view for every photo album, including drafts. Use Parent view to review published family content.</p>
+          <h2 id="manage-title">Photos by daily theme</h2>
+          <p id="staff-mode-description">Each day has one shared collection. Add more photos without creating another album.</p>
         </div>
         <button type="button" id="refresh-posts">Refresh</button>
       </div>
@@ -119,14 +94,31 @@
   </section>
 </main>
 
-<div class="lightbox" id="lightbox" hidden>
-  <button type="button" id="lightbox-close" aria-label="Close photo">&times;</button>
-  <button type="button" class="lightbox-nav lightbox-prev" id="lightbox-prev" aria-label="Previous photo">&lsaquo;</button>
-  <img id="lightbox-image" alt="">
-  <button type="button" class="lightbox-nav lightbox-next" id="lightbox-next" aria-label="Next photo">&rsaquo;</button>
-  <p class="lightbox-counter" id="lightbox-counter" aria-live="polite"></p>
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-labelledby="album-browser-title" hidden>
+  <section class="album-browser" id="album-browser">
+    <header class="album-browser-header">
+      <div>
+        <p>Luana Photo Day</p>
+        <h2 id="album-browser-title">All photos</h2>
+        <span id="album-browser-count"></span>
+      </div>
+      <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Close photos">&times;</button>
+    </header>
+    <div class="album-browser-grid" id="album-browser-grid"></div>
+    <div class="album-browser-sentinel" id="album-browser-sentinel" aria-hidden="true"></div>
+  </section>
+  <section class="photo-viewer" id="photo-viewer" aria-label="Photo viewer" hidden>
+    <button type="button" class="viewer-back" id="viewer-back">‹ All photos</button>
+    <button type="button" class="lightbox-close" id="viewer-close" aria-label="Close photo">&times;</button>
+    <button type="button" class="lightbox-nav lightbox-prev" id="lightbox-prev" aria-label="Previous photo">&lsaquo;</button>
+    <div class="lightbox-image-stage" id="lightbox-image-stage">
+      <img id="lightbox-image" alt="">
+    </div>
+    <button type="button" class="lightbox-nav lightbox-next" id="lightbox-next" aria-label="Next photo">&rsaquo;</button>
+    <p class="lightbox-counter" id="lightbox-counter" aria-live="polite"></p>
+  </section>
 </div>
 
-<script src="/portal.js?v=20260727-2"></script>
+<script src="/portal.js?v=20260727-4"></script>
 </body>
 </html>

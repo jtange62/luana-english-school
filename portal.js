@@ -318,7 +318,7 @@ function renderWeekTabs(container, selectedSlug, counts, onSelect, availableWeek
     button.innerHTML = `
       <span>${week.shortTitle}${parentView ? ` • ${week.dateRange}` : ""}</span>
       <strong>${parentView ? `${week.emoji} ${week.title}` : week.title}</strong>
-      <small>${counts.get(week.slug) || 0}${parentView ? "件のアルバム" : " albums"}</small>
+      <small>${counts.get(week.slug) || 0}${parentView ? "件のアルバム" : appKind === "staff" ? " photo days" : " albums"}</small>
     `;
     button.addEventListener("click", () => onSelect(week.slug));
     container.append(button);
@@ -584,7 +584,240 @@ async function initParents() {
   }
 }
 
-async function initStaff() {
+async function initDailyStaff() {
+  setupLightbox();
+  const login = document.getElementById("staff-login");
+  const loginNote = document.getElementById("staff-login-note");
+  const app = document.getElementById("staff-app");
+  const postForm = document.getElementById("post-form");
+  const postNote = document.getElementById("post-note");
+  const submit = document.getElementById("upload-submit");
+  const preview = document.getElementById("upload-preview");
+  const daySelect = document.getElementById("staff-day-select");
+  const manageList = document.getElementById("manage-list");
+  const manageNote = document.getElementById("manage-note");
+  const tabs = document.getElementById("staff-week-tabs");
+  const dayTabs = document.getElementById("staff-day-tabs");
+  const parentViewToggle = document.getElementById("parent-view-toggle");
+  let posts = [];
+  let selectedWeek = SUMMER_WEEKS[0].slug;
+  let parentPreview = false;
+  let previewUrls = [];
+
+  SUMMER_WEEKS.forEach(week => {
+    const group = document.createElement("optgroup");
+    group.label = `${week.shortTitle}: ${week.title}`;
+    week.days.forEach(day => {
+      const option = document.createElement("option");
+      option.value = day.date;
+      option.textContent = `${formatDailyDate(day.date)} — ${day.title}`;
+      group.append(option);
+    });
+    daySelect.append(group);
+  });
+
+  const today = localDateValue();
+  const todayWeek = weekForDate(today);
+  daySelect.value = todayWeek ? today : SUMMER_WEEKS[0].days[0].date;
+  selectedWeek = weekForDate(daySelect.value)?.slug || selectedWeek;
+
+  function clearPreview() {
+    previewUrls.forEach(url => URL.revokeObjectURL(url));
+    previewUrls = [];
+    preview.innerHTML = "";
+  }
+
+  function showStaffPanel(view) {
+    document.querySelectorAll("[data-staff-view]").forEach(item => {
+      item.classList.toggle("is-active", item.dataset.staffView === view);
+    });
+    document.querySelectorAll("[data-staff-panel]").forEach(panel => {
+      panel.hidden = panel.dataset.staffPanel !== view;
+    });
+  }
+
+  function openUploader(date) {
+    daySelect.value = date;
+    selectedWeek = weekForDate(date)?.slug || selectedWeek;
+    clearPreview();
+    postForm.reset();
+    daySelect.value = date;
+    postNote.textContent = "";
+    submit.disabled = false;
+    showStaffPanel("new");
+    daySelect.focus();
+  }
+
+  document.querySelectorAll("[data-staff-view]").forEach(button => {
+    button.addEventListener("click", () => {
+      parentPreview = false;
+      document.body.classList.remove("staff-parent-preview");
+      parentViewToggle.setAttribute("aria-pressed", "false");
+      parentViewToggle.textContent = "Parent view";
+      if (button.dataset.staffView === "new") openUploader(daySelect.value);
+      else showStaffPanel("manage");
+    });
+  });
+
+  login.addEventListener("submit", async event => {
+    event.preventDefault();
+    loginNote.textContent = "Checking staff access...";
+    try {
+      await api("/api/auth/password", {
+        method: "POST",
+        body: JSON.stringify({
+          password: new FormData(login).get("password"),
+          audience: "staff"
+        })
+      });
+      window.location.reload();
+    } catch (error) {
+      loginNote.textContent = error.data?.setupRequired
+        ? "Backend setup is needed before staff password login works."
+        : error.message;
+    }
+  });
+
+  document.getElementById("staff-signout").addEventListener("click", async () => {
+    await api("/api/auth/signout", { method: "POST", body: "{}" }).catch(() => null);
+    window.location.reload();
+  });
+
+  daySelect.addEventListener("change", () => {
+    selectedWeek = weekForDate(daySelect.value)?.slug || selectedWeek;
+  });
+
+  postForm.elements.photos.addEventListener("change", () => {
+    clearPreview();
+    const files = [...postForm.elements.photos.files];
+    if (files.length > 10) {
+      postNote.textContent = "Please choose 10 photos or fewer. You can add another group after this upload.";
+      submit.disabled = true;
+      return;
+    }
+    postNote.textContent = files.length ? `${files.length} photo${files.length === 1 ? "" : "s"} ready to upload.` : "";
+    submit.disabled = !files.length;
+    files.forEach(file => {
+      const image = document.createElement("img");
+      const url = URL.createObjectURL(file);
+      previewUrls.push(url);
+      image.alt = file.name;
+      image.src = url;
+      preview.append(image);
+    });
+  });
+
+  postForm.addEventListener("submit", async event => {
+    event.preventDefault();
+    const files = [...postForm.elements.photos.files];
+    if (!files.length || files.length > 10) return;
+    submit.disabled = true;
+    postNote.textContent = `Uploading ${files.length} photo${files.length === 1 ? "" : "s"}… Please keep this page open.`;
+    try {
+      const form = new FormData(postForm);
+      const date = String(form.get("date"));
+      const data = await api("/api/staff/posts", { method: "POST", body: form });
+      selectedWeek = weekForDate(date)?.slug || selectedWeek;
+      postForm.reset();
+      clearPreview();
+      daySelect.value = date;
+      postNote.textContent = `${data.added || files.length} photos added successfully.`;
+      await loadStaffPosts();
+      showStaffPanel("manage");
+    } catch (error) {
+      postNote.textContent = error.data?.setupRequired
+        ? "Backend setup is needed before uploads work."
+        : error.message;
+    } finally {
+      submit.disabled = false;
+    }
+  });
+
+  function dailyCard(day, post) {
+    const card = document.createElement("article");
+    const count = post?.photos?.length || Number(post?.photoCount || 0);
+    card.className = "daily-photo-manage-card";
+    card.dataset.hasPhotos = String(count > 0);
+    card.innerHTML = `
+      <div class="daily-photo-empty" aria-hidden="true">${count ? "📸" : "📷"}</div>
+      <div class="daily-photo-details">
+        <p>${formatDailyDate(day.date)}</p>
+        <h3>${escapeText(day.title)}</h3>
+        <span>${count} photo${count === 1 ? "" : "s"}</span>
+      </div>
+      <div class="daily-photo-actions">
+        <button type="button" class="add-daily-photos">${count ? "Add more photos" : "Add photos"}</button>
+        ${count ? '<button type="button" class="view-daily-photos">View photos</button>' : ""}
+      </div>
+    `;
+    card.querySelector(".add-daily-photos").addEventListener("click", () => openUploader(day.date));
+    card.querySelector(".view-daily-photos")?.addEventListener("click", () => openGallery(post.photos));
+    return card;
+  }
+
+  function renderStaffDays() {
+    const week = weekFor(selectedWeek);
+    const postsByDate = new Map(posts.map(post => [post.date, post]));
+    const counts = new Map(SUMMER_WEEKS.map(item => [
+      item.slug,
+      item.days.filter(day => postsByDate.get(day.date)?.photos?.length).length
+    ]));
+    renderWeekTabs(tabs, selectedWeek, counts, slug => {
+      selectedWeek = slug;
+      renderStaffDays();
+    });
+    renderWeekHeading(document.getElementById("staff-week-heading"), selectedWeek);
+    manageList.innerHTML = "";
+    dayTabs.innerHTML = "";
+    dayTabs.hidden = true;
+    if (parentPreview) {
+      const weekPosts = posts.filter(post => post.week === selectedWeek && post.photos?.length);
+      renderDayTabs(dayTabs, weekPosts);
+      renderDailyCollections(manageList, weekPosts);
+      return;
+    }
+    week.days.forEach(day => manageList.append(dailyCard(day, postsByDate.get(day.date))));
+  }
+
+  parentViewToggle.addEventListener("click", () => {
+    parentPreview = !parentPreview;
+    document.body.classList.toggle("staff-parent-preview", parentPreview);
+    parentViewToggle.setAttribute("aria-pressed", String(parentPreview));
+    parentViewToggle.textContent = parentPreview ? "Exit parent view" : "Parent view";
+    showStaffPanel("manage");
+    renderStaffDays();
+  });
+
+  async function loadStaffPosts() {
+    manageNote.textContent = "Loading daily photos…";
+    try {
+      const data = await api("/api/staff/posts");
+      posts = data.posts || [];
+      renderStaffDays();
+      manageNote.textContent = "";
+    } catch (error) {
+      manageNote.textContent = error.data?.setupRequired
+        ? "Backend setup is needed before management works."
+        : error.message;
+    }
+  }
+
+  document.getElementById("refresh-posts").addEventListener("click", loadStaffPosts);
+
+  try {
+    await api("/api/staff/me");
+    login.hidden = true;
+    app.hidden = false;
+    showStaffPanel("manage");
+    await loadStaffPosts();
+  } catch (error) {
+    if (error.data?.setupRequired) showSetupBanner("staff-setup-banner");
+    login.hidden = false;
+    app.hidden = true;
+  }
+}
+
+async function initStaffLegacy() {
   setupLightbox();
   const login = document.getElementById("staff-login");
   const note = document.getElementById("staff-login-note");
@@ -911,4 +1144,4 @@ async function initStaff() {
 }
 
 if (appKind === "parents") initParents();
-if (appKind === "staff") initStaff();
+if (appKind === "staff") initDailyStaff();

@@ -5,6 +5,24 @@ const SUMMER_WEEKS = [
   { slug: "week-2-ocean", secret: "SUMMER_WEEK_2_CODE" },
   { slug: "week-3-adventure", secret: "SUMMER_WEEK_3_CODE" }
 ];
+const SUMMER_DAYS = [
+  { date: "2026-07-27", week: "week-1-festivals", title: "Thailand — Songkran" },
+  { date: "2026-07-28", week: "week-1-festivals", title: "Brazil — Carnival" },
+  { date: "2026-07-29", week: "week-1-festivals", title: "India — Holi" },
+  { date: "2026-07-30", week: "week-1-festivals", title: "Japan — Matsuri" },
+  { date: "2026-07-31", week: "week-1-festivals", title: "Field Trip — teamLab" },
+  { date: "2026-08-03", week: "week-2-ocean", title: "Ocean Life" },
+  { date: "2026-08-04", week: "week-2-ocean", title: "Coral Reef" },
+  { date: "2026-08-05", week: "week-2-ocean", title: "Tides & Waves" },
+  { date: "2026-08-06", week: "week-2-ocean", title: "Conservation & Climate" },
+  { date: "2026-08-07", week: "week-2-ocean", title: "Field Trip — Enoshima Aquarium" },
+  { date: "2026-08-17", week: "week-3-adventure", title: "Survival Priorities" },
+  { date: "2026-08-18", week: "week-3-adventure", title: "Preparation & Teamwork" },
+  { date: "2026-08-19", week: "week-3-adventure", title: "Navigation" },
+  { date: "2026-08-20", week: "week-3-adventure", title: "Resource Management" },
+  { date: "2026-08-21", week: "week-3-adventure", title: "Field Trip — Hug-Hug & Westrock Bouldering" }
+];
+const MAX_DAILY_UPLOAD = 10;
 
 export default {
   async fetch(request, env) {
@@ -306,30 +324,46 @@ async function createStaffPost(request, env) {
   requireSetup(env, ["DB", "PHOTOS"]);
   const session = await requireSession(request, env, "staff");
   const form = await request.formData();
-  const group = String(form.get("group") || "").trim();
   const date = String(form.get("date") || "").trim();
-  const title = String(form.get("title") || "").trim();
-  const body = String(form.get("body") || "").trim();
-  const activities = normalizeActivities(form.get("activities"));
-  const status = form.get("status") === "published" ? "published" : "draft";
-  const weekSlug = validSummerWeek(String(form.get("week") || form.get("album") || "").trim());
-  const albumSlug = weekSlug;
+  const day = summerDay(date);
   const files = form.getAll("photos").filter(value => value && typeof value === "object" && value.size);
 
-  if (!group || !date || !title) return json({ error: "Week, date, and album title are required" }, 400);
-  if (!files.length) return json({ error: "Add at least one photo to publish an album" }, 400);
+  if (!day) return json({ error: "Choose a scheduled Summer School day" }, 400);
+  if (!files.length) return json({ error: "Add at least one photo" }, 400);
+  if (files.length > MAX_DAILY_UPLOAD) {
+    return json({ error: `Upload up to ${MAX_DAILY_UPLOAD} photos at a time` }, 400);
+  }
 
-  const postId = crypto.randomUUID();
   const now = new Date().toISOString();
+  const createdBy = session.email || session.subject || "staff";
+  let dailyPost = await env.DB.prepare(
+    "SELECT id FROM posts WHERE group_key = 'summer-2026' AND post_date = ?1 ORDER BY created_at ASC LIMIT 1"
+  ).bind(day.date).first();
+  if (!dailyPost) {
+    const dailyPostId = `summer-2026-${day.date}`;
+    await env.DB.prepare(
+      "INSERT OR IGNORE INTO posts (id, group_key, week_slug, post_date, title, body, activities, status, created_by, created_at, updated_at) VALUES (?1, 'summer-2026', ?2, ?3, ?4, '', '', 'published', ?5, ?6, ?7)"
+    ).bind(dailyPostId, day.week, day.date, day.title, createdBy, now, now).run();
+    dailyPost = await env.DB.prepare(
+      "SELECT id FROM posts WHERE group_key = 'summer-2026' AND post_date = ?1 ORDER BY created_at ASC LIMIT 1"
+    ).bind(day.date).first();
+  }
+  if (!dailyPost) return json({ error: "Could not prepare the daily photo collection" }, 500);
+
+  const postId = dailyPost.id;
   await env.DB.prepare(
-    "INSERT INTO posts (id, group_key, week_slug, post_date, title, body, activities, status, created_by, created_at, updated_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)"
-  ).bind(postId, group, weekSlug, date, title, body, activities, status, session.email || session.subject || "staff", now, now).run();
+    "UPDATE posts SET week_slug = ?1, title = ?2, status = 'published', updated_at = ?3 WHERE id = ?4"
+  ).bind(day.week, day.title, now, postId).run();
+  const orderRow = await env.DB.prepare(
+    "SELECT COALESCE(MAX(sort_order), -1) AS last_order FROM post_photos WHERE post_id = ?1"
+  ).bind(postId).first();
+  const firstSortOrder = Number(orderRow?.last_order ?? -1) + 1;
 
   for (let index = 0; index < files.length; index += 1) {
     const file = files[index];
     const photoId = crypto.randomUUID();
     const ext = extensionFor(file.type, file.name);
-    const key = `portal/${group}/${date}/${photoId}${ext}`;
+    const key = `portal/summer-2026/${date}/${photoId}${ext}`;
     await env.PHOTOS.put(key, file.stream(), {
       httpMetadata: { contentType: file.type || "application/octet-stream" }
     });
@@ -338,11 +372,10 @@ async function createStaffPost(request, env) {
     ).bind(photoId, key, file.name || `${photoId}${ext}`, file.type || "", file.size || 0, session.email || session.subject || "staff", now).run();
     await env.DB.prepare(
       "INSERT INTO post_photos (post_id, photo_id, sort_order) VALUES (?1, ?2, ?3)"
-    ).bind(postId, photoId, index).run();
-    if (albumSlug) await attachPhotoToAlbum(env, albumSlug, group, photoId, index, now);
+    ).bind(postId, photoId, firstSortOrder + index).run();
   }
 
-  return json({ ok: true, postId });
+  return json({ ok: true, postId, added: files.length, date: day.date });
 }
 
 async function updateStaffPost(request, env, url) {
@@ -518,6 +551,10 @@ function normalizeActivities(value) {
 function validSummerWeek(value) {
   const weeks = new Set(SUMMER_WEEKS.map(week => week.slug));
   return weeks.has(value) ? value : "week-1-festivals";
+}
+
+function summerDay(date) {
+  return SUMMER_DAYS.find(day => day.date === date) || null;
 }
 
 function validSessionWeeks(values) {
