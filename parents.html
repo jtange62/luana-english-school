@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap">
-<link rel="stylesheet" href="/portal.css">
+<link rel="stylesheet" href="/portal.css?v=20260727-privacy1">
 </head>
 <body class="portal-body" data-app="parents">
 <main class="portal-shell">
@@ -74,6 +74,14 @@
     <nav class="week-tabs" id="week-tabs" aria-label="サマースクールの参加週"></nav>
     <div class="week-heading" id="week-heading"></div>
     <nav class="day-tabs" id="day-tabs" aria-label="日にちから選ぶ"></nav>
+    <aside class="photo-privacy-notice" aria-labelledby="photo-privacy-title">
+      <span class="photo-privacy-icon" aria-hidden="true">🔒</span>
+      <div>
+        <h3 id="photo-privacy-title">写真・動画のお取り扱いについて</h3>
+        <p>保護者ページには、お子さまたちの活動の様子を写真や動画で掲載しています。ほかのお子さまが写っている場合がございますので、SNSなどへの投稿・共有の際は、プライバシーに十分ご配慮ください。</p>
+        <p>皆さまが安心してご利用いただけるよう、ご理解とご協力をお願いいたします。</p>
+      </div>
+    </aside>
     <div class="post-list" id="post-list"></div>
     <aside class="main-site-invitation" id="main-site-invitation" aria-labelledby="main-site-invitation-title" hidden>
       <div>
@@ -94,6 +102,7 @@
   <button type="button" class="lightbox-nav lightbox-prev" id="lightbox-prev" aria-label="前の写真">&lsaquo;</button>
   <img id="lightbox-image" alt="">
   <button type="button" class="lightbox-nav lightbox-next" id="lightbox-next" aria-label="次の写真">&rsaquo;</button>
+  <p class="lightbox-privacy-note">SNS等への投稿・共有時は、ほかのお子さまのプライバシーにご配慮ください。</p>
   <p class="lightbox-counter" id="lightbox-counter" aria-live="polite"></p>
 </div>
 

@@ -479,6 +479,47 @@ button:disabled {
   gap: 36px;
 }
 
+.photo-privacy-notice {
+  display: flex;
+  max-width: 720px;
+  gap: 14px;
+  margin: 22px auto 30px;
+  padding: 18px 20px;
+  border: 1px solid rgba(22, 140, 175, 0.2);
+  border-radius: 16px;
+  background: rgba(239, 250, 253, 0.94);
+  box-shadow: 0 8px 22px rgba(58, 86, 96, 0.06);
+  color: #42545b;
+}
+
+.photo-privacy-icon {
+  display: grid;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 50%;
+  background: #d9f1f6;
+  font-size: 1rem;
+}
+
+.photo-privacy-notice h3 {
+  margin: 1px 0 7px;
+  color: #294b57;
+  font-family: "Nunito", system-ui, sans-serif;
+  font-size: 1rem;
+}
+
+.photo-privacy-notice p {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.75;
+}
+
+.photo-privacy-notice p + p {
+  margin-top: 5px;
+}
+
 .main-site-invitation {
   display: flex;
   max-width: 720px;
@@ -1430,6 +1471,18 @@ button:disabled {
   font-weight: 800;
 }
 
+.lightbox-privacy-note {
+  position: absolute;
+  right: 20px;
+  bottom: 56px;
+  left: 20px;
+  margin: 0 auto;
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
 @media (max-width: 820px) {
   .unlock-card {
     grid-template-columns: 1fr;
@@ -1486,6 +1539,7 @@ button:disabled {
   }
 
   .parent-authenticated .week-heading,
+  .photo-privacy-notice,
   .parent-authenticated .post-list,
   .parent-authenticated .post-card {
     width: 100%;
@@ -1494,6 +1548,12 @@ button:disabled {
 
   .parent-authenticated .week-heading {
     padding: 17px 20px 19px;
+  }
+
+  .photo-privacy-notice {
+    align-items: flex-start;
+    margin-top: 18px;
+    padding: 16px;
   }
 
   .day-tabs {

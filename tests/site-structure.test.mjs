@@ -98,6 +98,15 @@ test("photo albums keep parent navigation and a simple staff upload flow", async
   assert.match(portal, /groupPostsByDate/);
 });
 
+test("parent photo albums include persistent privacy guidance", async () => {
+  const parents = await source("parents.html");
+  const styles = await source("portal.css");
+  assert.match(parents, /写真・動画のお取り扱いについて/);
+  assert.match(parents, /SNSなどへの投稿・共有の際は、プライバシーに十分ご配慮ください/);
+  assert.match(parents, /lightbox-privacy-note/);
+  assert.match(styles, /\.photo-privacy-notice/);
+});
+
 test("each summer week has a distinct lightweight collection theme", async () => {
   const portal = await source("portal.js");
   const styles = await source("portal.css");
