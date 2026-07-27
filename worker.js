@@ -17,7 +17,7 @@ export default {
         url.pathname.startsWith("/migrations/") ||
         url.pathname.startsWith("/docs/")
       ) return text("Not found", 404);
-      if (url.pathname === "/parents") return asset(request, env, "/parents.html");
+      if (url.pathname === "/parents") return asset(request, env, "/parents.html?v=20260727-visible-code1");
       if (url.pathname === "/staff") return asset(request, env, "/staff.html");
       if (url.pathname.startsWith("/api/")) return await handleApi(request, env, url);
       return asset(request, env);

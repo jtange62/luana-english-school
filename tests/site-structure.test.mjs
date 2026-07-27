@@ -109,6 +109,7 @@ test("parent photo albums include persistent privacy guidance", async () => {
 
 test("parent access codes remain visible while being entered", async () => {
   const parents = await source("parents.html");
+  const worker = await source("worker.js");
   const accessCodeFields = parents.match(/<input name="password"[^>]+>/g) || [];
   assert.equal(accessCodeFields.length, 2);
   for (const field of accessCodeFields) {
@@ -116,6 +117,7 @@ test("parent access codes remain visible while being entered", async () => {
     assert.match(field, /autocomplete="one-time-code"/);
     assert.doesNotMatch(field, /type="password"/);
   }
+  assert.match(worker, /parents\.html\?v=20260727-visible-code1/);
 });
 
 test("each summer week has a distinct lightweight collection theme", async () => {
