@@ -170,6 +170,7 @@ let selectedPhotoFiles = [];
 let nativeFileShareAvailable = false;
 let shareFilePromises = new Map();
 let shareReadinessRevision = 0;
+let shareReadinessTimer = 0;
 
 function photoUrlWithParameter(photo, parameter) {
   const separator = photo.url.includes("?") ? "&" : "?";
@@ -272,9 +273,11 @@ function setAlbumSelectionMode(enabled) {
     nativeFileShareAvailable = false;
     shareFilePromises.clear();
     shareReadinessRevision += 1;
+    window.clearTimeout(shareReadinessTimer);
+    shareReadinessTimer = 0;
   }
   refreshAlbumSelection();
-  updateShareReadiness();
+  scheduleShareReadiness();
 }
 
 function toggleSelectedPhoto(index) {
@@ -290,11 +293,11 @@ function toggleSelectedPhoto(index) {
       : "You can save up to 10 photos at a time";
     return;
   }
-  refreshAlbumSelection();
-  updateShareReadiness();
+  refreshAlbumSelection(index);
+  scheduleShareReadiness();
 }
 
-function refreshAlbumSelection() {
+function refreshAlbumSelection(changedIndex = null) {
   const bar = document.getElementById("album-selection-bar");
   const toggle = document.getElementById("album-select-toggle");
   const count = document.getElementById("album-selection-count");
@@ -309,22 +312,27 @@ function refreshAlbumSelection() {
   if (count) count.textContent = parentView
     ? `${selectedPhotoIndexes.size} / ${MAX_SELECTED_PHOTOS}枚選択中`
     : `${selectedPhotoIndexes.size} / ${MAX_SELECTED_PHOTOS} selected`;
-  document.querySelectorAll(".album-browser-photo").forEach(button => {
-    const index = Number(button.dataset.photoIndex);
-    const selected = selectedPhotoIndexes.has(index);
-    button.classList.toggle("is-selected", selected);
-    if (albumSelectionMode) {
-      button.setAttribute("aria-pressed", String(selected));
-      button.setAttribute("aria-label", parentView
-        ? `写真 ${index + 1} を${selected ? "選択解除" : "選択"}`
-        : `${selected ? "Deselect" : "Select"} photo ${index + 1}`);
-    } else {
-      button.removeAttribute("aria-pressed");
-      button.setAttribute("aria-label", parentView
-        ? `写真 ${index + 1} を開く`
-        : `Open photo ${index + 1}`);
-    }
-  });
+  const selector = changedIndex === null
+    ? ".album-browser-photo"
+    : `.album-browser-photo[data-photo-index="${changedIndex}"]`;
+  document.querySelectorAll(selector).forEach(button => refreshAlbumPhotoSelection(button, parentView));
+}
+
+function refreshAlbumPhotoSelection(button, parentView = isParentPresentation()) {
+  const index = Number(button.dataset.photoIndex);
+  const selected = selectedPhotoIndexes.has(index);
+  button.classList.toggle("is-selected", selected);
+  if (albumSelectionMode) {
+    button.setAttribute("aria-pressed", String(selected));
+    button.setAttribute("aria-label", parentView
+      ? `写真 ${index + 1} を${selected ? "選択解除" : "選択"}`
+      : `${selected ? "Deselect" : "Select"} photo ${index + 1}`);
+  } else {
+    button.removeAttribute("aria-pressed");
+    button.setAttribute("aria-label", parentView
+      ? `写真 ${index + 1} を開く`
+      : `Open photo ${index + 1}`);
+  }
 }
 
 function prepareShareFile(index) {
@@ -343,8 +351,15 @@ function prepareShareFile(index) {
   return promise;
 }
 
+function scheduleShareReadiness() {
+  shareReadinessRevision += 1;
+  window.clearTimeout(shareReadinessTimer);
+  shareReadinessTimer = window.setTimeout(updateShareReadiness, 80);
+}
+
 async function updateShareReadiness() {
   const revision = ++shareReadinessRevision;
+  shareReadinessTimer = 0;
   const button = document.getElementById("album-share-selected");
   const help = document.getElementById("album-selection-help");
   const parentView = isParentPresentation();

@@ -1605,6 +1605,8 @@ button:disabled {
   background: #eadfce;
   box-shadow: none;
   aspect-ratio: 1;
+  contain: layout paint;
+  touch-action: manipulation;
 }
 
 .album-browser-photo img {
