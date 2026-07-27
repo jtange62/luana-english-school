@@ -204,7 +204,7 @@ function appendAlbumBatch() {
     button.type = "button";
     button.className = "album-browser-photo";
     button.setAttribute("aria-label", `写真 ${index + 1} を開く`);
-    button.innerHTML = `<img src="${escapeAttribute(photo.url)}" alt="${escapeAttribute(photo.alt || "")}" loading="lazy" decoding="async"><span>${index + 1}</span>`;
+    button.innerHTML = `<img src="${escapeAttribute(photo.thumbnailUrl || photo.url)}" alt="${escapeAttribute(photo.alt || "")}" loading="lazy" decoding="async"><span>${index + 1}</span>`;
     button.addEventListener("click", () => showPhotoViewer(index));
     grid.append(button);
   });
@@ -356,7 +356,7 @@ function appendPhotoGrid(card, photos) {
     button.className = "portal-photo";
     button.type = "button";
     button.setAttribute("aria-label", `${parentView ? "写真を開く" : "Open photo"} ${index + 1}`);
-    button.innerHTML = `<img src="${escapeAttribute(photo.url)}" alt="${escapeAttribute(photo.alt || "")}" loading="lazy">`;
+    button.innerHTML = `<img src="${escapeAttribute(photo.thumbnailUrl || photo.url)}" alt="${escapeAttribute(photo.alt || "")}" loading="lazy" decoding="async">`;
     if (index === previewPhotos.length - 1 && photoList.length > previewPhotos.length) {
       button.insertAdjacentHTML("beforeend", `<span class="photo-more">+${photoList.length - previewPhotos.length}</span>`);
     }

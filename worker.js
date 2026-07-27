@@ -23,6 +23,10 @@ const SUMMER_DAYS = [
   { date: "2026-08-21", week: "week-3-adventure", title: "Field Trip — Hug-Hug & Westrock Bouldering" }
 ];
 const MAX_DAILY_UPLOAD = 10;
+const MAX_PHOTO_BYTES = 20 * 1024 * 1024;
+const PHOTO_CONTENT_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+const PHOTO_WIDTH = 1600;
+const THUMBNAIL_WIDTH = 480;
 
 export default {
   async fetch(request, env) {
@@ -333,6 +337,10 @@ async function createStaffPost(request, env) {
   if (files.length > MAX_DAILY_UPLOAD) {
     return json({ error: `Upload up to ${MAX_DAILY_UPLOAD} photos at a time` }, 400);
   }
+  const invalidFile = files.find(file => !PHOTO_CONTENT_TYPES.has(file.type) || file.size > MAX_PHOTO_BYTES);
+  if (invalidFile) {
+    return json({ error: "Photos must be JPEG, PNG, or WebP files no larger than 20 MB each" }, 400);
+  }
 
   const now = new Date().toISOString();
   const createdBy = session.email || session.subject || "staff";
@@ -362,20 +370,58 @@ async function createStaffPost(request, env) {
   for (let index = 0; index < files.length; index += 1) {
     const file = files[index];
     const photoId = crypto.randomUUID();
-    const ext = extensionFor(file.type, file.name);
-    const key = `portal/summer-2026/${date}/${photoId}${ext}`;
-    await env.PHOTOS.put(key, file.stream(), {
-      httpMetadata: { contentType: file.type || "application/octet-stream" }
-    });
-    await env.DB.prepare(
-      "INSERT INTO photos (id, r2_key, filename, content_type, size_bytes, uploaded_by, created_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)"
-    ).bind(photoId, key, file.name || `${photoId}${ext}`, file.type || "", file.size || 0, session.email || session.subject || "staff", now).run();
-    await env.DB.prepare(
-      "INSERT INTO post_photos (post_id, photo_id, sort_order) VALUES (?1, ?2, ?3)"
-    ).bind(postId, photoId, firstSortOrder + index).run();
+    const source = await file.arrayBuffer();
+    const optimized = await optimizePhoto(env, source, PHOTO_WIDTH, 82);
+    const thumbnail = await optimizePhoto(env, source, THUMBNAIL_WIDTH, 76);
+    const key = `portal/summer-2026/${date}/${photoId}.webp`;
+    const thumbnailKey = `portal/summer-2026/${date}/${photoId}-thumb.webp`;
+    let fullStored = false;
+    let thumbnailStored = false;
+    let photoRowStored = false;
+    try {
+      await env.PHOTOS.put(key, optimized, {
+        httpMetadata: { contentType: "image/webp" }
+      });
+      fullStored = true;
+      await env.PHOTOS.put(thumbnailKey, thumbnail, {
+        httpMetadata: { contentType: "image/webp" }
+      });
+      thumbnailStored = true;
+      await env.DB.prepare(
+        "INSERT INTO photos (id, r2_key, thumbnail_r2_key, filename, content_type, size_bytes, uploaded_by, created_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)"
+      ).bind(
+        photoId,
+        key,
+        thumbnailKey,
+        file.name || `${photoId}.webp`,
+        "image/webp",
+        optimized.byteLength + thumbnail.byteLength,
+        session.email || session.subject || "staff",
+        now
+      ).run();
+      photoRowStored = true;
+      await env.DB.prepare(
+        "INSERT INTO post_photos (post_id, photo_id, sort_order) VALUES (?1, ?2, ?3)"
+      ).bind(postId, photoId, firstSortOrder + index).run();
+    } catch (error) {
+      if (photoRowStored) await env.DB.prepare("DELETE FROM photos WHERE id = ?1").bind(photoId).run();
+      if (thumbnailStored) await env.PHOTOS.delete(thumbnailKey);
+      if (fullStored) await env.PHOTOS.delete(key);
+      throw error;
+    }
   }
 
   return json({ ok: true, postId, added: files.length, date: day.date });
+}
+
+async function optimizePhoto(env, source, width, quality) {
+  const output = await env.IMAGES
+    .input(source)
+    .transform({ width, fit: "scale-down" })
+    .output({ format: "image/webp", quality });
+  const response = output.response();
+  if (!response.ok) throw new Error("Could not optimize an uploaded photo");
+  return response.arrayBuffer();
 }
 
 async function updateStaffPost(request, env, url) {
@@ -417,7 +463,7 @@ async function deleteStaffPost(request, env, url) {
   if (!postId) return json({ error: "Post not found" }, 404);
 
   const photos = await env.DB.prepare(
-    `SELECT ph.id, ph.r2_key
+    `SELECT ph.id, ph.r2_key, ph.thumbnail_r2_key
      FROM photos ph
      JOIN post_photos pp ON pp.photo_id = ph.id
      WHERE pp.post_id = ?1`
@@ -425,6 +471,7 @@ async function deleteStaffPost(request, env, url) {
 
   for (const photo of photos.results) {
     await env.PHOTOS.delete(photo.r2_key);
+    if (photo.thumbnail_r2_key) await env.PHOTOS.delete(photo.thumbnail_r2_key);
   }
 
   await env.DB.batch([
@@ -448,7 +495,7 @@ async function getPhoto(request, env, url) {
 
   let photo = null;
   if (session.role === "staff") {
-    photo = await env.DB.prepare("SELECT r2_key, content_type FROM photos WHERE id = ?1").bind(photoId).first();
+    photo = await env.DB.prepare("SELECT r2_key, thumbnail_r2_key, content_type FROM photos WHERE id = ?1").bind(photoId).first();
   } else {
     const groups = session.groups?.length ? session.groups : await parentGroups(env, session.email);
     const weeks = parentSessionWeeks(session);
@@ -456,7 +503,7 @@ async function getPhoto(request, env, url) {
     const groupPlaceholders = groups.map(() => "?").join(",");
     const weekPlaceholders = weeks.map(() => "?").join(",");
     photo = await env.DB.prepare(
-      `SELECT DISTINCT ph.r2_key, ph.content_type
+      `SELECT DISTINCT ph.r2_key, ph.thumbnail_r2_key, ph.content_type
        FROM photos ph
        JOIN post_photos pp ON pp.photo_id = ph.id
        JOIN posts p ON p.id = pp.post_id
@@ -468,13 +515,17 @@ async function getPhoto(request, env, url) {
   }
 
   if (!photo) return json({ error: "Photo not found" }, 404);
-  const object = await env.PHOTOS.get(photo.r2_key);
+  const thumbnailRequested = url.searchParams.get("variant") === "thumbnail";
+  const objectKey = thumbnailRequested && photo.thumbnail_r2_key ? photo.thumbnail_r2_key : photo.r2_key;
+  const object = await env.PHOTOS.get(objectKey);
   if (!object) return json({ error: "Photo not found" }, 404);
 
   return new Response(object.body, {
     headers: {
-      "content-type": photo.content_type || object.httpMetadata?.contentType || "application/octet-stream",
-      "cache-control": "private, max-age=300"
+      "content-type": thumbnailRequested && photo.thumbnail_r2_key
+        ? "image/webp"
+        : photo.content_type || object.httpMetadata?.contentType || "application/octet-stream",
+      "cache-control": "private, max-age=86400"
     }
   });
 }
@@ -602,6 +653,7 @@ async function photosForPosts(env, postIds) {
     if (!map.has(row.post_id)) map.set(row.post_id, []);
     map.get(row.post_id).push({
       url: `/api/photos/${row.id}`,
+      thumbnailUrl: `/api/photos/${row.id}?variant=thumbnail`,
       alt: row.filename || "Luana photo"
     });
   });

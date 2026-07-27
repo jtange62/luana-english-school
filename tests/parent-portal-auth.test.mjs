@@ -71,11 +71,33 @@ function environment() {
         return { body: new TextEncoder().encode(key), httpMetadata: { contentType: "image/jpeg" } };
       }
     },
+    IMAGES: mockImages(),
     SESSION_SECRET: "test-session-secret",
     STAFF_PORTAL_PASSWORD: "staff-test-password",
     SUMMER_WEEK_1_CODE: "sunny-one",
     SUMMER_WEEK_2_CODE: "ocean-two",
     SUMMER_WEEK_3_CODE: "camp-three"
+  };
+}
+
+function mockImages() {
+  return {
+    input(source) {
+      return {
+        transform() {
+          return this;
+        },
+        async output() {
+          return {
+            response() {
+              return new Response(source, {
+                headers: { "content-type": "image/webp" }
+              });
+            }
+          };
+        }
+      };
+    }
   };
 }
 
@@ -201,7 +223,8 @@ test("staff uploads append photos to the existing scheduled day", async () => {
       async put(key) {
         uploads.push(key);
       }
-    }
+    },
+    IMAGES: mockImages()
   };
   const loginResponse = await worker.fetch(apiRequest("/api/auth/password", {
     method: "POST",
@@ -223,7 +246,8 @@ test("staff uploads append photos to the existing scheduled day", async () => {
   assert.equal(response.status, 200, JSON.stringify(data));
   assert.equal(data.postId, "existing-songkran-day");
   assert.equal(data.added, 1);
-  assert.equal(uploads.length, 1);
+  assert.equal(uploads.length, 2);
+  assert.ok(uploads.some(key => key.endsWith("-thumb.webp")));
   assert.ok(writes.some(write =>
     write.sql.includes("INSERT INTO post_photos") &&
     write.args[0] === "existing-songkran-day" &&
