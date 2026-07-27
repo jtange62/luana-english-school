@@ -169,10 +169,15 @@ function updateLightbox() {
   const counter = document.getElementById("lightbox-counter");
   const previous = document.getElementById("lightbox-prev");
   const next = document.getElementById("lightbox-next");
+  const download = document.getElementById("photo-download");
   const photo = lightboxPhotos[lightboxIndex];
   if (!image || !photo) return;
   image.src = photo.url;
   image.alt = photo.alt || "";
+  if (download) {
+    const separator = photo.url.includes("?") ? "&" : "?";
+    download.href = `${photo.url}${separator}download=1`;
+  }
   if (counter) counter.textContent = `${lightboxIndex + 1} / ${lightboxPhotos.length}`;
   if (previous) previous.hidden = lightboxPhotos.length < 2;
   if (next) next.hidden = lightboxPhotos.length < 2;
@@ -258,6 +263,7 @@ function closeGallery() {
   document.body.classList.remove("lightbox-open");
   albumObserver?.disconnect();
   document.getElementById("lightbox-image")?.removeAttribute("src");
+  document.getElementById("photo-download")?.removeAttribute("href");
   lightboxReturnFocus?.focus?.();
 }
 

@@ -122,6 +122,18 @@ test("parent photo albums include persistent privacy guidance", async () => {
   assert.match(styles, /\.photo-privacy-notice/);
 });
 
+test("photo viewer offers a mobile-friendly authenticated save action", async () => {
+  const parents = await source("parents.html");
+  const portal = await source("portal.js");
+  const worker = await source("worker.js");
+  const styles = await source("portal.css");
+  assert.match(parents, /id="photo-download"[^>]+download[^>]*>写真を保存/);
+  assert.match(portal, /download=1/);
+  assert.match(worker, /content-disposition/);
+  assert.match(worker, /photoDownloadDisposition/);
+  assert.match(styles, /\.photo-download/);
+});
+
 test("parent access codes remain visible while being entered", async () => {
   const parents = await source("parents.html");
   const worker = await source("worker.js");

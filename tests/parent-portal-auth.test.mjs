@@ -159,6 +159,13 @@ test("parent week codes filter feeds and direct photo access", async () => {
     headers: { cookie: weekTwoLogin.cookie }
   }), env);
   assert.equal(allowedPhoto.status, 200);
+
+  const downloadedPhoto = await worker.fetch(apiRequest("/api/photos/photo-week-2?download=1", {
+    headers: { cookie: weekTwoLogin.cookie }
+  }), env);
+  assert.equal(downloadedPhoto.status, 200);
+  assert.match(downloadedPhoto.headers.get("content-disposition"), /^attachment;/);
+  assert.match(downloadedPhoto.headers.get("content-disposition"), /\.webp/);
 });
 
 test("incorrect week codes are rejected", async () => {

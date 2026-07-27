@@ -495,7 +495,7 @@ async function getPhoto(request, env, url) {
 
   let photo = null;
   if (session.role === "staff") {
-    photo = await env.DB.prepare("SELECT r2_key, thumbnail_r2_key, content_type FROM photos WHERE id = ?1").bind(photoId).first();
+    photo = await env.DB.prepare("SELECT r2_key, thumbnail_r2_key, content_type, filename FROM photos WHERE id = ?1").bind(photoId).first();
   } else {
     const groups = session.groups?.length ? session.groups : await parentGroups(env, session.email);
     const weeks = parentSessionWeeks(session);
@@ -503,7 +503,7 @@ async function getPhoto(request, env, url) {
     const groupPlaceholders = groups.map(() => "?").join(",");
     const weekPlaceholders = weeks.map(() => "?").join(",");
     photo = await env.DB.prepare(
-      `SELECT DISTINCT ph.r2_key, ph.thumbnail_r2_key, ph.content_type
+      `SELECT DISTINCT ph.r2_key, ph.thumbnail_r2_key, ph.content_type, ph.filename
        FROM photos ph
        JOIN post_photos pp ON pp.photo_id = ph.id
        JOIN posts p ON p.id = pp.post_id
@@ -520,14 +520,16 @@ async function getPhoto(request, env, url) {
   const object = await env.PHOTOS.get(objectKey);
   if (!object) return json({ error: "Photo not found" }, 404);
 
-  return new Response(object.body, {
-    headers: {
-      "content-type": thumbnailRequested && photo.thumbnail_r2_key
-        ? "image/webp"
-        : photo.content_type || object.httpMetadata?.contentType || "application/octet-stream",
-      "cache-control": "private, max-age=86400"
-    }
-  });
+  const headers = {
+    "content-type": thumbnailRequested && photo.thumbnail_r2_key
+      ? "image/webp"
+      : photo.content_type || object.httpMetadata?.contentType || "application/octet-stream",
+    "cache-control": "private, max-age=86400"
+  };
+  if (url.searchParams.get("download") === "1" && !thumbnailRequested) {
+    headers["content-disposition"] = photoDownloadDisposition(photo.filename, photoId);
+  }
+  return new Response(object.body, { headers });
 }
 
 async function attachPhotoToAlbum(env, albumSlug, group, photoId, sortOrder, now) {
@@ -823,6 +825,22 @@ function extensionFor(type, name) {
   if (type === "image/webp") return ".webp";
   const match = String(name || "").match(/\.[a-z0-9]+$/i);
   return match ? match[0].toLowerCase() : "";
+}
+
+function photoDownloadDisposition(filename, photoId) {
+  const base = String(filename || "luana-photo")
+    .split(/[\\/]/)
+    .pop()
+    .replace(/[\u0000-\u001f\u007f]/g, "")
+    .replace(/\.[^.]+$/, "")
+    .trim()
+    .slice(0, 100) || "luana-photo";
+  const unicodeName = `${base}.webp`;
+  const encodedName = encodeURIComponent(unicodeName)
+    .replaceAll("'", "%27")
+    .replaceAll("(", "%28")
+    .replaceAll(")", "%29");
+  return `attachment; filename="luana-photo-${photoId}.webp"; filename*=UTF-8''${encodedName}`;
 }
 
 function postIdFromUrl(url) {
