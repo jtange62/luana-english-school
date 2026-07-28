@@ -6,6 +6,8 @@ changes to the Luana English School site.
 ## Current Known Good State
 
 - Production URL: `https://luana-english-school.jtange62.workers.dev`
+- Staging URL: `https://luana-english-school-staging.jtange62.workers.dev`
+  (separate D1 database and R2 bucket — see `docs/deployment.md`)
 - Working branch: `agent/parent-portal-checkpoint`
 - Latest local checkpoint tag: `checkpoint-before-photo-optimization-2026-07-28`
 - Latest deployed Worker version after photo-selection performance work:
