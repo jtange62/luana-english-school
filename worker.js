@@ -23,6 +23,7 @@ const SUMMER_DAYS = [
   { date: "2026-08-21", week: "week-3-adventure", title: "Field Trip — Hug-Hug & Westrock Bouldering" }
 ];
 const MAX_DAILY_UPLOAD = 10;
+const UPLOAD_CONCURRENCY = 4;
 const MAX_PHOTO_BYTES = 20 * 1024 * 1024;
 const PHOTO_CONTENT_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 const PHOTO_WIDTH = 1600;
@@ -238,7 +239,7 @@ async function parentFeed(request, env) {
     id: album.slug,
     title: album.title,
     description: album.description,
-    coverUrl: album.cover_photo_id ? `/api/photos/${album.cover_photo_id}` : ""
+    coverUrl: album.cover_photo_id ? `/api/photos/${album.cover_photo_id}?variant=thumbnail` : ""
   })));
 
   return json({
@@ -320,7 +321,7 @@ async function staffAlbums(env) {
     title: album.title,
     description: album.description,
     photoCount: album.photo_count || 0,
-    coverUrl: album.cover_photo_id ? `/api/photos/${album.cover_photo_id}` : ""
+    coverUrl: album.cover_photo_id ? `/api/photos/${album.cover_photo_id}?variant=thumbnail` : ""
   }));
 }
 
@@ -367,12 +368,13 @@ async function createStaffPost(request, env) {
   ).bind(postId).first();
   const firstSortOrder = Number(orderRow?.last_order ?? -1) + 1;
 
-  for (let index = 0; index < files.length; index += 1) {
-    const file = files[index];
+  const storePhoto = async (file, index) => {
     const photoId = crypto.randomUUID();
     const source = await file.arrayBuffer();
-    const optimized = await optimizePhoto(env, source, PHOTO_WIDTH, 82);
-    const thumbnail = await optimizePhoto(env, source, THUMBNAIL_WIDTH, 76);
+    const [optimized, thumbnail] = await Promise.all([
+      optimizePhoto(env, source, PHOTO_WIDTH, 82),
+      optimizePhoto(env, source, THUMBNAIL_WIDTH, 76)
+    ]);
     const key = `portal/summer-2026/${date}/${photoId}.webp`;
     const thumbnailKey = `portal/summer-2026/${date}/${photoId}-thumb.webp`;
     let fullStored = false;
@@ -409,6 +411,12 @@ async function createStaffPost(request, env) {
       if (fullStored) await env.PHOTOS.delete(key);
       throw error;
     }
+  };
+
+  for (let start = 0; start < files.length; start += UPLOAD_CONCURRENCY) {
+    await Promise.all(
+      files.slice(start, start + UPLOAD_CONCURRENCY).map((file, offset) => storePhoto(file, start + offset))
+    );
   }
 
   return json({ ok: true, postId, added: files.length, date: day.date });
@@ -469,21 +477,18 @@ async function deleteStaffPost(request, env, url) {
      WHERE pp.post_id = ?1`
   ).bind(postId).all();
 
-  for (const photo of photos.results) {
-    await env.PHOTOS.delete(photo.r2_key);
-    if (photo.thumbnail_r2_key) await env.PHOTOS.delete(photo.thumbnail_r2_key);
-  }
+  const objectKeys = photos.results.flatMap(photo =>
+    [photo.r2_key, photo.thumbnail_r2_key].filter(Boolean)
+  );
+  if (objectKeys.length) await env.PHOTOS.delete(objectKeys);
 
   await env.DB.batch([
     env.DB.prepare("DELETE FROM album_photos WHERE photo_id IN (SELECT photo_id FROM post_photos WHERE post_id = ?1)").bind(postId),
-    env.DB.prepare("DELETE FROM post_photos WHERE post_id = ?1").bind(postId)
+    env.DB.prepare("DELETE FROM post_photos WHERE post_id = ?1").bind(postId),
+    ...photos.results.map(photo => env.DB.prepare("DELETE FROM photos WHERE id = ?1").bind(photo.id)),
+    env.DB.prepare("DELETE FROM posts WHERE id = ?1").bind(postId)
   ]);
 
-  for (const photo of photos.results) {
-    await env.DB.prepare("DELETE FROM photos WHERE id = ?1").bind(photo.id).run();
-  }
-
-  await env.DB.prepare("DELETE FROM posts WHERE id = ?1").bind(postId).run();
   return json({ ok: true });
 }
 
@@ -531,7 +536,7 @@ async function getPhoto(request, env, url) {
     return new Response(response.body, {
       headers: {
         "content-type": "image/jpeg",
-        "cache-control": "private, max-age=86400"
+        "cache-control": "private, max-age=31536000, immutable"
       }
     });
   }
@@ -540,7 +545,7 @@ async function getPhoto(request, env, url) {
     "content-type": thumbnailRequested && photo.thumbnail_r2_key
       ? "image/webp"
       : photo.content_type || object.httpMetadata?.contentType || "application/octet-stream",
-    "cache-control": "private, max-age=86400"
+    "cache-control": "private, max-age=31536000, immutable"
   };
   if (url.searchParams.get("download") === "1" && !thumbnailRequested) {
     headers["content-disposition"] = photoDownloadDisposition(photo.filename, photoId);
@@ -834,14 +839,6 @@ function normalizeEmail(email) {
 function cleanReturnTo(returnTo) {
   if (!returnTo || !returnTo.startsWith("/") || returnTo.startsWith("//")) return "/parents";
   return returnTo;
-}
-
-function extensionFor(type, name) {
-  if (type === "image/jpeg") return ".jpg";
-  if (type === "image/png") return ".png";
-  if (type === "image/webp") return ".webp";
-  const match = String(name || "").match(/\.[a-z0-9]+$/i);
-  return match ? match[0].toLowerCase() : "";
 }
 
 function photoDownloadDisposition(filename, photoId) {
