@@ -240,3 +240,19 @@ test("Worker configuration keeps required bindings and secrets", async () => {
     assert.ok(requiredSecrets.has(secret), `${secret} must remain required`);
   }
 });
+
+test("homepage exposes local business and website identity to search engines", async () => {
+  const html = await source("index.html");
+  assert.match(html, /"@type": \["EducationalOrganization", "LocalBusiness"\]/);
+  assert.match(html, /"@type": "WebSite"/);
+  assert.match(html, /"@id": "https:\/\/luanaenglishschool\.jp\/#school"/);
+  assert.match(html, /https:\/\/www\.instagram\.com\/luana\.english\.school\//);
+  assert.doesNotMatch(html, /<meta name="keywords"/);
+});
+
+test("Worker permanently redirects the www hostname to the canonical domain", async () => {
+  const worker = await source("worker.js");
+  assert.match(worker, /url\.hostname === "www\.luanaenglishschool\.jp"/);
+  assert.match(worker, /url\.hostname = "luanaenglishschool\.jp"/);
+  assert.match(worker, /Response\.redirect\(url\.toString\(\), 301\)/);
+});

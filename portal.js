@@ -578,7 +578,7 @@ function appendPhotoGrid(card, photos) {
   const grid = card.querySelector(".photo-grid");
   const parentView = isParentPresentation();
   const photoList = photos || [];
-  const previewPhotos = photoList.slice(0, 4);
+  const previewPhotos = appKind === "staff" ? photoList : photoList.slice(0, 4);
   grid.classList.add(`photo-count-${previewPhotos.length}`);
   previewPhotos.forEach((photo, index) => {
     const button = document.createElement("button");
@@ -602,6 +602,7 @@ function appendPhotoGrid(card, photos) {
     grid.hidden = true;
     return;
   }
+  if (appKind === "staff") return;
   const galleryButton = document.createElement("button");
   galleryButton.type = "button";
   galleryButton.className = "view-gallery";
@@ -623,12 +624,15 @@ function activityCard(post, { showDate = true } = {}) {
   card.innerHTML = `
     <div class="post-text">
       ${showDate ? `<p class="post-date">${parentView ? formatDailyDate(post.date) : formatDate(post.date)}</p>` : ""}
-      <h3>${escapeText(post.title || (parentView ? "フォトアルバム" : "Photo album"))}</h3>
+      ${post.title ? `<h3>${escapeText(post.title)}</h3>` : ""}
       ${post.body ? `<p class="daily-summary">${escapeText(post.body)}</p>` : ""}
       ${activities.length ? `<div class="activity-tags" aria-label="${parentView ? "今日の活動" : "Activities"}">${activities.map(activity => `<span>${escapeText(activity)}</span>`).join("")}</div>` : ""}
     </div>
     <div class="photo-grid"></div>
   `;
+  if (!showDate && !post.title && !post.body && !activities.length) {
+    card.querySelector(".post-text").hidden = true;
+  }
   appendPhotoGrid(card, post.photos);
   return card;
 }
@@ -672,6 +676,16 @@ function renderDayTabs(container, posts) {
 function renderDailyCollections(container, posts, decorateCard) {
   groupPostsByDate(posts).forEach(group => {
     const day = scheduledDay(group.date, group.week);
+    const dailyPost = {
+      id: `day-${group.date}`,
+      date: group.date,
+      week: group.week,
+      title: "",
+      body: "",
+      activities: [],
+      status: group.posts.every(post => post.status === "published") ? "published" : "draft",
+      photos: group.posts.flatMap(post => post.photos || [])
+    };
     const collection = document.createElement("section");
     collection.className = "daily-collection";
     collection.id = `day-${group.date}`;
@@ -680,17 +694,15 @@ function renderDailyCollections(container, posts, decorateCard) {
       <header class="daily-collection-heading">
         <p>${formatDailyDate(group.date)}</p>
         <h3>${escapeText(day.title)}</h3>
-        <span>${group.posts.length}${isParentPresentation() ? "件のフォトアルバム" : group.posts.length === 1 ? " photo album" : " photo albums"}</span>
+        <span>${dailyPost.photos.length} photos</span>
       </header>
       <div class="daily-albums"></div>
     `;
     const albums = collection.querySelector(".daily-albums");
-    group.posts.forEach(post => {
-      const card = activityCard(post, { showDate: false });
-      card.classList.add("daily-album");
-      decorateCard?.(card, post);
-      albums.append(card);
-    });
+    const card = activityCard(dailyPost, { showDate: false });
+    card.classList.add("daily-album");
+    decorateCard?.(card, dailyPost);
+    albums.append(card);
     container.append(collection);
   });
 }

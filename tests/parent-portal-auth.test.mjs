@@ -192,7 +192,6 @@ test("staff daily uploads require at least one picture", async () => {
   form.set("group", "summer-2026");
   form.set("week", "week-1-festivals");
   form.set("date", "2026-07-27");
-  form.set("title", "Making Carnival Masks");
   form.set("status", "published");
 
   const response = await worker.fetch(apiRequest("/api/staff/posts", {

@@ -34,6 +34,11 @@ export default {
     const url = new URL(request.url);
 
     try {
+      if (url.hostname === "www.luanaenglishschool.jp") {
+        url.protocol = "https:";
+        url.hostname = "luanaenglishschool.jp";
+        return Response.redirect(url.toString(), 301);
+      }
       if (
         url.pathname === "/worker.js" ||
         url.pathname === "/wrangler.jsonc" ||
@@ -64,6 +69,7 @@ async function handleApi(request, env, url) {
   if (url.pathname === "/api/staff/posts" && request.method === "POST") return createStaffPost(request, env);
   if (url.pathname.startsWith("/api/staff/posts/") && request.method === "PATCH") return updateStaffPost(request, env, url);
   if (url.pathname.startsWith("/api/staff/posts/") && request.method === "DELETE") return deleteStaffPost(request, env, url);
+  if (url.pathname.startsWith("/api/staff/photos/") && request.method === "DELETE") return deleteStaffPhoto(request, env, url);
   if (url.pathname.startsWith("/api/photos/") && request.method === "GET") return getPhoto(request, env, url);
   return json({ error: "Not found" }, 404);
 }
@@ -445,7 +451,7 @@ async function updateStaffPost(request, env, url) {
   const weekSlug = validSummerWeek(String(body.week || "").trim());
 
   if (!postId) return json({ error: "Post not found" }, 404);
-  if (!group || !date || !title) return json({ error: "Week, date, and album title are required" }, 400);
+  if (!group || !date) return json({ error: "Week and date are required" }, 400);
 
   const existing = await env.DB.prepare("SELECT id, week_slug, activities FROM posts WHERE id = ?1").bind(postId).first();
   if (!existing) return json({ error: "Post not found" }, 404);
@@ -488,6 +494,37 @@ async function deleteStaffPost(request, env, url) {
     ...photos.results.map(photo => env.DB.prepare("DELETE FROM photos WHERE id = ?1").bind(photo.id)),
     env.DB.prepare("DELETE FROM posts WHERE id = ?1").bind(postId)
   ]);
+
+  return json({ ok: true });
+}
+
+async function deleteStaffPhoto(request, env, url) {
+  requireSetup(env, ["DB", "PHOTOS"]);
+  await requireSession(request, env, "staff");
+  const photoId = decodeURIComponent(url.pathname.replace("/api/staff/photos/", "")).trim();
+  if (!photoId) return json({ error: "Photo not found" }, 404);
+
+  const photo = await env.DB.prepare(
+    `SELECT ph.r2_key, pp.post_id
+     FROM photos ph
+     JOIN post_photos pp ON pp.photo_id = ph.id
+     WHERE ph.id = ?1`
+  ).bind(photoId).first();
+  if (!photo) return json({ error: "Photo not found" }, 404);
+
+  await env.PHOTOS.delete(photo.r2_key);
+  await env.DB.batch([
+    env.DB.prepare("DELETE FROM album_photos WHERE photo_id = ?1").bind(photoId),
+    env.DB.prepare("DELETE FROM post_photos WHERE photo_id = ?1").bind(photoId),
+    env.DB.prepare("DELETE FROM photos WHERE id = ?1").bind(photoId)
+  ]);
+
+  const remaining = await env.DB.prepare(
+    "SELECT COUNT(*) AS count FROM post_photos WHERE post_id = ?1"
+  ).bind(photo.post_id).first();
+  if (!Number(remaining?.count || 0)) {
+    await env.DB.prepare("DELETE FROM posts WHERE id = ?1").bind(photo.post_id).run();
+  }
 
   return json({ ok: true });
 }
@@ -675,6 +712,7 @@ async function photosForPosts(env, postIds) {
   rows.results.forEach(row => {
     if (!map.has(row.post_id)) map.set(row.post_id, []);
     map.get(row.post_id).push({
+      id: row.id,
       url: `/api/photos/${row.id}`,
       thumbnailUrl: `/api/photos/${row.id}?variant=thumbnail`,
       filename: row.filename || "",

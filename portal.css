@@ -1222,6 +1222,30 @@ button:disabled {
   box-shadow: 0 18px 40px rgba(84, 62, 45, 0.14);
 }
 
+.staff-photo-item {
+  position: relative;
+  min-width: 0;
+}
+
+.staff-photo-item .portal-photo {
+  display: block;
+}
+
+.staff-photo-item .remove-photo {
+  position: absolute;
+  right: 7px;
+  bottom: 7px;
+  width: auto;
+  margin: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 2px 10px rgba(66, 40, 26, 0.2);
+  color: #a93224;
+  font-size: 0.76rem;
+  padding: 6px 10px;
+}
+
 .manage-card-header {
   display: flex;
   justify-content: space-between;
@@ -1746,6 +1770,9 @@ button:disabled {
   max-width: 94vw;
   max-height: 88vh;
   border-radius: 8px;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 .lightbox-close {
