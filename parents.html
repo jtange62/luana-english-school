@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap">
-<link rel="stylesheet" href="/portal.css">
+<link rel="stylesheet" href="/portal.css?v=20260727-privacy1">
 </head>
 <body class="portal-body" data-app="parents">
 <main class="portal-shell">
@@ -31,7 +31,7 @@
         <p>スクールからお知らせした、お子さまが参加する週のアクセスコードを入力してください。ご家族や祖父母の方とも共有していただけます。</p>
         <label>
           アクセスコード
-          <input name="password" type="password" autocomplete="current-password" required placeholder="アクセスコードを入力">
+          <input name="password" type="text" autocomplete="one-time-code" autocapitalize="none" spellcheck="false" required placeholder="アクセスコードを入力">
         </label>
         <button type="submit">写真とお知らせを見る</button>
         <p class="form-note" id="login-note">この端末では、次回から30日間コードの入力は不要です。</p>
@@ -58,7 +58,7 @@
       </div>
       <label>
         アクセスコード
-        <input name="password" type="password" autocomplete="current-password" required placeholder="アクセスコードを入力">
+        <input name="password" type="text" autocomplete="one-time-code" autocapitalize="none" spellcheck="false" required placeholder="アクセスコードを入力">
       </label>
       <div class="unlock-actions">
         <button type="submit">追加する</button>
@@ -74,18 +74,66 @@
     <nav class="week-tabs" id="week-tabs" aria-label="サマースクールの参加週"></nav>
     <div class="week-heading" id="week-heading"></div>
     <nav class="day-tabs" id="day-tabs" aria-label="日にちから選ぶ"></nav>
+    <aside class="photo-privacy-notice" aria-labelledby="photo-privacy-title">
+      <span class="photo-privacy-icon" aria-hidden="true">🔒</span>
+      <div>
+        <h3 id="photo-privacy-title">写真・動画のお取り扱いについて</h3>
+        <p>保護者ページには、お子さまたちの活動の様子を写真や動画で掲載しています。ほかのお子さまが写っている場合がございますので、SNSなどへの投稿・共有の際は、プライバシーに十分ご配慮ください。</p>
+        <p>皆さまが安心してご利用いただけるよう、ご理解とご協力をお願いいたします。</p>
+      </div>
+    </aside>
     <div class="post-list" id="post-list"></div>
+    <footer class="main-site-invitation" id="main-site-invitation" aria-labelledby="main-site-invitation-title">
+      <a class="main-site-link" href="/" target="_blank" rel="noopener">
+        <span class="main-site-copy">
+          <span class="main-site-kicker">Luana English School</span>
+          <strong id="main-site-invitation-title">夏の思い出の、その先も。</strong>
+          <span>プリスクール、キンダー、アフタースクールなど、Luanaでは通常クラスも開講しています。</span>
+        </span>
+        <span class="main-site-address">luanaenglishschool.jp <span aria-hidden="true">↗</span></span>
+      </a>
+    </footer>
   </section>
 </main>
 
-<div class="lightbox" id="lightbox" hidden>
-  <button type="button" id="lightbox-close" aria-label="写真を閉じる">&times;</button>
-  <button type="button" class="lightbox-nav lightbox-prev" id="lightbox-prev" aria-label="前の写真">&lsaquo;</button>
-  <img id="lightbox-image" alt="">
-  <button type="button" class="lightbox-nav lightbox-next" id="lightbox-next" aria-label="次の写真">&rsaquo;</button>
-  <p class="lightbox-counter" id="lightbox-counter" aria-live="polite"></p>
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-labelledby="album-browser-title" hidden>
+  <section class="album-browser" id="album-browser">
+    <header class="album-browser-header">
+      <div>
+        <p>Luana Photo Album</p>
+        <h2 id="album-browser-title">写真をすべて見る</h2>
+        <span id="album-browser-count"></span>
+      </div>
+      <div class="album-header-actions">
+        <button type="button" class="album-select-toggle" id="album-select-toggle">写真をまとめて保存</button>
+        <button type="button" class="lightbox-close" id="lightbox-close" aria-label="アルバムを閉じる">&times;</button>
+      </div>
+    </header>
+    <div class="album-browser-grid" id="album-browser-grid"></div>
+    <div class="album-browser-sentinel" id="album-browser-sentinel" aria-hidden="true"></div>
+    <div class="album-selection-bar" id="album-selection-bar" hidden>
+      <div>
+        <strong id="album-selection-count">0 / 10枚選択中</strong>
+        <span id="album-selection-help">保存したい写真をタップしてください</span>
+      </div>
+      <button type="button" id="album-share-selected" disabled>選んだ写真を保存</button>
+    </div>
+    <p class="album-browser-privacy">SNS等への投稿・共有時は、ほかのお子さまのプライバシーにご配慮ください。</p>
+  </section>
+  <section class="photo-viewer" id="photo-viewer" aria-label="写真ビューアー" hidden>
+    <button type="button" class="viewer-back" id="viewer-back">‹ アルバム</button>
+    <button type="button" class="lightbox-close" id="viewer-close" aria-label="写真を閉じる">&times;</button>
+    <button type="button" class="lightbox-nav lightbox-prev" id="lightbox-prev" aria-label="前の写真">&lsaquo;</button>
+    <div class="lightbox-image-stage" id="lightbox-image-stage">
+      <img id="lightbox-image" alt="">
+    </div>
+    <button type="button" class="lightbox-nav lightbox-next" id="lightbox-next" aria-label="次の写真">&rsaquo;</button>
+    <p class="lightbox-privacy-note">SNS等への投稿・共有時は、ほかのお子さまのプライバシーにご配慮ください。</p>
+    <a class="photo-download" id="photo-download" href="#" download>写真を保存</a>
+    <p class="lightbox-counter" id="lightbox-counter" aria-live="polite"></p>
+  </section>
 </div>
 
-<script src="/portal.js"></script>
+<script src="/portal.js?v=20260728-multisave1"></script>
 </body>
 </html>

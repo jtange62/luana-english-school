@@ -71,10 +71,33 @@ function environment() {
         return { body: new TextEncoder().encode(key), httpMetadata: { contentType: "image/jpeg" } };
       }
     },
+    IMAGES: mockImages(),
     SESSION_SECRET: "test-session-secret",
+    STAFF_PORTAL_PASSWORD: "staff-test-password",
     SUMMER_WEEK_1_CODE: "sunny-one",
     SUMMER_WEEK_2_CODE: "ocean-two",
     SUMMER_WEEK_3_CODE: "camp-three"
+  };
+}
+
+function mockImages() {
+  return {
+    input(source) {
+      return {
+        transform() {
+          return this;
+        },
+        async output() {
+          return {
+            response() {
+              return new Response(source, {
+                headers: { "content-type": "image/webp" }
+              });
+            }
+          };
+        }
+      };
+    }
   };
 }
 
@@ -136,10 +159,111 @@ test("parent week codes filter feeds and direct photo access", async () => {
     headers: { cookie: weekTwoLogin.cookie }
   }), env);
   assert.equal(allowedPhoto.status, 200);
+
+  const downloadedPhoto = await worker.fetch(apiRequest("/api/photos/photo-week-2?download=1", {
+    headers: { cookie: weekTwoLogin.cookie }
+  }), env);
+  assert.equal(downloadedPhoto.status, 200);
+  assert.match(downloadedPhoto.headers.get("content-disposition"), /^attachment;/);
+  assert.match(downloadedPhoto.headers.get("content-disposition"), /\.webp/);
+
+  const sharedPhoto = await worker.fetch(apiRequest("/api/photos/photo-week-2?share=1", {
+    headers: { cookie: weekTwoLogin.cookie }
+  }), env);
+  assert.equal(sharedPhoto.status, 200);
+  assert.equal(sharedPhoto.headers.get("content-type"), "image/jpeg");
 });
 
 test("incorrect week codes are rejected", async () => {
   const result = await login(environment(), "wrong-code");
   assert.equal(result.response.status, 401);
   assert.deepEqual(await result.response.json(), { error: "Incorrect access code" });
+});
+
+test("staff daily uploads require at least one picture", async () => {
+  const env = environment();
+  const loginResponse = await worker.fetch(apiRequest("/api/auth/password", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ audience: "staff", password: "staff-test-password" })
+  }), env);
+  const cookie = loginResponse.headers.get("set-cookie")?.split(";")[0] || "";
+  const form = new FormData();
+  form.set("group", "summer-2026");
+  form.set("week", "week-1-festivals");
+  form.set("date", "2026-07-27");
+  form.set("status", "published");
+
+  const response = await worker.fetch(apiRequest("/api/staff/posts", {
+    method: "POST",
+    headers: { cookie },
+    body: form
+  }), env);
+
+  assert.equal(response.status, 400);
+  assert.deepEqual(await response.json(), {
+    error: "Add at least one photo"
+  });
+});
+
+test("staff uploads append photos to the existing scheduled day", async () => {
+  const writes = [];
+  const uploads = [];
+  const env = {
+    ...environment(),
+    DB: {
+      prepare(sql) {
+        return {
+          args: [],
+          bind(...args) {
+            this.args = args;
+            return this;
+          },
+          async first() {
+            if (sql.includes("SELECT id FROM posts")) return { id: "existing-songkran-day" };
+            if (sql.includes("MAX(sort_order)")) return { last_order: 68 };
+            return null;
+          },
+          async run() {
+            writes.push({ sql, args: this.args });
+            return { success: true };
+          }
+        };
+      }
+    },
+    PHOTOS: {
+      async put(key) {
+        uploads.push(key);
+      }
+    },
+    IMAGES: mockImages()
+  };
+  const loginResponse = await worker.fetch(apiRequest("/api/auth/password", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ audience: "staff", password: "staff-test-password" })
+  }), env);
+  const cookie = loginResponse.headers.get("set-cookie")?.split(";")[0] || "";
+  const form = new FormData();
+  form.set("date", "2026-07-27");
+  form.append("photos", new Blob(["new photo"], { type: "image/jpeg" }), "songkran.jpg");
+
+  const response = await worker.fetch(apiRequest("/api/staff/posts", {
+    method: "POST",
+    headers: { cookie },
+    body: form
+  }), env);
+  const data = await response.json();
+
+  assert.equal(response.status, 200, JSON.stringify(data));
+  assert.equal(data.postId, "existing-songkran-day");
+  assert.equal(data.added, 1);
+  assert.equal(uploads.length, 2);
+  assert.ok(uploads.some(key => key.endsWith("-thumb.webp")));
+  assert.ok(writes.some(write =>
+    write.sql.includes("INSERT INTO post_photos") &&
+    write.args[0] === "existing-songkran-day" &&
+    write.args[2] === 69
+  ));
+  assert.ok(!writes.some(write => write.sql.includes("INSERT OR IGNORE INTO posts")));
 });

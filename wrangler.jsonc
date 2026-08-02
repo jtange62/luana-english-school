@@ -35,7 +35,47 @@
       "bucket_name": "luana-parent-photos"
     }
   ],
+  "images": {
+    "binding": "IMAGES"
+  },
   "compatibility_flags": [
     "nodejs_compat"
-  ]
+  ],
+  "env": {
+    "staging": {
+      "name": "luana-english-school-staging",
+      "vars": {
+        "LOGIN_FROM_EMAIL": "Luana English School <portal@luanaenglishschool.jp>"
+      },
+      "secrets": {
+        "required": [
+          "SESSION_SECRET",
+          "STAFF_PORTAL_PASSWORD",
+          "SUMMER_WEEK_1_CODE",
+          "SUMMER_WEEK_2_CODE",
+          "SUMMER_WEEK_3_CODE"
+        ]
+      },
+      "assets": {
+        "directory": ".",
+        "binding": "ASSETS"
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "luana_parent_portal_staging",
+          "database_id": "38117423-b2c3-4e88-896d-41736ff15feb"
+        }
+      ],
+      "r2_buckets": [
+        {
+          "binding": "PHOTOS",
+          "bucket_name": "luana-parent-photos-staging"
+        }
+      ],
+      "images": {
+        "binding": "IMAGES"
+      }
+    }
+  }
 }

@@ -8,7 +8,6 @@
 <link rel="canonical" href="https://luanaenglishschool.jp/">
 <title>Luana English School | 府中市中河原の子ども英語教室</title>
 <meta name="description" content="府中市中河原の子ども英語教室、Luana English School。1〜2歳・幼稚園児・小学生を対象に、ネイティブ講師と保育士がAll Englishの環境で楽しく学べるレッスンを提供。体験レッスン受付中。">
-<meta name="keywords" content="英語学校,英語教室,子ども英語,府中市,中河原,ルアナイングリッシュスクール,Luana English School,プレスクール,アフタースクール,サマースクール,ネイティブ講師">
 <meta name="category" content="英語学校">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Luana English School">
@@ -163,6 +162,36 @@
   }
   .hero-copy { min-width: 0; }
 
+  .hero-brand-line {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    margin-bottom: 22px;
+    padding: 12px 20px 12px 18px;
+    border-left: 5px solid var(--coral);
+    border-radius: 0 16px 16px 0;
+    background: rgba(255, 255, 255, 0.68);
+    color: #704814;
+    font-family: 'Baloo 2', cursive;
+    box-shadow: 0 8px 24px rgba(112, 72, 20, 0.08);
+    animation: popIn 0.7s ease both;
+  }
+  .hero-school-name {
+    color: #704814;
+    font-size: clamp(1.2rem, 2vw, 1.5rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: 0.01em;
+  }
+  .hero-motto {
+    color: #B34B3D;
+    font-size: clamp(1rem, 1.65vw, 1.18rem);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+  }
+
   .hero h1 {
     font-family: 'Baloo 2', cursive;
     font-size: clamp(2.6rem, 5vw, 4.2rem);
@@ -237,6 +266,13 @@
 
   @media(max-width: 900px) {
     .hero-content { grid-template-columns: 1fr; text-align: center; gap: 40px; }
+    .hero-brand-line {
+      align-items: center;
+      padding: 12px 18px;
+      border-top: 4px solid var(--coral);
+      border-left: 0;
+      border-radius: 14px;
+    }
     .hero-sub { margin-left: auto; margin-right: auto; }
     .hero-trust { justify-content: center; }
     .hero-photo { justify-self: center; max-width: 390px; }
@@ -736,7 +772,7 @@
   @media(max-width: 600px) {
     /* Typography */
     body { font-size: 15px; }
-    .hero h1, .hero-sub, .hero-trust, .hero-cta { animation: none; }
+    .hero-brand-line, .hero h1, .hero-sub, .hero-trust, .hero-cta { animation: none; }
     .hero h1 { font-size: 2rem; Line-height: 1.2; }
     .hero { padding-left: 16px; padding-right: 16px; }
     .hero-sub { font-size: 0.95rem; padding: 0 8px; }
@@ -901,6 +937,10 @@ document.querySelectorAll(".nav-links a").forEach(link => {
   <div class="blob blob-4"></div>
   <div class="hero-content">
     <div class="hero-copy">
+      <div class="hero-brand-line" aria-label="Luana English School — Learn, Play, and Shine in English">
+        <span class="hero-school-name">Luana English School</span>
+        <span class="hero-motto">Learn, Play, and Shine in English</span>
+      </div>
       <h1><em>府中市中河原の<br>子ども英語スクール</em></h1>
       <p class="hero-sub">
         遊びや体験を通して、英語を「勉強」ではなく自然に使える力へ。
@@ -916,7 +956,9 @@ document.querySelectorAll(".nav-links a").forEach(link => {
     </div>
     <div class="hero-photo">
       <div class="hero-photo-frame">
-        <img src="photos/Everyday Moments/July 2026/photo-35.jpg"
+        <img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-35.webp"
+          srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-35.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-35.webp 960w"
+          sizes="(max-width:600px) calc(100vw - 40px), 45vw"
           alt="Luana English Schoolの先生と子どもたちが教室で楽しく過ごす様子"
           width="900" height="1200" fetchpriority="high" decoding="async">
       </div>
@@ -1291,7 +1333,8 @@ document.querySelectorAll(".nav-links a").forEach(link => {
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "EducationalOrganization",
+  "@type": ["EducationalOrganization", "LocalBusiness"],
+  "@id": "https://luanaenglishschool.jp/#school",
   "name": "Luana English School",
   "alternateName": "ルアナイングリッシュスクール",
   "description": "府中市中河原の子ども英語教室。ネイティブ講師と保育士が、幼児から小学生の英語力を楽しく育てます。",
@@ -1320,13 +1363,30 @@ document.querySelectorAll(".nav-links a").forEach(link => {
     "opens": "09:00",
     "closes": "18:00"
   },
+  "logo": "https://luanaenglishschool.jp/images/optimized/logo-256.webp",
   "image": "https://luanaenglishschool.jp/photos/Everyday%20Moments/June%202026/photo-01.jpg",
   "sameAs": [
-    "https://share.google/GKLR65rSGx8cFoN6S"
+    "https://www.google.com/maps/search/Luana+English+School/@35.6619352,139.4605206,17z",
+    "https://www.instagram.com/luana.english.school/"
   ],
   "priceRange": "¥¥",
   "currenciesAccepted": "JPY",
   "paymentAccepted": "Cash, Credit Card"
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": "https://luanaenglishschool.jp/#website",
+  "url": "https://luanaenglishschool.jp/",
+  "name": "Luana English School",
+  "alternateName": "ルアナイングリッシュスクール",
+  "inLanguage": "ja",
+  "publisher": {
+    "@id": "https://luanaenglishschool.jp/#school"
+  }
 }
 </script>
 

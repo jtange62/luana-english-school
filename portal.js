@@ -1,11 +1,23 @@
 const appKind = document.body.dataset.app;
 
+function isParentPresentation() {
+  return appKind === "parents" || document.body.classList.contains("staff-parent-preview");
+}
+
 const SUMMER_WEEKS = [
   {
     slug: "week-1-festivals",
     shortTitle: "Week 1",
     dateRange: "7/27 – 7/31",
     emoji: "🌎",
+    theme: "festivals",
+    days: [
+      { date: "2026-07-27", title: "Thailand — Songkran", badge: "💦 Songkran" },
+      { date: "2026-07-28", title: "Brazil — Carnival", badge: "🎭 Carnival" },
+      { date: "2026-07-29", title: "India — Holi", badge: "🎨 Holi" },
+      { date: "2026-07-30", title: "Japan — Matsuri", badge: "🏮 Matsuri" },
+      { date: "2026-07-31", title: "Field Trip — teamLab", badge: "🚌 Field Trip: teamLab" }
+    ],
     title: "Festivals of the World",
     description: "Celebrations, games, crafts, and traditions from around the world.",
     shortTitleJa: "第1週",
@@ -17,6 +29,14 @@ const SUMMER_WEEKS = [
     shortTitle: "Week 2",
     dateRange: "8/3 – 8/7",
     emoji: "🐠",
+    theme: "ocean",
+    days: [
+      { date: "2026-08-03", title: "Ocean Life", badge: "🐠 Ocean Life" },
+      { date: "2026-08-04", title: "Coral Reef", badge: "🪸 Coral Reef" },
+      { date: "2026-08-05", title: "Tides & Waves", badge: "🌊 Tides & Waves" },
+      { date: "2026-08-06", title: "Conservation & Climate", badge: "🌍 Conservation & Climate" },
+      { date: "2026-08-07", title: "Field Trip — Enoshima Aquarium", badge: "🚌 Field Trip: Enoshima Aquarium" }
+    ],
     title: "Ocean Explorers",
     description: "Ocean activities, crafts, games, and discoveries.",
     shortTitleJa: "第2週",
@@ -28,6 +48,14 @@ const SUMMER_WEEKS = [
     shortTitle: "Week 3",
     dateRange: "8/17 – 8/21",
     emoji: "🧭",
+    theme: "adventure",
+    days: [
+      { date: "2026-08-17", title: "Survival Priorities", badge: "🧰 Survival Priorities" },
+      { date: "2026-08-18", title: "Preparation & Teamwork", badge: "🤝 Preparation & Teamwork" },
+      { date: "2026-08-19", title: "Navigation", badge: "🧭 Navigation" },
+      { date: "2026-08-20", title: "Resource Management", badge: "🎒 Resource Management" },
+      { date: "2026-08-21", title: "Field Trip — Hug-Hug & Westrock Bouldering", badge: "🚌 Field Trip: Hug-Hug & Westrock Bouldering" }
+    ],
     title: "Adventure Survival",
     description: "Adventure skills, survival challenges, and teamwork.",
     shortTitleJa: "第3週",
@@ -39,9 +67,9 @@ const SUMMER_WEEKS = [
 const demoPosts = [
   {
     id: "demo-water-fight",
-    date: "2026-07-24",
+    date: "2026-07-27",
     week: "week-1-festivals",
-    title: "Brazil — Carnival",
+    title: "Making Carnival Masks",
     body: "カーニバルの音楽やダンスを楽しみ、カラフルなマスクを作りました。",
     activities: ["Music", "Dancing", "Mask Making"],
     status: "published",
@@ -83,6 +111,26 @@ function weekFor(slug) {
   return SUMMER_WEEKS.find(week => week.slug === slug) || SUMMER_WEEKS[0];
 }
 
+function scheduledDay(date, weekSlug) {
+  const week = weekFor(weekSlug);
+  return week.days.find(day => day.date === date) || {
+    date,
+    title: "Summer School",
+    badge: "📷 Summer School"
+  };
+}
+
+function weekForDate(date) {
+  return SUMMER_WEEKS.find(week => week.days.some(day => day.date === date));
+}
+
+function localDateValue(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 function initialWeek(posts, availableWeeks = SUMMER_WEEKS) {
   const allowed = new Set(availableWeeks.map(week => week.slug));
   const latest = posts.find(post => allowed.has(post.week));
@@ -111,42 +159,351 @@ function showSetupBanner(id) {
 
 let lightboxPhotos = [];
 let lightboxIndex = 0;
+let albumRenderCount = 0;
+let albumObserver;
+let lightboxReturnFocus;
+const ALBUM_BATCH_SIZE = 12;
+const MAX_SELECTED_PHOTOS = 10;
+let albumSelectionMode = false;
+let selectedPhotoIndexes = new Set();
+let selectedPhotoFiles = [];
+let nativeFileShareAvailable = false;
+let shareFilePromises = new Map();
+let shareReadinessRevision = 0;
+let shareReadinessTimer = 0;
+
+function photoUrlWithParameter(photo, parameter) {
+  const separator = photo.url.includes("?") ? "&" : "?";
+  return `${photo.url}${separator}${parameter}`;
+}
 
 function updateLightbox() {
-  const box = document.getElementById("lightbox");
   const image = document.getElementById("lightbox-image");
   const counter = document.getElementById("lightbox-counter");
   const previous = document.getElementById("lightbox-prev");
   const next = document.getElementById("lightbox-next");
+  const download = document.getElementById("photo-download");
   const photo = lightboxPhotos[lightboxIndex];
-  if (!box || !image || !photo) return;
+  if (!image || !photo) return;
   image.src = photo.url;
   image.alt = photo.alt || "";
+  if (download) {
+    download.href = photoUrlWithParameter(photo, "download=1");
+  }
   if (counter) counter.textContent = `${lightboxIndex + 1} / ${lightboxPhotos.length}`;
   if (previous) previous.hidden = lightboxPhotos.length < 2;
   if (next) next.hidden = lightboxPhotos.length < 2;
+  [lightboxIndex - 1, lightboxIndex + 1].forEach(index => {
+    const nearby = lightboxPhotos[(index + lightboxPhotos.length) % lightboxPhotos.length];
+    if (nearby) new Image().src = nearby.url;
+  });
 }
 
-function openGallery(photos, startIndex = 0) {
+function showPhotoViewer(startIndex = 0) {
+  const browser = document.getElementById("album-browser");
+  const viewer = document.getElementById("photo-viewer");
+  if (!viewer || !lightboxPhotos.length) return;
+  lightboxIndex = Math.max(0, Math.min(startIndex, lightboxPhotos.length - 1));
+  if (browser) browser.hidden = true;
+  viewer.hidden = false;
+  updateLightbox();
+  document.getElementById("viewer-close")?.focus();
+}
+
+function appendAlbumBatch() {
+  const grid = document.getElementById("album-browser-grid");
+  const sentinel = document.getElementById("album-browser-sentinel");
+  if (!grid || albumRenderCount >= lightboxPhotos.length) return;
+  const batchEnd = Math.min(albumRenderCount + ALBUM_BATCH_SIZE, lightboxPhotos.length);
+  lightboxPhotos.slice(albumRenderCount, batchEnd).forEach((photo, offset) => {
+    const index = albumRenderCount + offset;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "album-browser-photo";
+    button.dataset.photoIndex = String(index);
+    button.setAttribute("aria-label", `写真 ${index + 1} を開く`);
+    button.innerHTML = `<img src="${escapeAttribute(photo.thumbnailUrl || photo.url)}" alt="${escapeAttribute(photo.alt || "")}" loading="lazy" decoding="async"><span class="album-photo-number">${index + 1}</span><span class="album-photo-check" aria-hidden="true">✓</span>`;
+    let longPressTriggered = false;
+    let longPressTimer;
+    let pointerStart = null;
+    button.addEventListener("pointerdown", event => {
+      if (event.pointerType === "mouse" || albumSelectionMode) return;
+      pointerStart = { x: event.clientX, y: event.clientY };
+      longPressTimer = window.setTimeout(() => {
+        longPressTriggered = true;
+        setAlbumSelectionMode(true);
+        toggleSelectedPhoto(index);
+        navigator.vibrate?.(30);
+      }, 550);
+    });
+    button.addEventListener("pointermove", event => {
+      if (!pointerStart || !longPressTimer) return;
+      if (Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y) > 10) {
+        clearTimeout(longPressTimer);
+        longPressTimer = null;
+      }
+    });
+    ["pointerup", "pointercancel", "pointerleave"].forEach(type => {
+      button.addEventListener(type, () => {
+        clearTimeout(longPressTimer);
+        longPressTimer = null;
+        pointerStart = null;
+      });
+    });
+    button.addEventListener("click", () => {
+      if (longPressTriggered) {
+        longPressTriggered = false;
+        return;
+      }
+      if (albumSelectionMode) toggleSelectedPhoto(index);
+      else showPhotoViewer(index);
+    });
+    grid.append(button);
+  });
+  refreshAlbumSelection();
+  albumRenderCount = batchEnd;
+  if (sentinel) sentinel.hidden = albumRenderCount >= lightboxPhotos.length;
+}
+
+function setAlbumSelectionMode(enabled) {
+  albumSelectionMode = enabled;
+  if (!enabled) {
+    selectedPhotoIndexes.clear();
+    selectedPhotoFiles = [];
+    nativeFileShareAvailable = false;
+    shareFilePromises.clear();
+    shareReadinessRevision += 1;
+    window.clearTimeout(shareReadinessTimer);
+    shareReadinessTimer = 0;
+  }
+  refreshAlbumSelection();
+  scheduleShareReadiness();
+}
+
+function toggleSelectedPhoto(index) {
+  const help = document.getElementById("album-selection-help");
+  if (selectedPhotoIndexes.has(index)) {
+    selectedPhotoIndexes.delete(index);
+    shareFilePromises.delete(index);
+  } else if (selectedPhotoIndexes.size < MAX_SELECTED_PHOTOS) {
+    selectedPhotoIndexes.add(index);
+  } else {
+    if (help) help.textContent = isParentPresentation()
+      ? "一度に保存できる写真は10枚までです"
+      : "You can save up to 10 photos at a time";
+    return;
+  }
+  refreshAlbumSelection(index);
+  scheduleShareReadiness();
+}
+
+function refreshAlbumSelection(changedIndex = null) {
+  const bar = document.getElementById("album-selection-bar");
+  const toggle = document.getElementById("album-select-toggle");
+  const count = document.getElementById("album-selection-count");
+  const parentView = isParentPresentation();
+  if (bar) bar.hidden = !albumSelectionMode;
+  if (toggle) {
+    toggle.textContent = albumSelectionMode
+      ? parentView ? "選択をやめる" : "Cancel selection"
+      : parentView ? "写真をまとめて保存" : "Save multiple";
+    toggle.setAttribute("aria-pressed", String(albumSelectionMode));
+  }
+  if (count) count.textContent = parentView
+    ? `${selectedPhotoIndexes.size} / ${MAX_SELECTED_PHOTOS}枚選択中`
+    : `${selectedPhotoIndexes.size} / ${MAX_SELECTED_PHOTOS} selected`;
+  const selector = changedIndex === null
+    ? ".album-browser-photo"
+    : `.album-browser-photo[data-photo-index="${changedIndex}"]`;
+  document.querySelectorAll(selector).forEach(button => refreshAlbumPhotoSelection(button, parentView));
+}
+
+function refreshAlbumPhotoSelection(button, parentView = isParentPresentation()) {
+  const index = Number(button.dataset.photoIndex);
+  const selected = selectedPhotoIndexes.has(index);
+  button.classList.toggle("is-selected", selected);
+  if (albumSelectionMode) {
+    button.setAttribute("aria-pressed", String(selected));
+    button.setAttribute("aria-label", parentView
+      ? `写真 ${index + 1} を${selected ? "選択解除" : "選択"}`
+      : `${selected ? "Deselect" : "Select"} photo ${index + 1}`);
+  } else {
+    button.removeAttribute("aria-pressed");
+    button.setAttribute("aria-label", parentView
+      ? `写真 ${index + 1} を開く`
+      : `Open photo ${index + 1}`);
+  }
+}
+
+function prepareShareFile(index) {
+  if (shareFilePromises.has(index)) return shareFilePromises.get(index);
+  const photo = lightboxPhotos[index];
+  const promise = fetch(photoUrlWithParameter(photo, "share=1"), {
+    credentials: "same-origin"
+  }).then(async response => {
+    if (!response.ok) throw new Error("Could not prepare photo");
+    const blob = await response.blob();
+    return new File([blob], `luana-photo-${String(index + 1).padStart(2, "0")}.jpg`, {
+      type: "image/jpeg"
+    });
+  });
+  shareFilePromises.set(index, promise);
+  return promise;
+}
+
+function scheduleShareReadiness() {
+  shareReadinessRevision += 1;
+  window.clearTimeout(shareReadinessTimer);
+  shareReadinessTimer = window.setTimeout(updateShareReadiness, 80);
+}
+
+async function updateShareReadiness() {
+  const revision = ++shareReadinessRevision;
+  shareReadinessTimer = 0;
+  const button = document.getElementById("album-share-selected");
+  const help = document.getElementById("album-selection-help");
+  const parentView = isParentPresentation();
+  selectedPhotoFiles = [];
+  nativeFileShareAvailable = false;
+  if (button) button.disabled = true;
+  if (!selectedPhotoIndexes.size) {
+    if (help) help.textContent = parentView
+      ? "保存したい写真をタップしてください"
+      : "Tap the photos you want to save";
+    return;
+  }
+  if (help) help.textContent = parentView ? "写真を準備しています…" : "Preparing photos…";
+  try {
+    const indexes = [...selectedPhotoIndexes].sort((a, b) => a - b);
+    const files = await Promise.all(indexes.map(prepareShareFile));
+    if (revision !== shareReadinessRevision) return;
+    selectedPhotoFiles = files;
+    nativeFileShareAvailable = typeof navigator.share === "function" &&
+      (!navigator.canShare || navigator.canShare({ files }));
+    if (button) button.disabled = false;
+    if (help) {
+      help.textContent = nativeFileShareAvailable
+        ? parentView
+          ? "次の画面で「画像を保存」を選びます"
+          : "Choose “Save Images” on the next screen"
+        : parentView
+          ? "選んだ写真を端末にダウンロードします"
+          : "The selected photos will download to this device";
+    }
+  } catch {
+    if (revision !== shareReadinessRevision) return;
+    if (help) help.textContent = parentView
+      ? "この端末では1枚ずつ保存してください"
+      : "Please save photos individually on this device";
+  }
+}
+
+function shareSelectedPhotos() {
+  const help = document.getElementById("album-selection-help");
+  const parentView = isParentPresentation();
+  if (!selectedPhotoFiles.length) return;
+  if (nativeFileShareAvailable) {
+    navigator.share({
+      files: selectedPhotoFiles,
+      title: parentView ? "Luanaの写真" : "Luana photos"
+    }).then(() => {
+      if (help) help.textContent = parentView
+        ? "共有画面で保存先を選べます"
+        : "Choose where to save from the share sheet";
+    }).catch(error => {
+      if (error.name !== "AbortError" && help) {
+        help.textContent = parentView ? "保存できませんでした。もう一度お試しください" : "Could not save. Please try again";
+      }
+    });
+    return;
+  }
+
+  selectedPhotoFiles.forEach(file => {
+    const objectUrl = URL.createObjectURL(file);
+    const link = document.createElement("a");
+    link.href = objectUrl;
+    link.download = file.name;
+    link.hidden = true;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60000);
+  });
+  if (help) help.textContent = parentView
+    ? "ダウンロードが始まりました"
+    : "Downloads started";
+}
+
+function showAlbumBrowser(reset = false) {
+  const browser = document.getElementById("album-browser");
+  const viewer = document.getElementById("photo-viewer");
+  const grid = document.getElementById("album-browser-grid");
+  const count = document.getElementById("album-browser-count");
+  const sentinel = document.getElementById("album-browser-sentinel");
+  if (!browser || !grid) return;
+  if (viewer) viewer.hidden = true;
+  browser.hidden = false;
+  if (reset) setAlbumSelectionMode(false);
+  if (count) count.textContent = `${lightboxPhotos.length}枚`;
+  if (reset || !grid.children.length) {
+    grid.innerHTML = "";
+    albumRenderCount = 0;
+    appendAlbumBatch();
+    albumObserver?.disconnect();
+    if ("IntersectionObserver" in window && sentinel) {
+      albumObserver = new IntersectionObserver(entries => {
+        if (entries.some(entry => entry.isIntersecting)) appendAlbumBatch();
+      }, { root: browser, rootMargin: "300px" });
+      albumObserver.observe(sentinel);
+    } else {
+      while (albumRenderCount < lightboxPhotos.length) appendAlbumBatch();
+    }
+    browser.scrollTop = 0;
+  }
+  document.getElementById("lightbox-close")?.focus();
+}
+
+function openGallery(photos, startIndex = null) {
   const box = document.getElementById("lightbox");
   if (!box || !photos?.length) return;
   lightboxPhotos = photos;
-  lightboxIndex = Math.max(0, Math.min(startIndex, photos.length - 1));
-  updateLightbox();
+  lightboxReturnFocus = document.activeElement;
   box.hidden = false;
+  document.body.classList.add("lightbox-open");
+  if (startIndex === null) showAlbumBrowser(true);
+  else showPhotoViewer(startIndex);
+}
+
+function closeGallery() {
+  const box = document.getElementById("lightbox");
+  if (!box || box.hidden) return;
+  box.hidden = true;
+  document.body.classList.remove("lightbox-open");
+  albumObserver?.disconnect();
+  setAlbumSelectionMode(false);
+  document.getElementById("lightbox-image")?.removeAttribute("src");
+  document.getElementById("photo-download")?.removeAttribute("href");
+  lightboxReturnFocus?.focus?.();
 }
 
 function setupLightbox() {
   const box = document.getElementById("lightbox");
   const close = document.getElementById("lightbox-close");
+  const viewerClose = document.getElementById("viewer-close");
+  const viewerBack = document.getElementById("viewer-back");
+  const stage = document.getElementById("lightbox-image-stage");
   const previous = document.getElementById("lightbox-prev");
   const next = document.getElementById("lightbox-next");
+  const selectToggle = document.getElementById("album-select-toggle");
+  const shareSelected = document.getElementById("album-share-selected");
   if (!box || !close) return;
-  close.addEventListener("click", () => {
-    box.hidden = true;
-  });
+  close.addEventListener("click", closeGallery);
+  viewerClose?.addEventListener("click", closeGallery);
+  viewerBack?.addEventListener("click", showAlbumBrowser);
+  selectToggle?.addEventListener("click", () => setAlbumSelectionMode(!albumSelectionMode));
+  shareSelected?.addEventListener("click", shareSelectedPhotos);
   box.addEventListener("click", event => {
-    if (event.target === box) box.hidden = true;
+    if (event.target === box) closeGallery();
   });
   previous?.addEventListener("click", () => {
     lightboxIndex = (lightboxIndex - 1 + lightboxPhotos.length) % lightboxPhotos.length;
@@ -156,26 +513,41 @@ function setupLightbox() {
     lightboxIndex = (lightboxIndex + 1) % lightboxPhotos.length;
     updateLightbox();
   });
+  let touchStartX = 0;
+  let touchStartY = 0;
+  stage?.addEventListener("touchstart", event => {
+    touchStartX = event.changedTouches[0].clientX;
+    touchStartY = event.changedTouches[0].clientY;
+  }, { passive: true });
+  stage?.addEventListener("touchend", event => {
+    const distanceX = event.changedTouches[0].clientX - touchStartX;
+    const distanceY = event.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(distanceX) < 45 || Math.abs(distanceX) < Math.abs(distanceY)) return;
+    if (distanceX > 0) previous?.click();
+    else next?.click();
+  }, { passive: true });
   document.addEventListener("keydown", event => {
-    if (event.key === "Escape") box.hidden = true;
-    if (!box.hidden && event.key === "ArrowLeft") previous?.click();
-    if (!box.hidden && event.key === "ArrowRight") next?.click();
+    if (event.key === "Escape") closeGallery();
+    const viewer = document.getElementById("photo-viewer");
+    if (!box.hidden && viewer && !viewer.hidden && event.key === "ArrowLeft") previous?.click();
+    if (!box.hidden && viewer && !viewer.hidden && event.key === "ArrowRight") next?.click();
   });
 }
 
 function renderWeekTabs(container, selectedSlug, counts, onSelect, availableWeeks = SUMMER_WEEKS) {
   container.innerHTML = "";
-  const parentView = appKind === "parents";
+  const parentView = isParentPresentation();
   availableWeeks.forEach(week => {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "week-tab";
+    button.dataset.weekTheme = week.theme;
     button.classList.toggle("is-active", week.slug === selectedSlug);
     button.setAttribute("aria-pressed", String(week.slug === selectedSlug));
     button.innerHTML = `
       <span>${week.shortTitle}${parentView ? ` • ${week.dateRange}` : ""}</span>
       <strong>${parentView ? `${week.emoji} ${week.title}` : week.title}</strong>
-      <small>${counts.get(week.slug) || 0}${parentView ? "件のお知らせ" : " activities"}</small>
+      <small>${counts.get(week.slug) || 0}${parentView ? "件のアルバム" : appKind === "staff" ? " photo days" : " albums"}</small>
     `;
     button.addEventListener("click", () => onSelect(week.slug));
     container.append(button);
@@ -184,11 +556,14 @@ function renderWeekTabs(container, selectedSlug, counts, onSelect, availableWeek
 
 function renderWeekHeading(container, selectedSlug) {
   const week = weekFor(selectedSlug);
-  const parentView = appKind === "parents";
+  const parentView = isParentPresentation();
   if (parentView) {
     container.innerHTML = `
       <p class="week-campaign-line">${week.shortTitle} • ${week.dateRange}</p>
       <h3 class="week-campaign-theme"><span aria-hidden="true">${week.emoji}</span> ${week.title}</h3>
+      <div class="week-motifs" aria-label="${week.title} themes">
+        ${week.days.map(day => `<span>${day.badge}</span>`).join("")}
+      </div>
     `;
     return;
   }
@@ -201,73 +576,135 @@ function renderWeekHeading(container, selectedSlug) {
 
 function appendPhotoGrid(card, photos) {
   const grid = card.querySelector(".photo-grid");
+  const parentView = isParentPresentation();
   const photoList = photos || [];
-  const previewPhotos = photoList.slice(0, 4);
+  const previewPhotos = appKind === "staff" ? photoList : photoList.slice(0, 4);
   grid.classList.add(`photo-count-${previewPhotos.length}`);
   previewPhotos.forEach((photo, index) => {
     const button = document.createElement("button");
     button.className = "portal-photo";
     button.type = "button";
-    button.setAttribute("aria-label", `${appKind === "parents" ? "写真を開く" : "Open photo"} ${index + 1}`);
-    button.innerHTML = `<img src="${escapeAttribute(photo.url)}" alt="${escapeAttribute(photo.alt || "")}" loading="lazy">`;
+    button.setAttribute("aria-label", `${parentView ? "写真を開く" : "Open photo"} ${index + 1}`);
+    button.innerHTML = `<img src="${escapeAttribute(photo.thumbnailUrl || photo.url)}" alt="${escapeAttribute(photo.alt || "")}" loading="lazy" decoding="async">`;
     if (index === previewPhotos.length - 1 && photoList.length > previewPhotos.length) {
       button.insertAdjacentHTML("beforeend", `<span class="photo-more">+${photoList.length - previewPhotos.length}</span>`);
     }
-    button.addEventListener("click", () => openGallery(photoList, index));
+    button.addEventListener("click", () => {
+      if (index === previewPhotos.length - 1 && photoList.length > previewPhotos.length) {
+        openGallery(photoList);
+      } else {
+        openGallery(photoList, index);
+      }
+    });
     grid.append(button);
   });
   if (!photoList.length) {
     grid.hidden = true;
     return;
   }
+  if (appKind === "staff") return;
   const galleryButton = document.createElement("button");
   galleryButton.type = "button";
   galleryButton.className = "view-gallery";
-  galleryButton.textContent = appKind === "parents"
+  galleryButton.textContent = parentView
     ? `写真をすべて見る（${photoList.length}枚）`
     : `View all photos (${photoList.length})`;
   galleryButton.addEventListener("click", () => openGallery(photoList));
   grid.insertAdjacentElement("afterend", galleryButton);
 }
 
-function activityCard(post) {
+function activityCard(post, { showDate = true } = {}) {
   const card = document.createElement("article");
-  const parentView = appKind === "parents";
+  const parentView = isParentPresentation();
   const activities = Array.isArray(post.activities) ? post.activities : [];
   card.className = "post-card activity-card";
+  card.dataset.weekTheme = weekFor(post.week).theme;
   card.id = `activity-${post.id}`;
   card.tabIndex = -1;
   card.innerHTML = `
     <div class="post-text">
-      <p class="post-date">${parentView ? formatDailyDate(post.date) : formatDate(post.date)}</p>
-      <h3>${escapeText(post.title || (parentView ? "サマースクールの活動" : "Summer activity"))}</h3>
+      ${showDate ? `<p class="post-date">${parentView ? formatDailyDate(post.date) : formatDate(post.date)}</p>` : ""}
+      ${post.title ? `<h3>${escapeText(post.title)}</h3>` : ""}
       ${post.body ? `<p class="daily-summary">${escapeText(post.body)}</p>` : ""}
       ${activities.length ? `<div class="activity-tags" aria-label="${parentView ? "今日の活動" : "Activities"}">${activities.map(activity => `<span>${escapeText(activity)}</span>`).join("")}</div>` : ""}
     </div>
     <div class="photo-grid"></div>
   `;
+  if (!showDate && !post.title && !post.body && !activities.length) {
+    card.querySelector(".post-text").hidden = true;
+  }
   appendPhotoGrid(card, post.photos);
   return card;
 }
 
+function groupPostsByDate(posts) {
+  const groups = [];
+  const groupsByDate = new Map();
+  posts.forEach(post => {
+    if (!groupsByDate.has(post.date)) {
+      const group = { date: post.date, week: post.week, posts: [] };
+      groupsByDate.set(post.date, group);
+      groups.push(group);
+    }
+    groupsByDate.get(post.date).posts.push(post);
+  });
+  return groups;
+}
+
 function renderDayTabs(container, posts) {
   container.innerHTML = "";
-  posts.forEach(post => {
+  const groups = groupPostsByDate(posts);
+  groups.forEach(group => {
+    const day = scheduledDay(group.date, group.week);
     const button = document.createElement("button");
     button.type = "button";
     button.className = "day-tab";
     button.innerHTML = `
-      <span>${formatDailyDate(post.date, "short")}</span>
-      <strong>${escapeText(post.title || "Today")}</strong>
+      <span>${formatDailyDate(group.date, "short")}</span>
+      <strong>${escapeText(day.title)}</strong>
     `;
     button.addEventListener("click", () => {
-      const card = document.getElementById(`activity-${post.id}`);
-      card?.scrollIntoView({ behavior: "smooth", block: "start" });
-      card?.focus({ preventScroll: true });
+      const collection = document.getElementById(`day-${group.date}`);
+      collection?.scrollIntoView({ behavior: "smooth", block: "start" });
+      collection?.focus({ preventScroll: true });
     });
     container.append(button);
   });
-  container.hidden = posts.length < 2;
+  container.hidden = groups.length < 2;
+}
+
+function renderDailyCollections(container, posts, decorateCard) {
+  groupPostsByDate(posts).forEach(group => {
+    const day = scheduledDay(group.date, group.week);
+    const dailyPost = {
+      id: `day-${group.date}`,
+      date: group.date,
+      week: group.week,
+      title: "",
+      body: "",
+      activities: [],
+      status: group.posts.every(post => post.status === "published") ? "published" : "draft",
+      photos: group.posts.flatMap(post => post.photos || [])
+    };
+    const collection = document.createElement("section");
+    collection.className = "daily-collection";
+    collection.id = `day-${group.date}`;
+    collection.tabIndex = -1;
+    collection.innerHTML = `
+      <header class="daily-collection-heading">
+        <p>${formatDailyDate(group.date)}</p>
+        <h3>${escapeText(day.title)}</h3>
+        <span>${dailyPost.photos.length} photos</span>
+      </header>
+      <div class="daily-albums"></div>
+    `;
+    const albums = collection.querySelector(".daily-albums");
+    const card = activityCard(dailyPost, { showDate: false });
+    card.classList.add("daily-album");
+    decorateCard?.(card, dailyPost);
+    albums.append(card);
+    container.append(collection);
+  });
 }
 
 function renderParentActivities(posts, selectedWeek) {
@@ -287,7 +724,7 @@ function renderParentActivities(posts, selectedWeek) {
     `;
     return;
   }
-  weekPosts.forEach(post => list.append(activityCard(post)));
+  renderDailyCollections(list, weekPosts);
 }
 
 async function initParents() {
@@ -304,6 +741,7 @@ async function initParents() {
   let selectedWeek = SUMMER_WEEKS[0].slug;
 
   function render() {
+    document.body.dataset.weekTheme = weekFor(selectedWeek).theme;
     const counts = new Map(availableWeeks.map(week => [
       week.slug,
       posts.filter(post => post.week === week.slug).length
@@ -387,25 +825,48 @@ async function initParents() {
   }
 }
 
-async function initStaff() {
+async function initDailyStaff() {
   setupLightbox();
   const login = document.getElementById("staff-login");
-  const note = document.getElementById("staff-login-note");
+  const loginNote = document.getElementById("staff-login-note");
   const app = document.getElementById("staff-app");
   const postForm = document.getElementById("post-form");
   const postNote = document.getElementById("post-note");
+  const submit = document.getElementById("upload-submit");
+  const preview = document.getElementById("upload-preview");
+  const daySelect = document.getElementById("staff-day-select");
   const manageList = document.getElementById("manage-list");
   const manageNote = document.getElementById("manage-note");
-  const refreshPosts = document.getElementById("refresh-posts");
-  const preview = document.getElementById("upload-preview");
   const tabs = document.getElementById("staff-week-tabs");
+  const dayTabs = document.getElementById("staff-day-tabs");
   const parentViewToggle = document.getElementById("parent-view-toggle");
   let posts = [];
   let selectedWeek = SUMMER_WEEKS[0].slug;
   let parentPreview = false;
+  let previewUrls = [];
 
-  postForm.elements.date.valueAsDate = new Date();
-  postForm.elements.week.value = selectedWeek;
+  SUMMER_WEEKS.forEach(week => {
+    const group = document.createElement("optgroup");
+    group.label = `${week.shortTitle}: ${week.title}`;
+    week.days.forEach(day => {
+      const option = document.createElement("option");
+      option.value = day.date;
+      option.textContent = `${formatDailyDate(day.date)} — ${day.title}`;
+      group.append(option);
+    });
+    daySelect.append(group);
+  });
+
+  const today = localDateValue();
+  const todayWeek = weekForDate(today);
+  daySelect.value = todayWeek ? today : SUMMER_WEEKS[0].days[0].date;
+  selectedWeek = weekForDate(daySelect.value)?.slug || selectedWeek;
+
+  function clearPreview() {
+    previewUrls.forEach(url => URL.revokeObjectURL(url));
+    previewUrls = [];
+    preview.innerHTML = "";
+  }
 
   function showStaffPanel(view) {
     document.querySelectorAll("[data-staff-view]").forEach(item => {
@@ -416,44 +877,43 @@ async function initStaff() {
     });
   }
 
+  function openUploader(date) {
+    daySelect.value = date;
+    selectedWeek = weekForDate(date)?.slug || selectedWeek;
+    clearPreview();
+    postForm.reset();
+    daySelect.value = date;
+    postNote.textContent = "";
+    submit.disabled = false;
+    showStaffPanel("new");
+    daySelect.focus();
+  }
+
   document.querySelectorAll("[data-staff-view]").forEach(button => {
     button.addEventListener("click", () => {
       parentPreview = false;
-      updatePreviewMode();
-      showStaffPanel(button.dataset.staffView);
-      if (button.dataset.staffView === "manage") loadStaffPosts();
+      document.body.classList.remove("staff-parent-preview");
+      parentViewToggle.setAttribute("aria-pressed", "false");
+      parentViewToggle.textContent = "Parent view";
+      if (button.dataset.staffView === "new") openUploader(daySelect.value);
+      else showStaffPanel("manage");
     });
-  });
-
-  function updatePreviewMode() {
-    document.body.classList.toggle("staff-parent-preview", parentPreview);
-    parentViewToggle.setAttribute("aria-pressed", String(parentPreview));
-    parentViewToggle.textContent = parentPreview ? "Exit parent view" : "Parent view";
-    document.getElementById("staff-mode-label").textContent = parentPreview ? "Parent view" : "Staff view";
-    document.getElementById("staff-mode-description").textContent = parentPreview
-      ? "This is exactly how published activities appear to summer families."
-      : "This is the family timeline with edit controls added. Use Parent view to hide every staff control.";
-    renderStaffActivities();
-  }
-
-  parentViewToggle.addEventListener("click", () => {
-    parentPreview = !parentPreview;
-    showStaffPanel("manage");
-    updatePreviewMode();
   });
 
   login.addEventListener("submit", async event => {
     event.preventDefault();
-    const password = new FormData(login).get("password");
-    note.textContent = "Checking staff access...";
+    loginNote.textContent = "Checking staff access...";
     try {
       await api("/api/auth/password", {
         method: "POST",
-        body: JSON.stringify({ password, audience: "staff" })
+        body: JSON.stringify({
+          password: new FormData(login).get("password"),
+          audience: "staff"
+        })
       });
       window.location.reload();
     } catch (error) {
-      note.textContent = error.data?.setupRequired
+      loginNote.textContent = error.data?.setupRequired
         ? "Backend setup is needed before staff password login works."
         : error.message;
     }
@@ -464,48 +924,118 @@ async function initStaff() {
     window.location.reload();
   });
 
+  daySelect.addEventListener("change", () => {
+    selectedWeek = weekForDate(daySelect.value)?.slug || selectedWeek;
+  });
+
   postForm.elements.photos.addEventListener("change", () => {
-    preview.innerHTML = "";
-    [...postForm.elements.photos.files].slice(0, 20).forEach(file => {
+    clearPreview();
+    const files = [...postForm.elements.photos.files];
+    if (files.length > 10) {
+      postNote.textContent = "Please choose 10 photos or fewer. You can add another group after this upload.";
+      submit.disabled = true;
+      return;
+    }
+    postNote.textContent = files.length ? `${files.length} photo${files.length === 1 ? "" : "s"} ready to upload.` : "";
+    submit.disabled = !files.length;
+    files.forEach(file => {
       const image = document.createElement("img");
+      const url = URL.createObjectURL(file);
+      previewUrls.push(url);
       image.alt = file.name;
-      image.src = URL.createObjectURL(file);
+      image.src = url;
       preview.append(image);
     });
   });
 
   postForm.addEventListener("submit", async event => {
     event.preventDefault();
-    postNote.textContent = "Publishing activity...";
+    const files = [...postForm.elements.photos.files];
+    if (!files.length || files.length > 10) return;
+    submit.disabled = true;
+    postNote.textContent = `Uploading ${files.length} photo${files.length === 1 ? "" : "s"}… Please keep this page open.`;
     try {
       const form = new FormData(postForm);
-      form.set("group", "summer-2026");
-      form.set("status", "published");
-      form.set("album", form.get("week"));
-      await api("/api/staff/posts", { method: "POST", body: form });
-      selectedWeek = String(form.get("week"));
+      const date = String(form.get("date"));
+      const data = await api("/api/staff/posts", { method: "POST", body: form });
+      selectedWeek = weekForDate(date)?.slug || selectedWeek;
       postForm.reset();
-      postForm.elements.date.valueAsDate = new Date();
-      postForm.elements.week.value = selectedWeek;
-      preview.innerHTML = "";
-      postNote.textContent = "Published. Families can see this activity now.";
+      clearPreview();
+      daySelect.value = date;
+      postNote.textContent = `${data.added || files.length} photos added successfully.`;
       await loadStaffPosts();
       showStaffPanel("manage");
     } catch (error) {
       postNote.textContent = error.data?.setupRequired
         ? "Backend setup is needed before uploads work."
         : error.message;
+    } finally {
+      submit.disabled = false;
     }
   });
 
+  function dailyCard(day, post) {
+    const card = document.createElement("article");
+    const count = post?.photos?.length || Number(post?.photoCount || 0);
+    card.className = "daily-photo-manage-card";
+    card.dataset.hasPhotos = String(count > 0);
+    card.innerHTML = `
+      <div class="daily-photo-empty" aria-hidden="true">${count ? "📸" : "📷"}</div>
+      <div class="daily-photo-details">
+        <p>${formatDailyDate(day.date)}</p>
+        <h3>${escapeText(day.title)}</h3>
+        <span>${count} photo${count === 1 ? "" : "s"}</span>
+      </div>
+      <div class="daily-photo-actions">
+        <button type="button" class="add-daily-photos">${count ? "Add more photos" : "Add photos"}</button>
+        ${count ? '<button type="button" class="view-daily-photos">View photos</button>' : ""}
+      </div>
+    `;
+    card.querySelector(".add-daily-photos").addEventListener("click", () => openUploader(day.date));
+    card.querySelector(".view-daily-photos")?.addEventListener("click", () => openGallery(post.photos));
+    return card;
+  }
+
+  function renderStaffDays() {
+    const week = weekFor(selectedWeek);
+    const postsByDate = new Map(posts.map(post => [post.date, post]));
+    const counts = new Map(SUMMER_WEEKS.map(item => [
+      item.slug,
+      item.days.filter(day => postsByDate.get(day.date)?.photos?.length).length
+    ]));
+    renderWeekTabs(tabs, selectedWeek, counts, slug => {
+      selectedWeek = slug;
+      renderStaffDays();
+    });
+    renderWeekHeading(document.getElementById("staff-week-heading"), selectedWeek);
+    manageList.innerHTML = "";
+    dayTabs.innerHTML = "";
+    dayTabs.hidden = true;
+    if (parentPreview) {
+      const weekPosts = posts.filter(post => post.week === selectedWeek && post.photos?.length);
+      renderDayTabs(dayTabs, weekPosts);
+      renderDailyCollections(manageList, weekPosts);
+      return;
+    }
+    week.days.forEach(day => manageList.append(dailyCard(day, postsByDate.get(day.date))));
+  }
+
+  parentViewToggle.addEventListener("click", () => {
+    parentPreview = !parentPreview;
+    document.body.classList.toggle("staff-parent-preview", parentPreview);
+    parentViewToggle.setAttribute("aria-pressed", String(parentPreview));
+    parentViewToggle.textContent = parentPreview ? "Exit parent view" : "Parent view";
+    showStaffPanel("manage");
+    renderStaffDays();
+  });
+
   async function loadStaffPosts() {
-    manageNote.textContent = "Loading activities...";
+    manageNote.textContent = "Loading daily photos…";
     try {
       const data = await api("/api/staff/posts");
       posts = data.posts || [];
-      if (!SUMMER_WEEKS.some(week => week.slug === selectedWeek)) selectedWeek = initialWeek(posts);
-      renderStaffActivities();
-      manageNote.textContent = posts.length ? "" : "No activities yet.";
+      renderStaffDays();
+      manageNote.textContent = "";
     } catch (error) {
       manageNote.textContent = error.data?.setupRequired
         ? "Backend setup is needed before management works."
@@ -513,143 +1043,7 @@ async function initStaff() {
     }
   }
 
-  function renderStaffActivities() {
-    const visiblePosts = parentPreview ? posts.filter(post => post.status === "published") : posts;
-    const counts = new Map(SUMMER_WEEKS.map(week => [
-      week.slug,
-      visiblePosts.filter(post => post.week === week.slug).length
-    ]));
-    renderWeekTabs(tabs, selectedWeek, counts, slug => {
-      selectedWeek = slug;
-      postForm.elements.week.value = slug;
-      renderStaffActivities();
-    });
-    renderWeekHeading(document.getElementById("staff-week-heading"), selectedWeek);
-    manageList.innerHTML = "";
-    const weekPosts = visiblePosts.filter(post => post.week === selectedWeek);
-    if (!weekPosts.length) {
-      manageList.innerHTML = `
-        <div class="empty-week">
-          <h3>No activities in this week yet</h3>
-          <p>${parentPreview ? "Families will see this message until an activity is published." : "Use Add activity to share the first photos for this week."}</p>
-        </div>
-      `;
-      return;
-    }
-    weekPosts.forEach(post => {
-      const card = activityCard(post);
-      card.classList.add("manage-card");
-      card.dataset.postId = post.id;
-      if (!parentPreview) appendStaffControls(card, post);
-      manageList.append(card);
-    });
-  }
-
-  function appendStaffControls(card, post) {
-    const status = document.createElement("span");
-    status.className = `manage-status ${post.status}`;
-    status.textContent = post.status;
-    card.querySelector(".post-text").prepend(status);
-
-    const controls = document.createElement("div");
-    controls.className = "manage-card-actions";
-    controls.innerHTML = `
-      <button type="button" class="toggle-edit">Edit activity</button>
-      <button type="button" class="delete-post">Delete</button>
-    `;
-
-    const editor = document.createElement("div");
-    editor.className = "manage-edit";
-    editor.hidden = true;
-    editor.innerHTML = `
-      <label>
-        Summer week
-        <select name="week">
-          ${SUMMER_WEEKS.map(week => `<option value="${week.slug}">${week.shortTitle}: ${escapeText(week.title)}</option>`).join("")}
-        </select>
-      </label>
-      <label>
-        Date
-        <input name="date" type="date" value="${escapeAttribute(post.date)}">
-      </label>
-      <label>
-        Daily theme
-        <input name="title" type="text" maxlength="120" value="${escapeAttribute(post.title || "")}">
-      </label>
-      <label>
-        Visibility
-        <select name="status">
-          <option value="published">Published</option>
-          <option value="draft">Hidden from parents</option>
-        </select>
-      </label>
-      <label class="full-width">
-        Parent summary
-        <textarea name="body" rows="4">${escapeText(post.body || "")}</textarea>
-      </label>
-      <label class="full-width">
-        Activities
-        <input name="activities" type="text" maxlength="240" value="${escapeAttribute((post.activities || []).join(", "))}">
-      </label>
-      <div class="manage-card-actions full-width">
-        <button type="button" class="save-post">Save changes</button>
-        <button type="button" class="cancel-edit">Cancel</button>
-      </div>
-    `;
-    editor.querySelector('[name="week"]').value = post.week;
-    editor.querySelector('[name="status"]').value = post.status;
-    card.querySelector(".post-text").append(controls);
-    card.append(editor);
-
-    controls.querySelector(".toggle-edit").addEventListener("click", () => {
-      editor.hidden = false;
-      controls.hidden = true;
-    });
-    editor.querySelector(".cancel-edit").addEventListener("click", () => {
-      editor.hidden = true;
-      controls.hidden = false;
-    });
-    editor.querySelector(".save-post").addEventListener("click", () => saveManagedPost(card, editor));
-    controls.querySelector(".delete-post").addEventListener("click", () => deleteManagedPost(card, post.title));
-  }
-
-  async function saveManagedPost(card, editor) {
-    const body = {
-      group: "summer-2026",
-      week: editor.querySelector('[name="week"]').value,
-      date: editor.querySelector('[name="date"]').value,
-      status: editor.querySelector('[name="status"]').value,
-      title: editor.querySelector('[name="title"]').value,
-      body: editor.querySelector('[name="body"]').value,
-      activities: editor.querySelector('[name="activities"]').value
-    };
-    manageNote.textContent = "Saving changes...";
-    try {
-      await api(`/api/staff/posts/${encodeURIComponent(card.dataset.postId)}`, {
-        method: "PATCH",
-        body: JSON.stringify(body)
-      });
-      selectedWeek = body.week;
-      await loadStaffPosts();
-      manageNote.textContent = "Activity updated.";
-    } catch (error) {
-      manageNote.textContent = error.message;
-    }
-  }
-
-  async function deleteManagedPost(card, title) {
-    if (!window.confirm(`Delete "${title || "this activity"}" and all of its photos?`)) return;
-    manageNote.textContent = "Deleting activity...";
-    try {
-      await api(`/api/staff/posts/${encodeURIComponent(card.dataset.postId)}`, { method: "DELETE" });
-      await loadStaffPosts();
-      manageNote.textContent = "Activity deleted.";
-    } catch (error) {
-      manageNote.textContent = error.message;
-    }
-  }
-
-  refreshPosts.addEventListener("click", loadStaffPosts);
+  document.getElementById("refresh-posts").addEventListener("click", loadStaffPosts);
 
   try {
     await api("/api/staff/me");
@@ -657,19 +1051,12 @@ async function initStaff() {
     app.hidden = false;
     showStaffPanel("manage");
     await loadStaffPosts();
-    selectedWeek = initialWeek(posts);
-    postForm.elements.week.value = selectedWeek;
-    renderStaffActivities();
   } catch (error) {
-    if (error.data?.setupRequired) {
-      app.hidden = false;
-      showSetupBanner("staff-setup-banner");
-      return;
-    }
+    if (error.data?.setupRequired) showSetupBanner("staff-setup-banner");
     login.hidden = false;
     app.hidden = true;
   }
 }
 
 if (appKind === "parents") initParents();
-if (appKind === "staff") initStaff();
+if (appKind === "staff") initDailyStaff();

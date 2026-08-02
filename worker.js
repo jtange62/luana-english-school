@@ -5,19 +5,47 @@ const SUMMER_WEEKS = [
   { slug: "week-2-ocean", secret: "SUMMER_WEEK_2_CODE" },
   { slug: "week-3-adventure", secret: "SUMMER_WEEK_3_CODE" }
 ];
+const SUMMER_DAYS = [
+  { date: "2026-07-27", week: "week-1-festivals", title: "Thailand — Songkran" },
+  { date: "2026-07-28", week: "week-1-festivals", title: "Brazil — Carnival" },
+  { date: "2026-07-29", week: "week-1-festivals", title: "India — Holi" },
+  { date: "2026-07-30", week: "week-1-festivals", title: "Japan — Matsuri" },
+  { date: "2026-07-31", week: "week-1-festivals", title: "Field Trip — teamLab" },
+  { date: "2026-08-03", week: "week-2-ocean", title: "Ocean Life" },
+  { date: "2026-08-04", week: "week-2-ocean", title: "Coral Reef" },
+  { date: "2026-08-05", week: "week-2-ocean", title: "Tides & Waves" },
+  { date: "2026-08-06", week: "week-2-ocean", title: "Conservation & Climate" },
+  { date: "2026-08-07", week: "week-2-ocean", title: "Field Trip — Enoshima Aquarium" },
+  { date: "2026-08-17", week: "week-3-adventure", title: "Survival Priorities" },
+  { date: "2026-08-18", week: "week-3-adventure", title: "Preparation & Teamwork" },
+  { date: "2026-08-19", week: "week-3-adventure", title: "Navigation" },
+  { date: "2026-08-20", week: "week-3-adventure", title: "Resource Management" },
+  { date: "2026-08-21", week: "week-3-adventure", title: "Field Trip — Hug-Hug & Westrock Bouldering" }
+];
+const MAX_DAILY_UPLOAD = 10;
+const UPLOAD_CONCURRENCY = 4;
+const MAX_PHOTO_BYTES = 20 * 1024 * 1024;
+const PHOTO_CONTENT_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+const PHOTO_WIDTH = 1600;
+const THUMBNAIL_WIDTH = 480;
 
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
     try {
+      if (url.hostname === "www.luanaenglishschool.jp") {
+        url.protocol = "https:";
+        url.hostname = "luanaenglishschool.jp";
+        return Response.redirect(url.toString(), 301);
+      }
       if (
         url.pathname === "/worker.js" ||
         url.pathname === "/wrangler.jsonc" ||
         url.pathname.startsWith("/migrations/") ||
         url.pathname.startsWith("/docs/")
       ) return text("Not found", 404);
-      if (url.pathname === "/parents") return asset(request, env, "/parents.html");
+      if (url.pathname === "/parents") return asset(request, env, "/parents.html?v=20260727-visible-code1");
       if (url.pathname === "/staff") return asset(request, env, "/staff.html");
       if (url.pathname.startsWith("/api/")) return await handleApi(request, env, url);
       return asset(request, env);
@@ -41,6 +69,7 @@ async function handleApi(request, env, url) {
   if (url.pathname === "/api/staff/posts" && request.method === "POST") return createStaffPost(request, env);
   if (url.pathname.startsWith("/api/staff/posts/") && request.method === "PATCH") return updateStaffPost(request, env, url);
   if (url.pathname.startsWith("/api/staff/posts/") && request.method === "DELETE") return deleteStaffPost(request, env, url);
+  if (url.pathname.startsWith("/api/staff/photos/") && request.method === "DELETE") return deleteStaffPhoto(request, env, url);
   if (url.pathname.startsWith("/api/photos/") && request.method === "GET") return getPhoto(request, env, url);
   return json({ error: "Not found" }, 404);
 }
@@ -216,7 +245,7 @@ async function parentFeed(request, env) {
     id: album.slug,
     title: album.title,
     description: album.description,
-    coverUrl: album.cover_photo_id ? `/api/photos/${album.cover_photo_id}` : ""
+    coverUrl: album.cover_photo_id ? `/api/photos/${album.cover_photo_id}?variant=thumbnail` : ""
   })));
 
   return json({
@@ -298,7 +327,7 @@ async function staffAlbums(env) {
     title: album.title,
     description: album.description,
     photoCount: album.photo_count || 0,
-    coverUrl: album.cover_photo_id ? `/api/photos/${album.cover_photo_id}` : ""
+    coverUrl: album.cover_photo_id ? `/api/photos/${album.cover_photo_id}?variant=thumbnail` : ""
   }));
 }
 
@@ -306,42 +335,107 @@ async function createStaffPost(request, env) {
   requireSetup(env, ["DB", "PHOTOS"]);
   const session = await requireSession(request, env, "staff");
   const form = await request.formData();
-  const group = String(form.get("group") || "").trim();
   const date = String(form.get("date") || "").trim();
-  const title = String(form.get("title") || "Luana day").trim();
-  const body = String(form.get("body") || "").trim();
-  const activities = normalizeActivities(form.get("activities"));
-  const status = form.get("status") === "published" ? "published" : "draft";
-  const weekSlug = validSummerWeek(String(form.get("week") || form.get("album") || "").trim());
-  const albumSlug = weekSlug;
+  const day = summerDay(date);
   const files = form.getAll("photos").filter(value => value && typeof value === "object" && value.size);
 
-  if (!group || !date || !title) return json({ error: "Week, date, and activity title are required" }, 400);
-
-  const postId = crypto.randomUUID();
-  const now = new Date().toISOString();
-  await env.DB.prepare(
-    "INSERT INTO posts (id, group_key, week_slug, post_date, title, body, activities, status, created_by, created_at, updated_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)"
-  ).bind(postId, group, weekSlug, date, title, body, activities, status, session.email || session.subject || "staff", now, now).run();
-
-  for (let index = 0; index < files.length; index += 1) {
-    const file = files[index];
-    const photoId = crypto.randomUUID();
-    const ext = extensionFor(file.type, file.name);
-    const key = `portal/${group}/${date}/${photoId}${ext}`;
-    await env.PHOTOS.put(key, file.stream(), {
-      httpMetadata: { contentType: file.type || "application/octet-stream" }
-    });
-    await env.DB.prepare(
-      "INSERT INTO photos (id, r2_key, filename, content_type, size_bytes, uploaded_by, created_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)"
-    ).bind(photoId, key, file.name || `${photoId}${ext}`, file.type || "", file.size || 0, session.email || session.subject || "staff", now).run();
-    await env.DB.prepare(
-      "INSERT INTO post_photos (post_id, photo_id, sort_order) VALUES (?1, ?2, ?3)"
-    ).bind(postId, photoId, index).run();
-    if (albumSlug) await attachPhotoToAlbum(env, albumSlug, group, photoId, index, now);
+  if (!day) return json({ error: "Choose a scheduled Summer School day" }, 400);
+  if (!files.length) return json({ error: "Add at least one photo" }, 400);
+  if (files.length > MAX_DAILY_UPLOAD) {
+    return json({ error: `Upload up to ${MAX_DAILY_UPLOAD} photos at a time` }, 400);
+  }
+  const invalidFile = files.find(file => !PHOTO_CONTENT_TYPES.has(file.type) || file.size > MAX_PHOTO_BYTES);
+  if (invalidFile) {
+    return json({ error: "Photos must be JPEG, PNG, or WebP files no larger than 20 MB each" }, 400);
   }
 
-  return json({ ok: true, postId });
+  const now = new Date().toISOString();
+  const createdBy = session.email || session.subject || "staff";
+  let dailyPost = await env.DB.prepare(
+    "SELECT id FROM posts WHERE group_key = 'summer-2026' AND post_date = ?1 ORDER BY created_at ASC LIMIT 1"
+  ).bind(day.date).first();
+  if (!dailyPost) {
+    const dailyPostId = `summer-2026-${day.date}`;
+    await env.DB.prepare(
+      "INSERT OR IGNORE INTO posts (id, group_key, week_slug, post_date, title, body, activities, status, created_by, created_at, updated_at) VALUES (?1, 'summer-2026', ?2, ?3, ?4, '', '', 'published', ?5, ?6, ?7)"
+    ).bind(dailyPostId, day.week, day.date, day.title, createdBy, now, now).run();
+    dailyPost = await env.DB.prepare(
+      "SELECT id FROM posts WHERE group_key = 'summer-2026' AND post_date = ?1 ORDER BY created_at ASC LIMIT 1"
+    ).bind(day.date).first();
+  }
+  if (!dailyPost) return json({ error: "Could not prepare the daily photo collection" }, 500);
+
+  const postId = dailyPost.id;
+  await env.DB.prepare(
+    "UPDATE posts SET week_slug = ?1, title = ?2, status = 'published', updated_at = ?3 WHERE id = ?4"
+  ).bind(day.week, day.title, now, postId).run();
+  const orderRow = await env.DB.prepare(
+    "SELECT COALESCE(MAX(sort_order), -1) AS last_order FROM post_photos WHERE post_id = ?1"
+  ).bind(postId).first();
+  const firstSortOrder = Number(orderRow?.last_order ?? -1) + 1;
+
+  const storePhoto = async (file, index) => {
+    const photoId = crypto.randomUUID();
+    const source = await file.arrayBuffer();
+    const [optimized, thumbnail] = await Promise.all([
+      optimizePhoto(env, source, PHOTO_WIDTH, 82),
+      optimizePhoto(env, source, THUMBNAIL_WIDTH, 76)
+    ]);
+    const key = `portal/summer-2026/${date}/${photoId}.webp`;
+    const thumbnailKey = `portal/summer-2026/${date}/${photoId}-thumb.webp`;
+    let fullStored = false;
+    let thumbnailStored = false;
+    let photoRowStored = false;
+    try {
+      await env.PHOTOS.put(key, optimized, {
+        httpMetadata: { contentType: "image/webp" }
+      });
+      fullStored = true;
+      await env.PHOTOS.put(thumbnailKey, thumbnail, {
+        httpMetadata: { contentType: "image/webp" }
+      });
+      thumbnailStored = true;
+      await env.DB.prepare(
+        "INSERT INTO photos (id, r2_key, thumbnail_r2_key, filename, content_type, size_bytes, uploaded_by, created_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)"
+      ).bind(
+        photoId,
+        key,
+        thumbnailKey,
+        file.name || `${photoId}.webp`,
+        "image/webp",
+        optimized.byteLength + thumbnail.byteLength,
+        session.email || session.subject || "staff",
+        now
+      ).run();
+      photoRowStored = true;
+      await env.DB.prepare(
+        "INSERT INTO post_photos (post_id, photo_id, sort_order) VALUES (?1, ?2, ?3)"
+      ).bind(postId, photoId, firstSortOrder + index).run();
+    } catch (error) {
+      if (photoRowStored) await env.DB.prepare("DELETE FROM photos WHERE id = ?1").bind(photoId).run();
+      if (thumbnailStored) await env.PHOTOS.delete(thumbnailKey);
+      if (fullStored) await env.PHOTOS.delete(key);
+      throw error;
+    }
+  };
+
+  for (let start = 0; start < files.length; start += UPLOAD_CONCURRENCY) {
+    await Promise.all(
+      files.slice(start, start + UPLOAD_CONCURRENCY).map((file, offset) => storePhoto(file, start + offset))
+    );
+  }
+
+  return json({ ok: true, postId, added: files.length, date: day.date });
+}
+
+async function optimizePhoto(env, source, width, quality) {
+  const output = await env.IMAGES
+    .input(source)
+    .transform({ width, fit: "scale-down" })
+    .output({ format: "image/webp", quality });
+  const response = output.response();
+  if (!response.ok) throw new Error("Could not optimize an uploaded photo");
+  return response.arrayBuffer();
 }
 
 async function updateStaffPost(request, env, url) {
@@ -351,17 +445,19 @@ async function updateStaffPost(request, env, url) {
   const body = await request.json();
   const group = String(body.group || "").trim();
   const date = String(body.date || "").trim();
-  const title = String(body.title || "Luana day").trim();
+  const title = String(body.title || "").trim();
   const note = String(body.body || "").trim();
-  const activities = normalizeActivities(body.activities);
   const status = body.status === "published" ? "published" : "draft";
   const weekSlug = validSummerWeek(String(body.week || "").trim());
 
   if (!postId) return json({ error: "Post not found" }, 404);
-  if (!group || !date || !title) return json({ error: "Week, date, and activity title are required" }, 400);
+  if (!group || !date) return json({ error: "Week and date are required" }, 400);
 
-  const existing = await env.DB.prepare("SELECT id, week_slug FROM posts WHERE id = ?1").bind(postId).first();
+  const existing = await env.DB.prepare("SELECT id, week_slug, activities FROM posts WHERE id = ?1").bind(postId).first();
   if (!existing) return json({ error: "Post not found" }, 404);
+  const activities = body.activities === undefined
+    ? String(existing.activities || "")
+    : normalizeActivities(body.activities);
 
   await env.DB.prepare(
     "UPDATE posts SET group_key = ?1, week_slug = ?2, post_date = ?3, title = ?4, body = ?5, activities = ?6, status = ?7, updated_at = ?8 WHERE id = ?9"
@@ -381,26 +477,55 @@ async function deleteStaffPost(request, env, url) {
   if (!postId) return json({ error: "Post not found" }, 404);
 
   const photos = await env.DB.prepare(
-    `SELECT ph.id, ph.r2_key
+    `SELECT ph.id, ph.r2_key, ph.thumbnail_r2_key
      FROM photos ph
      JOIN post_photos pp ON pp.photo_id = ph.id
      WHERE pp.post_id = ?1`
   ).bind(postId).all();
 
-  for (const photo of photos.results) {
-    await env.PHOTOS.delete(photo.r2_key);
-  }
+  const objectKeys = photos.results.flatMap(photo =>
+    [photo.r2_key, photo.thumbnail_r2_key].filter(Boolean)
+  );
+  if (objectKeys.length) await env.PHOTOS.delete(objectKeys);
 
   await env.DB.batch([
     env.DB.prepare("DELETE FROM album_photos WHERE photo_id IN (SELECT photo_id FROM post_photos WHERE post_id = ?1)").bind(postId),
-    env.DB.prepare("DELETE FROM post_photos WHERE post_id = ?1").bind(postId)
+    env.DB.prepare("DELETE FROM post_photos WHERE post_id = ?1").bind(postId),
+    ...photos.results.map(photo => env.DB.prepare("DELETE FROM photos WHERE id = ?1").bind(photo.id)),
+    env.DB.prepare("DELETE FROM posts WHERE id = ?1").bind(postId)
   ]);
 
-  for (const photo of photos.results) {
-    await env.DB.prepare("DELETE FROM photos WHERE id = ?1").bind(photo.id).run();
+  return json({ ok: true });
+}
+
+async function deleteStaffPhoto(request, env, url) {
+  requireSetup(env, ["DB", "PHOTOS"]);
+  await requireSession(request, env, "staff");
+  const photoId = decodeURIComponent(url.pathname.replace("/api/staff/photos/", "")).trim();
+  if (!photoId) return json({ error: "Photo not found" }, 404);
+
+  const photo = await env.DB.prepare(
+    `SELECT ph.r2_key, pp.post_id
+     FROM photos ph
+     JOIN post_photos pp ON pp.photo_id = ph.id
+     WHERE ph.id = ?1`
+  ).bind(photoId).first();
+  if (!photo) return json({ error: "Photo not found" }, 404);
+
+  await env.PHOTOS.delete(photo.r2_key);
+  await env.DB.batch([
+    env.DB.prepare("DELETE FROM album_photos WHERE photo_id = ?1").bind(photoId),
+    env.DB.prepare("DELETE FROM post_photos WHERE photo_id = ?1").bind(photoId),
+    env.DB.prepare("DELETE FROM photos WHERE id = ?1").bind(photoId)
+  ]);
+
+  const remaining = await env.DB.prepare(
+    "SELECT COUNT(*) AS count FROM post_photos WHERE post_id = ?1"
+  ).bind(photo.post_id).first();
+  if (!Number(remaining?.count || 0)) {
+    await env.DB.prepare("DELETE FROM posts WHERE id = ?1").bind(photo.post_id).run();
   }
 
-  await env.DB.prepare("DELETE FROM posts WHERE id = ?1").bind(postId).run();
   return json({ ok: true });
 }
 
@@ -412,7 +537,7 @@ async function getPhoto(request, env, url) {
 
   let photo = null;
   if (session.role === "staff") {
-    photo = await env.DB.prepare("SELECT r2_key, content_type FROM photos WHERE id = ?1").bind(photoId).first();
+    photo = await env.DB.prepare("SELECT r2_key, thumbnail_r2_key, content_type, filename FROM photos WHERE id = ?1").bind(photoId).first();
   } else {
     const groups = session.groups?.length ? session.groups : await parentGroups(env, session.email);
     const weeks = parentSessionWeeks(session);
@@ -420,7 +545,7 @@ async function getPhoto(request, env, url) {
     const groupPlaceholders = groups.map(() => "?").join(",");
     const weekPlaceholders = weeks.map(() => "?").join(",");
     photo = await env.DB.prepare(
-      `SELECT DISTINCT ph.r2_key, ph.content_type
+      `SELECT DISTINCT ph.r2_key, ph.thumbnail_r2_key, ph.content_type, ph.filename
        FROM photos ph
        JOIN post_photos pp ON pp.photo_id = ph.id
        JOIN posts p ON p.id = pp.post_id
@@ -432,15 +557,37 @@ async function getPhoto(request, env, url) {
   }
 
   if (!photo) return json({ error: "Photo not found" }, 404);
-  const object = await env.PHOTOS.get(photo.r2_key);
+  const thumbnailRequested = url.searchParams.get("variant") === "thumbnail";
+  const shareRequested = url.searchParams.get("share") === "1";
+  const objectKey = thumbnailRequested && photo.thumbnail_r2_key ? photo.thumbnail_r2_key : photo.r2_key;
+  const object = await env.PHOTOS.get(objectKey);
   if (!object) return json({ error: "Photo not found" }, 404);
 
-  return new Response(object.body, {
-    headers: {
-      "content-type": photo.content_type || object.httpMetadata?.contentType || "application/octet-stream",
-      "cache-control": "private, max-age=300"
-    }
-  });
+  if (shareRequested) {
+    const output = await env.IMAGES
+      .input(object.body)
+      .transform({ width: PHOTO_WIDTH, fit: "scale-down" })
+      .output({ format: "image/jpeg", quality: 85 });
+    const response = output.response();
+    if (!response.ok) throw new Error("Could not prepare photo for saving");
+    return new Response(response.body, {
+      headers: {
+        "content-type": "image/jpeg",
+        "cache-control": "private, max-age=31536000, immutable"
+      }
+    });
+  }
+
+  const headers = {
+    "content-type": thumbnailRequested && photo.thumbnail_r2_key
+      ? "image/webp"
+      : photo.content_type || object.httpMetadata?.contentType || "application/octet-stream",
+    "cache-control": "private, max-age=31536000, immutable"
+  };
+  if (url.searchParams.get("download") === "1" && !thumbnailRequested) {
+    headers["content-disposition"] = photoDownloadDisposition(photo.filename, photoId);
+  }
+  return new Response(object.body, { headers });
 }
 
 async function attachPhotoToAlbum(env, albumSlug, group, photoId, sortOrder, now) {
@@ -517,6 +664,10 @@ function validSummerWeek(value) {
   return weeks.has(value) ? value : "week-1-festivals";
 }
 
+function summerDay(date) {
+  return SUMMER_DAYS.find(day => day.date === date) || null;
+}
+
 function validSessionWeeks(values) {
   const allowed = new Set(SUMMER_WEEKS.map(week => week.slug));
   return [...new Set(values)].filter(value => allowed.has(value));
@@ -561,7 +712,10 @@ async function photosForPosts(env, postIds) {
   rows.results.forEach(row => {
     if (!map.has(row.post_id)) map.set(row.post_id, []);
     map.get(row.post_id).push({
+      id: row.id,
       url: `/api/photos/${row.id}`,
+      thumbnailUrl: `/api/photos/${row.id}?variant=thumbnail`,
+      filename: row.filename || "",
       alt: row.filename || "Luana photo"
     });
   });
@@ -725,12 +879,20 @@ function cleanReturnTo(returnTo) {
   return returnTo;
 }
 
-function extensionFor(type, name) {
-  if (type === "image/jpeg") return ".jpg";
-  if (type === "image/png") return ".png";
-  if (type === "image/webp") return ".webp";
-  const match = String(name || "").match(/\.[a-z0-9]+$/i);
-  return match ? match[0].toLowerCase() : "";
+function photoDownloadDisposition(filename, photoId) {
+  const base = String(filename || "luana-photo")
+    .split(/[\\/]/)
+    .pop()
+    .replace(/[\u0000-\u001f\u007f]/g, "")
+    .replace(/\.[^.]+$/, "")
+    .trim()
+    .slice(0, 100) || "luana-photo";
+  const unicodeName = `${base}.webp`;
+  const encodedName = encodeURIComponent(unicodeName)
+    .replaceAll("'", "%27")
+    .replaceAll("(", "%28")
+    .replaceAll(")", "%29");
+  return `attachment; filename="luana-photo-${photoId}.webp"; filename*=UTF-8''${encodedName}`;
 }
 
 function postIdFromUrl(url) {
