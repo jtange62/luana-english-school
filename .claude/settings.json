@@ -9,16 +9,7 @@
       "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\jtange\\\\luana-english-school\" -File)",
       "Bash(Select-Object Name)",
       "Bash(Sort-Object Name)",
-      "Bash(rm c:\\\\Users\\\\jtange\\\\luana-english-school\\\\_redirects)",
-      "Skill(artifact-design)",
-      "Skill(artifact-design:*)",
-      "Bash(grep -o '#[0-9a-fA-F]\\\\{3,6\\\\}' c:/Users/jtange/luana-english-school/index.html)",
-      "Bash(node --check portal.js)",
-      "Bash(node --check worker.js)",
-      "Bash(git commit -m 'Optimize portal photo delivery and uploads *)",
-      "Bash(git stash *)",
-      "PowerShell(.\\\\scripts\\\\deploy-clean.ps1)",
-      "Bash(git commit -m 'Update local permission allowlist *)"
+      "Bash(rm c:\\\\Users\\\\jtange\\\\luana-english-school\\\\_redirects)"
     ],
     "additionalDirectories": [
       "c:\\Users\\jtange\\luana-english-school"
