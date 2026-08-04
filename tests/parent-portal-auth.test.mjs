@@ -229,6 +229,9 @@ test("staff uploads append photos to the existing scheduled day", async () => {
             return { success: true };
           }
         };
+      },
+      async batch(statements) {
+        return Promise.all(statements.map(statement => statement.run()));
       }
     },
     PHOTOS: {
@@ -260,6 +263,8 @@ test("staff uploads append photos to the existing scheduled day", async () => {
   assert.equal(data.added, 1);
   assert.equal(uploads.length, 2);
   assert.ok(uploads.some(key => key.endsWith("-thumb.webp")));
+  assert.match(workerSource, /const storageResults = await Promise\.allSettled/);
+  assert.match(workerSource, /await env\.DB\.batch\(\[/);
   assert.ok(writes.some(write =>
     write.sql.includes("INSERT INTO post_photos") &&
     write.args[0] === "existing-songkran-day" &&
@@ -289,6 +294,9 @@ test("staff uploads accept iPhone HEIC photos", async () => {
             return { success: true };
           }
         };
+      },
+      async batch(statements) {
+        return Promise.all(statements.map(statement => statement.run()));
       }
     },
     PHOTOS: {

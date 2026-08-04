@@ -401,30 +401,36 @@ async function createStaffPost(request, env) {
     let thumbnailStored = false;
     let photoRowStored = false;
     try {
-      await env.PHOTOS.put(key, optimized, {
-        httpMetadata: { contentType: "image/webp" }
-      });
-      fullStored = true;
-      await env.PHOTOS.put(thumbnailKey, thumbnail, {
-        httpMetadata: { contentType: "image/webp" }
-      });
-      thumbnailStored = true;
-      await env.DB.prepare(
-        "INSERT INTO photos (id, r2_key, thumbnail_r2_key, filename, content_type, size_bytes, uploaded_by, created_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)"
-      ).bind(
-        photoId,
-        key,
-        thumbnailKey,
-        file.name || `${photoId}.webp`,
-        "image/webp",
-        optimized.byteLength + thumbnail.byteLength,
-        session.email || session.subject || "staff",
-        now
-      ).run();
+      const storageResults = await Promise.allSettled([
+        env.PHOTOS.put(key, optimized, {
+          httpMetadata: { contentType: "image/webp" }
+        }),
+        env.PHOTOS.put(thumbnailKey, thumbnail, {
+          httpMetadata: { contentType: "image/webp" }
+        })
+      ]);
+      fullStored = storageResults[0].status === "fulfilled";
+      thumbnailStored = storageResults[1].status === "fulfilled";
+      const storageFailure = storageResults.find(result => result.status === "rejected");
+      if (storageFailure) throw storageFailure.reason;
+      await env.DB.batch([
+        env.DB.prepare(
+          "INSERT INTO photos (id, r2_key, thumbnail_r2_key, filename, content_type, size_bytes, uploaded_by, created_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)"
+        ).bind(
+          photoId,
+          key,
+          thumbnailKey,
+          file.name || `${photoId}.webp`,
+          "image/webp",
+          optimized.byteLength + thumbnail.byteLength,
+          session.email || session.subject || "staff",
+          now
+        ),
+        env.DB.prepare(
+          "INSERT INTO post_photos (post_id, photo_id, sort_order) VALUES (?1, ?2, ?3)"
+        ).bind(postId, photoId, firstSortOrder + index)
+      ]);
       photoRowStored = true;
-      await env.DB.prepare(
-        "INSERT INTO post_photos (post_id, photo_id, sort_order) VALUES (?1, ?2, ?3)"
-      ).bind(postId, photoId, firstSortOrder + index).run();
     } catch (error) {
       if (photoRowStored) await env.DB.prepare("DELETE FROM photos WHERE id = ?1").bind(photoId).run();
       if (thumbnailStored) await env.PHOTOS.delete(thumbnailKey);
