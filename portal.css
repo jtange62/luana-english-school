@@ -1727,6 +1727,17 @@ button:disabled {
   white-space: nowrap;
 }
 
+.album-selection-bar .delete-selected {
+  background: #a93224;
+  color: #fff;
+}
+
+.daily-photo-actions .delete-daily-photos {
+  border: 1px solid rgba(169, 50, 36, 0.3);
+  background: #fff;
+  color: #a93224;
+}
+
 .album-browser-photo:hover img,
 .album-browser-photo:focus-visible img {
   transform: scale(1.035);

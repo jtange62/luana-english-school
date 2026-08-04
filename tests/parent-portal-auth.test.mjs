@@ -324,3 +324,62 @@ test("staff upload retries do not duplicate an already stored photo", async () =
   assert.equal(uploads.length, 0);
   assert.ok(!writes.some(write => write.sql.includes("INSERT INTO photos")));
 });
+
+test("staff photo deletion removes the full image and thumbnail", async () => {
+  const deletedObjects = [];
+  const batches = [];
+  const env = {
+    ...environment(),
+    DB: {
+      prepare(sql) {
+        return {
+          sql,
+          args: [],
+          bind(...args) {
+            this.args = args;
+            return this;
+          },
+          async first() {
+            if (sql.includes("JOIN post_photos")) {
+              return {
+                r2_key: "portal/day/photo.webp",
+                thumbnail_r2_key: "portal/day/photo-thumb.webp",
+                post_id: "post-with-photos"
+              };
+            }
+            if (sql.includes("COUNT(*)")) return { count: 2 };
+            return null;
+          },
+          async run() {
+            return { success: true };
+          }
+        };
+      },
+      async batch(statements) {
+        batches.push(statements);
+        return statements.map(() => ({ success: true }));
+      }
+    },
+    PHOTOS: {
+      async delete(keys) {
+        deletedObjects.push(...(Array.isArray(keys) ? keys : [keys]));
+      }
+    }
+  };
+  const loginResponse = await worker.fetch(apiRequest("/api/auth/password", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ audience: "staff", password: "staff-test-password" })
+  }), env);
+  const cookie = loginResponse.headers.get("set-cookie")?.split(";")[0] || "";
+
+  const response = await worker.fetch(apiRequest("/api/staff/photos/photo-to-delete", {
+    method: "DELETE",
+    headers: { cookie }
+  }), env);
+
+  assert.equal(response.status, 200);
+  assert.deepEqual(deletedObjects, ["portal/day/photo.webp", "portal/day/photo-thumb.webp"]);
+  assert.equal(batches.length, 1);
+  assert.equal(batches[0].length, 3);
+});

@@ -107,6 +107,8 @@ test("daily photo collections keep parent navigation and a simple staff upload f
   assert.match(portal, /Uploading \$\{uploaded \+ failed\.length\} of \$\{files\.length\}/);
   assert.match(portal, /form\.set\("upload_id", uploadId\)/);
   assert.match(portal, /Add more photos/);
+  assert.match(portal, /Delete photos/);
+  assert.match(portal, /deleteSelectedPhotos/);
   assert.match(portal, /daily-photo-manage-card/);
   assert.doesNotMatch(portal, /class="daily-photo-cover"/);
   assert.match(portal, /isParentPresentation/);

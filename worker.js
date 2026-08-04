@@ -515,14 +515,14 @@ async function deleteStaffPhoto(request, env, url) {
   if (!photoId) return json({ error: "Photo not found" }, 404);
 
   const photo = await env.DB.prepare(
-    `SELECT ph.r2_key, pp.post_id
+    `SELECT ph.r2_key, ph.thumbnail_r2_key, pp.post_id
      FROM photos ph
      JOIN post_photos pp ON pp.photo_id = ph.id
      WHERE ph.id = ?1`
   ).bind(photoId).first();
   if (!photo) return json({ error: "Photo not found" }, 404);
 
-  await env.PHOTOS.delete(photo.r2_key);
+  await env.PHOTOS.delete([photo.r2_key, photo.thumbnail_r2_key].filter(Boolean));
   await env.DB.batch([
     env.DB.prepare("DELETE FROM album_photos WHERE photo_id = ?1").bind(photoId),
     env.DB.prepare("DELETE FROM post_photos WHERE photo_id = ?1").bind(photoId),

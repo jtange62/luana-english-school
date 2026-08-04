@@ -177,6 +177,8 @@ let lightboxReturnFocus;
 const ALBUM_BATCH_SIZE = 12;
 const MAX_SELECTED_PHOTOS = 10;
 let albumSelectionMode = false;
+let albumActionMode = "save";
+let galleryChanged = null;
 let selectedPhotoIndexes = new Set();
 let selectedPhotoFiles = [];
 let nativeFileShareAvailable = false;
@@ -289,7 +291,8 @@ function setAlbumSelectionMode(enabled) {
     shareReadinessTimer = 0;
   }
   refreshAlbumSelection();
-  scheduleShareReadiness();
+  if (albumActionMode === "delete") updateDeleteReadiness();
+  else scheduleShareReadiness();
 }
 
 function toggleSelectedPhoto(index) {
@@ -300,13 +303,25 @@ function toggleSelectedPhoto(index) {
   } else if (selectedPhotoIndexes.size < MAX_SELECTED_PHOTOS) {
     selectedPhotoIndexes.add(index);
   } else {
-    if (help) help.textContent = isParentPresentation()
+    if (help) help.textContent = albumActionMode === "delete"
+      ? "You can delete up to 10 photos at a time"
+      : isParentPresentation()
       ? "一度に保存できる写真は10枚までです"
       : "You can save up to 10 photos at a time";
     return;
   }
   refreshAlbumSelection(index);
-  scheduleShareReadiness();
+  if (albumActionMode === "delete") updateDeleteReadiness();
+  else scheduleShareReadiness();
+}
+
+function updateDeleteReadiness() {
+  const button = document.getElementById("album-share-selected");
+  const help = document.getElementById("album-selection-help");
+  if (button) button.disabled = !selectedPhotoIndexes.size;
+  if (help) help.textContent = selectedPhotoIndexes.size
+    ? "Selected photos will be permanently deleted"
+    : "Tap the photos you want to delete";
 }
 
 function refreshAlbumSelection(changedIndex = null) {
@@ -318,10 +333,12 @@ function refreshAlbumSelection(changedIndex = null) {
   if (toggle) {
     toggle.textContent = albumSelectionMode
       ? parentView ? "選択をやめる" : "Cancel selection"
-      : parentView ? "写真をまとめて保存" : "Save multiple";
+      : albumActionMode === "delete"
+        ? "Select photos"
+        : parentView ? "写真をまとめて保存" : "Save multiple";
     toggle.setAttribute("aria-pressed", String(albumSelectionMode));
   }
-  if (count) count.textContent = parentView
+  if (count) count.textContent = parentView && albumActionMode !== "delete"
     ? `${selectedPhotoIndexes.size} / ${MAX_SELECTED_PHOTOS}枚選択中`
     : `${selectedPhotoIndexes.size} / ${MAX_SELECTED_PHOTOS} selected`;
   const selector = changedIndex === null
@@ -446,6 +463,32 @@ function shareSelectedPhotos() {
     : "Downloads started";
 }
 
+async function deleteSelectedPhotos() {
+  const indexes = [...selectedPhotoIndexes].sort((a, b) => a - b);
+  if (!indexes.length) return;
+  const label = indexes.length === 1 ? "this photo" : `these ${indexes.length} photos`;
+  if (!window.confirm(`Permanently delete ${label}? This cannot be undone.`)) return;
+  const button = document.getElementById("album-share-selected");
+  const help = document.getElementById("album-selection-help");
+  if (button) button.disabled = true;
+  if (help) help.textContent = `Deleting 0 of ${indexes.length} photos…`;
+  let deleted = 0;
+  const failed = [];
+  for (const index of indexes) {
+    const photo = lightboxPhotos[index];
+    try {
+      await api(`/api/staff/photos/${encodeURIComponent(photo.id)}`, { method: "DELETE" });
+      deleted += 1;
+    } catch (error) {
+      failed.push(error);
+    }
+    if (help) help.textContent = `Deleting ${deleted + failed.length} of ${indexes.length} photos…`;
+  }
+  await galleryChanged?.();
+  closeGallery();
+  if (failed.length) window.alert(`${deleted} deleted; ${failed.length} could not be deleted. Please try again.`);
+}
+
 function showAlbumBrowser(reset = false) {
   const browser = document.getElementById("album-browser");
   const viewer = document.getElementById("photo-viewer");
@@ -475,10 +518,19 @@ function showAlbumBrowser(reset = false) {
   document.getElementById("lightbox-close")?.focus();
 }
 
-function openGallery(photos, startIndex = null) {
+function openGallery(photos, startIndex = null, options = {}) {
   const box = document.getElementById("lightbox");
   if (!box || !photos?.length) return;
   lightboxPhotos = photos;
+  albumActionMode = options.action === "delete" ? "delete" : "save";
+  galleryChanged = options.onChanged || null;
+  const selectToggle = document.getElementById("album-select-toggle");
+  const actionButton = document.getElementById("album-share-selected");
+  if (selectToggle) selectToggle.textContent = albumActionMode === "delete" ? "Select photos" : "Save multiple";
+  if (actionButton) {
+    actionButton.textContent = albumActionMode === "delete" ? "Delete selected" : "Save selected photos";
+    actionButton.classList.toggle("delete-selected", albumActionMode === "delete");
+  }
   lightboxReturnFocus = document.activeElement;
   box.hidden = false;
   document.body.classList.add("lightbox-open");
@@ -513,7 +565,10 @@ function setupLightbox() {
   viewerClose?.addEventListener("click", closeGallery);
   viewerBack?.addEventListener("click", showAlbumBrowser);
   selectToggle?.addEventListener("click", () => setAlbumSelectionMode(!albumSelectionMode));
-  shareSelected?.addEventListener("click", shareSelectedPhotos);
+  shareSelected?.addEventListener("click", () => {
+    if (albumActionMode === "delete") deleteSelectedPhotos();
+    else shareSelectedPhotos();
+  });
   box.addEventListener("click", event => {
     if (event.target === box) closeGallery();
   });
@@ -1028,10 +1083,14 @@ async function initDailyStaff() {
       <div class="daily-photo-actions">
         <button type="button" class="add-daily-photos">${count ? "Add more photos" : "Add photos"}</button>
         ${count ? '<button type="button" class="view-daily-photos">View photos</button>' : ""}
+        ${count ? '<button type="button" class="delete-daily-photos">Delete photos</button>' : ""}
       </div>
     `;
     card.querySelector(".add-daily-photos").addEventListener("click", () => openUploader(day.date));
     card.querySelector(".view-daily-photos")?.addEventListener("click", () => openGallery(post.photos));
+    card.querySelector(".delete-daily-photos")?.addEventListener("click", () => {
+      openGallery(post.photos, null, { action: "delete", onChanged: loadStaffPosts });
+    });
     return card;
   }
 
