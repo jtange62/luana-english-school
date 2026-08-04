@@ -534,8 +534,12 @@ function openGallery(photos, startIndex = null, options = {}) {
   lightboxReturnFocus = document.activeElement;
   box.hidden = false;
   document.body.classList.add("lightbox-open");
-  if (startIndex === null) showAlbumBrowser(true);
-  else showPhotoViewer(startIndex);
+  if (startIndex === null) {
+    showAlbumBrowser(true);
+    if (albumActionMode === "delete") setAlbumSelectionMode(true);
+  } else {
+    showPhotoViewer(startIndex);
+  }
 }
 
 function closeGallery() {
