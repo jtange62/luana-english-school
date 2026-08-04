@@ -1078,7 +1078,7 @@ async function initDailyStaff() {
       ? `${invalid[0].name} cannot be uploaded. Use JPEG, PNG, WebP, HEIC, or HEIF files up to 20 MB each.`
       : files.length ? `${files.length} photo${files.length === 1 ? "" : "s"} ready to upload.` : "";
     submit.disabled = !files.length || Boolean(invalid.length);
-    files.slice(0, 12).forEach(file => {
+    files.slice(0, 4).forEach(file => {
       const image = document.createElement("img");
       const url = URL.createObjectURL(file);
       previewUrls.push(url);
@@ -1086,10 +1086,10 @@ async function initDailyStaff() {
       image.src = url;
       preview.append(image);
     });
-    if (files.length > 12) {
+    if (files.length > 4) {
       const more = document.createElement("p");
       more.className = "upload-preview-more";
-      more.textContent = `+ ${files.length - 12} more`;
+      more.textContent = `+ ${files.length - 4} more`;
       preview.append(more);
     }
   });
