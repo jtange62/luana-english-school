@@ -177,6 +177,7 @@ let lightboxReturnFocus;
 const ALBUM_BATCH_SIZE = 12;
 const MAX_SELECTED_PHOTOS = 10;
 const MAX_UPLOAD_PHOTO_BYTES = 20 * 1024 * 1024;
+const UPLOAD_QUEUE_CONCURRENCY = 2;
 const UPLOAD_PHOTO_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"]);
 const UPLOAD_PHOTO_NAME_PATTERN = /\.(?:jpe?g|png|webp|heic|heif)$/i;
 let albumSelectionMode = false;
@@ -1114,14 +1115,20 @@ async function initDailyStaff() {
     const failed = [];
     let stopped = [];
     try {
-      for (let index = 0; index < items.length; index += 1) {
-        if (stopUploadRequested) {
-          stopped = items.slice(index);
-          break;
-        }
-        const item = items[index];
+      let nextIndex = 0;
+      const activeNames = new Map();
+      const updateActiveNames = () => {
+        uploadCurrentFile.textContent = activeNames.size
+          ? `Uploading ${[...activeNames.values()].join(" + ")}`
+          : "Finishing upload…";
+      };
+      const uploadNext = async () => {
+        if (stopUploadRequested || nextIndex >= items.length) return;
+        const item = items[nextIndex];
+        nextIndex += 1;
         const { file, uploadId } = item;
-        uploadCurrentFile.textContent = `Uploading ${file.name}`;
+        activeNames.set(uploadId, file.name);
+        updateActiveNames();
         let lastError;
         for (let attempt = 1; attempt <= 3; attempt += 1) {
           const form = new FormData();
@@ -1138,6 +1145,8 @@ async function initDailyStaff() {
             if (attempt < 3) await new Promise(resolve => setTimeout(resolve, attempt * 750));
           }
         }
+        activeNames.delete(uploadId);
+        updateActiveNames();
         if (lastError) failed.push({ item, error: lastError });
         else uploaded += 1;
         const processed = uploaded + failed.length;
@@ -1145,7 +1154,13 @@ async function initDailyStaff() {
         uploadProgressBar.value = processed;
         uploadProgressLabel.textContent = `${percent}% · ${processed} of ${items.length}`;
         postNote.textContent = `Uploading ${processed} of ${items.length} photos… ${uploaded} completed.`;
-      }
+        await uploadNext();
+      };
+      await Promise.all(Array.from(
+        { length: Math.min(UPLOAD_QUEUE_CONCURRENCY, items.length) },
+        () => uploadNext()
+      ));
+      if (stopUploadRequested) stopped = items.slice(nextIndex);
       retainedUploadItems = [...failed.map(entry => entry.item), ...stopped];
       retainedUploadDate = retainedUploadItems.length ? date : "";
       selectedWeek = weekForDate(date)?.slug || selectedWeek;
@@ -1156,7 +1171,7 @@ async function initDailyStaff() {
         uploadCurrentFile.textContent = stopUploadRequested ? "Upload stopped safely" : "Some photos need another try";
         uploadProgressLabel.textContent = `${uploaded} uploaded · ${retainedUploadItems.length} remaining`;
         postNote.textContent = stopUploadRequested
-          ? `${uploaded} uploaded. ${stopped.length} photos were not started.`
+          ? `${uploaded} uploaded. ${retainedUploadItems.length} photos remain.`
           : `${uploaded} uploaded; ${failed.length} failed. Tap Retry to continue.`;
       } else {
         uploadProgress.classList.add("is-complete");
