@@ -25,7 +25,8 @@ const SUMMER_DAYS = [
 const MAX_DAILY_UPLOAD = 10;
 const UPLOAD_CONCURRENCY = 4;
 const MAX_PHOTO_BYTES = 20 * 1024 * 1024;
-const PHOTO_CONTENT_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+const PHOTO_CONTENT_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"]);
+const PHOTO_FILENAME_PATTERN = /\.(?:jpe?g|png|webp|heic|heif)$/i;
 const PHOTO_WIDTH = 1600;
 const THUMBNAIL_WIDTH = 480;
 
@@ -346,9 +347,12 @@ async function createStaffPost(request, env) {
   if (files.length > MAX_DAILY_UPLOAD) {
     return json({ error: `Upload up to ${MAX_DAILY_UPLOAD} photos at a time` }, 400);
   }
-  const invalidFile = files.find(file => !PHOTO_CONTENT_TYPES.has(file.type) || file.size > MAX_PHOTO_BYTES);
+  const invalidFile = files.find(file =>
+    (!PHOTO_CONTENT_TYPES.has(file.type) && !PHOTO_FILENAME_PATTERN.test(file.name || "")) ||
+    file.size > MAX_PHOTO_BYTES
+  );
   if (invalidFile) {
-    return json({ error: "Photos must be JPEG, PNG, or WebP files no larger than 20 MB each" }, 400);
+    return json({ error: "Photos must be JPEG, PNG, WebP, HEIC, or HEIF files no larger than 20 MB each" }, 400);
   }
 
   const now = new Date().toISOString();

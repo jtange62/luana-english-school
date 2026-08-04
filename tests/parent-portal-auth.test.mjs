@@ -268,6 +268,56 @@ test("staff uploads append photos to the existing scheduled day", async () => {
   assert.ok(!writes.some(write => write.sql.includes("INSERT OR IGNORE INTO posts")));
 });
 
+test("staff uploads accept iPhone HEIC photos", async () => {
+  const uploads = [];
+  const env = {
+    ...environment(),
+    DB: {
+      prepare(sql) {
+        return {
+          args: [],
+          bind(...args) {
+            this.args = args;
+            return this;
+          },
+          async first() {
+            if (sql.includes("SELECT id FROM posts")) return { id: "iphone-photo-day" };
+            if (sql.includes("MAX(sort_order)")) return { last_order: 0 };
+            return null;
+          },
+          async run() {
+            return { success: true };
+          }
+        };
+      }
+    },
+    PHOTOS: {
+      async put(key) {
+        uploads.push(key);
+      }
+    },
+    IMAGES: mockImages()
+  };
+  const loginResponse = await worker.fetch(apiRequest("/api/auth/password", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ audience: "staff", password: "staff-test-password" })
+  }), env);
+  const cookie = loginResponse.headers.get("set-cookie")?.split(";")[0] || "";
+  const form = new FormData();
+  form.set("date", "2026-08-03");
+  form.append("photos", new Blob(["iphone photo"], { type: "image/heic" }), "IMG_1234.HEIC");
+
+  const response = await worker.fetch(apiRequest("/api/staff/posts", {
+    method: "POST",
+    headers: { cookie },
+    body: form
+  }), env);
+
+  assert.equal(response.status, 200);
+  assert.equal(uploads.length, 2);
+});
+
 test("staff upload retries do not duplicate an already stored photo", async () => {
   const writes = [];
   const uploads = [];
