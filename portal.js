@@ -131,6 +131,12 @@ function localDateValue(date = new Date()) {
   return `${year}-${month}-${day}`;
 }
 
+function newUploadId() {
+  if (crypto.randomUUID) return crypto.randomUUID();
+  const random = crypto.getRandomValues(new Uint32Array(2));
+  return `upload-${Date.now()}-${random[0]}-${random[1]}`;
+}
+
 function initialWeek(posts, availableWeeks = SUMMER_WEEKS) {
   const allowed = new Set(availableWeeks.map(week => week.slug));
   const latest = posts.find(post => allowed.has(post.week));
@@ -145,8 +151,14 @@ async function api(path, options = {}) {
   });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
-    const error = new Error(data.error || "Request failed");
+    const fallbackMessage = response.status === 413
+      ? "This photo is too large to upload. Try a smaller version."
+      : response.status >= 500
+        ? "The upload was interrupted. Please try again."
+        : "Request failed";
+    const error = new Error(data.error || fallbackMessage);
     error.data = data;
+    error.status = response.status;
     throw error;
   }
   return data;
@@ -164,7 +176,13 @@ let albumObserver;
 let lightboxReturnFocus;
 const ALBUM_BATCH_SIZE = 12;
 const MAX_SELECTED_PHOTOS = 10;
+const MAX_UPLOAD_PHOTO_BYTES = 20 * 1024 * 1024;
+const UPLOAD_QUEUE_CONCURRENCY = 1;
+const UPLOAD_PHOTO_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"]);
+const UPLOAD_PHOTO_NAME_PATTERN = /\.(?:jpe?g|png|webp|heic|heif)$/i;
 let albumSelectionMode = false;
+let albumActionMode = "save";
+let galleryChanged = null;
 let selectedPhotoIndexes = new Set();
 let selectedPhotoFiles = [];
 let nativeFileShareAvailable = false;
@@ -277,15 +295,22 @@ function setAlbumSelectionMode(enabled) {
     shareReadinessTimer = 0;
   }
   refreshAlbumSelection();
-  scheduleShareReadiness();
+  if (albumActionMode === "delete") updateDeleteReadiness();
+  else scheduleShareReadiness();
+}
+
+function validUploadPhoto(file) {
+  const supported = UPLOAD_PHOTO_TYPES.has(file.type) || UPLOAD_PHOTO_NAME_PATTERN.test(file.name || "");
+  return supported && file.size <= MAX_UPLOAD_PHOTO_BYTES;
 }
 
 function toggleSelectedPhoto(index) {
   const help = document.getElementById("album-selection-help");
+  const selectionLimit = albumActionMode === "delete" ? lightboxPhotos.length : MAX_SELECTED_PHOTOS;
   if (selectedPhotoIndexes.has(index)) {
     selectedPhotoIndexes.delete(index);
     shareFilePromises.delete(index);
-  } else if (selectedPhotoIndexes.size < MAX_SELECTED_PHOTOS) {
+  } else if (selectedPhotoIndexes.size < selectionLimit) {
     selectedPhotoIndexes.add(index);
   } else {
     if (help) help.textContent = isParentPresentation()
@@ -294,24 +319,43 @@ function toggleSelectedPhoto(index) {
     return;
   }
   refreshAlbumSelection(index);
-  scheduleShareReadiness();
+  if (albumActionMode === "delete") updateDeleteReadiness();
+  else scheduleShareReadiness();
+}
+
+function updateDeleteReadiness() {
+  const button = document.getElementById("album-share-selected");
+  const help = document.getElementById("album-selection-help");
+  if (button) button.disabled = !selectedPhotoIndexes.size;
+  if (help) help.textContent = selectedPhotoIndexes.size
+    ? "Selected photos will be permanently deleted"
+    : "Tap the photos you want to delete";
 }
 
 function refreshAlbumSelection(changedIndex = null) {
   const bar = document.getElementById("album-selection-bar");
   const toggle = document.getElementById("album-select-toggle");
   const count = document.getElementById("album-selection-count");
+  const selectAll = document.getElementById("album-select-all");
   const parentView = isParentPresentation();
   if (bar) bar.hidden = !albumSelectionMode;
   if (toggle) {
     toggle.textContent = albumSelectionMode
       ? parentView ? "選択をやめる" : "Cancel selection"
-      : parentView ? "写真をまとめて保存" : "Save multiple";
+      : albumActionMode === "delete"
+        ? "Select photos"
+        : parentView ? "写真をまとめて保存" : "Save multiple";
     toggle.setAttribute("aria-pressed", String(albumSelectionMode));
   }
-  if (count) count.textContent = parentView
-    ? `${selectedPhotoIndexes.size} / ${MAX_SELECTED_PHOTOS}枚選択中`
-    : `${selectedPhotoIndexes.size} / ${MAX_SELECTED_PHOTOS} selected`;
+  if (count) count.textContent = albumActionMode === "delete"
+    ? `${selectedPhotoIndexes.size} of ${lightboxPhotos.length} selected`
+    : parentView
+      ? `${selectedPhotoIndexes.size} / ${MAX_SELECTED_PHOTOS}枚選択中`
+      : `${selectedPhotoIndexes.size} / ${MAX_SELECTED_PHOTOS} selected`;
+  if (selectAll) {
+    selectAll.hidden = albumActionMode !== "delete";
+    selectAll.textContent = selectedPhotoIndexes.size === lightboxPhotos.length ? "Clear all" : "Select all";
+  }
   const selector = changedIndex === null
     ? ".album-browser-photo"
     : `.album-browser-photo[data-photo-index="${changedIndex}"]`;
@@ -434,6 +478,32 @@ function shareSelectedPhotos() {
     : "Downloads started";
 }
 
+async function deleteSelectedPhotos() {
+  const indexes = [...selectedPhotoIndexes].sort((a, b) => a - b);
+  if (!indexes.length) return;
+  const label = indexes.length === 1 ? "this photo" : `these ${indexes.length} photos`;
+  if (!window.confirm(`Permanently delete ${label}? This cannot be undone.`)) return;
+  const button = document.getElementById("album-share-selected");
+  const help = document.getElementById("album-selection-help");
+  if (button) button.disabled = true;
+  if (help) help.textContent = `Deleting 0 of ${indexes.length} photos…`;
+  let deleted = 0;
+  const failed = [];
+  for (const index of indexes) {
+    const photo = lightboxPhotos[index];
+    try {
+      await api(`/api/staff/photos/${encodeURIComponent(photo.id)}`, { method: "DELETE" });
+      deleted += 1;
+    } catch (error) {
+      failed.push(error);
+    }
+    if (help) help.textContent = `Deleting ${deleted + failed.length} of ${indexes.length} photos…`;
+  }
+  await galleryChanged?.();
+  closeGallery();
+  if (failed.length) window.alert(`${deleted} deleted; ${failed.length} could not be deleted. Please try again.`);
+}
+
 function showAlbumBrowser(reset = false) {
   const browser = document.getElementById("album-browser");
   const viewer = document.getElementById("photo-viewer");
@@ -463,15 +533,30 @@ function showAlbumBrowser(reset = false) {
   document.getElementById("lightbox-close")?.focus();
 }
 
-function openGallery(photos, startIndex = null) {
+function openGallery(photos, startIndex = null, options = {}) {
   const box = document.getElementById("lightbox");
   if (!box || !photos?.length) return;
   lightboxPhotos = photos;
+  albumActionMode = options.action === "delete" ? "delete" : "save";
+  galleryChanged = options.onChanged || null;
+  const selectToggle = document.getElementById("album-select-toggle");
+  const actionButton = document.getElementById("album-share-selected");
+  const selectAll = document.getElementById("album-select-all");
+  if (selectToggle) selectToggle.textContent = albumActionMode === "delete" ? "Select photos" : "Save multiple";
+  if (actionButton) {
+    actionButton.textContent = albumActionMode === "delete" ? "Delete selected" : "Save selected photos";
+    actionButton.classList.toggle("delete-selected", albumActionMode === "delete");
+  }
+  if (selectAll) selectAll.hidden = albumActionMode !== "delete";
   lightboxReturnFocus = document.activeElement;
   box.hidden = false;
   document.body.classList.add("lightbox-open");
-  if (startIndex === null) showAlbumBrowser(true);
-  else showPhotoViewer(startIndex);
+  if (startIndex === null) {
+    showAlbumBrowser(true);
+    if (albumActionMode === "delete") setAlbumSelectionMode(true);
+  } else {
+    showPhotoViewer(startIndex);
+  }
 }
 
 function closeGallery() {
@@ -495,13 +580,23 @@ function setupLightbox() {
   const previous = document.getElementById("lightbox-prev");
   const next = document.getElementById("lightbox-next");
   const selectToggle = document.getElementById("album-select-toggle");
+  const selectAll = document.getElementById("album-select-all");
   const shareSelected = document.getElementById("album-share-selected");
   if (!box || !close) return;
   close.addEventListener("click", closeGallery);
   viewerClose?.addEventListener("click", closeGallery);
   viewerBack?.addEventListener("click", showAlbumBrowser);
   selectToggle?.addEventListener("click", () => setAlbumSelectionMode(!albumSelectionMode));
-  shareSelected?.addEventListener("click", shareSelectedPhotos);
+  selectAll?.addEventListener("click", () => {
+    if (selectedPhotoIndexes.size === lightboxPhotos.length) selectedPhotoIndexes.clear();
+    else selectedPhotoIndexes = new Set(lightboxPhotos.map((_, index) => index));
+    refreshAlbumSelection();
+    updateDeleteReadiness();
+  });
+  shareSelected?.addEventListener("click", () => {
+    if (albumActionMode === "delete") deleteSelectedPhotos();
+    else shareSelectedPhotos();
+  });
   box.addEventListener("click", event => {
     if (event.target === box) closeGallery();
   });
@@ -834,6 +929,12 @@ async function initDailyStaff() {
   const postNote = document.getElementById("post-note");
   const submit = document.getElementById("upload-submit");
   const preview = document.getElementById("upload-preview");
+  const uploadProgress = document.getElementById("upload-progress");
+  const uploadProgressBar = document.getElementById("upload-progress-bar");
+  const uploadProgressLabel = document.getElementById("upload-progress-label");
+  const uploadCurrentFile = document.getElementById("upload-current-file");
+  const retryUpload = document.getElementById("upload-retry");
+  const cancelUpload = document.getElementById("upload-cancel");
   const daySelect = document.getElementById("staff-day-select");
   const manageList = document.getElementById("manage-list");
   const manageNote = document.getElementById("manage-note");
@@ -842,6 +943,11 @@ async function initDailyStaff() {
   let posts = [];
   let selectedWeek = SUMMER_WEEKS[0].slug;
   let previewUrls = [];
+  let retainedUploadItems = [];
+  let retainedUploadDate = "";
+  let stopUploadRequested = false;
+  let uploadRunning = false;
+  let uploadWakeLock = null;
 
   SUMMER_WEEKS.forEach(week => {
     const group = document.createElement("optgroup");
@@ -866,6 +972,27 @@ async function initDailyStaff() {
     preview.innerHTML = "";
   }
 
+  async function keepScreenAwake() {
+    if (!("wakeLock" in navigator) || uploadWakeLock) return;
+    try {
+      uploadWakeLock = await navigator.wakeLock.request("screen");
+      uploadWakeLock.addEventListener("release", () => {
+        uploadWakeLock = null;
+      }, { once: true });
+    } catch {
+      // Uploads still work when wake lock is unavailable or denied.
+    }
+  }
+
+  async function releaseScreenWakeLock() {
+    if (uploadWakeLock) await uploadWakeLock.release().catch(() => null);
+    uploadWakeLock = null;
+  }
+
+  document.addEventListener("visibilitychange", () => {
+    if (uploadRunning && document.visibilityState === "visible") keepScreenAwake();
+  });
+
   function showStaffPanel(view) {
     document.querySelectorAll("[data-staff-view]").forEach(item => {
       item.classList.toggle("is-active", item.dataset.staffView === view);
@@ -876,13 +1003,23 @@ async function initDailyStaff() {
   }
 
   function openUploader(date) {
+    if (uploadRunning) {
+      showStaffPanel("new");
+      return;
+    }
     daySelect.value = date;
     selectedWeek = weekForDate(date)?.slug || selectedWeek;
     clearPreview();
     postForm.reset();
     daySelect.value = date;
     postNote.textContent = "";
-    submit.disabled = false;
+    retainedUploadItems = [];
+    retainedUploadDate = "";
+    uploadProgress.hidden = true;
+    retryUpload.hidden = true;
+    cancelUpload.hidden = true;
+    uploadCurrentFile.textContent = "";
+    submit.disabled = true;
     showStaffPanel("new");
     daySelect.focus();
   }
@@ -924,15 +1061,18 @@ async function initDailyStaff() {
 
   postForm.elements.photos.addEventListener("change", () => {
     clearPreview();
+    retainedUploadItems = [];
+    uploadProgress.hidden = true;
+    uploadProgress.classList.remove("is-complete", "has-errors");
+    retryUpload.hidden = true;
+    cancelUpload.hidden = true;
     const files = [...postForm.elements.photos.files];
-    if (files.length > 10) {
-      postNote.textContent = "Please choose 10 photos or fewer. You can add another group after this upload.";
-      submit.disabled = true;
-      return;
-    }
-    postNote.textContent = files.length ? `${files.length} photo${files.length === 1 ? "" : "s"} ready to upload.` : "";
-    submit.disabled = !files.length;
-    files.forEach(file => {
+    const invalid = files.filter(file => !validUploadPhoto(file));
+    postNote.textContent = invalid.length
+      ? `${invalid[0].name} cannot be uploaded. Use JPEG, PNG, WebP, HEIC, or HEIF files up to 20 MB each.`
+      : files.length ? `${files.length} photo${files.length === 1 ? "" : "s"} ready to upload.` : "";
+    submit.disabled = !files.length || Boolean(invalid.length);
+    files.slice(0, 4).forEach(file => {
       const image = document.createElement("img");
       const url = URL.createObjectURL(file);
       previewUrls.push(url);
@@ -940,32 +1080,130 @@ async function initDailyStaff() {
       image.src = url;
       preview.append(image);
     });
+    if (files.length > 4) {
+      const more = document.createElement("p");
+      more.className = "upload-preview-more";
+      more.textContent = `+ ${files.length - 4} more`;
+      preview.append(more);
+    }
+  });
+
+  async function runUploadQueue(items, date) {
+    if (!items.length || uploadRunning) return;
+    uploadRunning = true;
+    stopUploadRequested = false;
+    retainedUploadItems = [];
+    submit.disabled = true;
+    retryUpload.hidden = true;
+    cancelUpload.hidden = false;
+    cancelUpload.disabled = false;
+    cancelUpload.textContent = "Stop upload";
+    uploadProgress.hidden = false;
+    uploadProgress.classList.remove("is-complete", "has-errors");
+    uploadProgressBar.max = items.length;
+    uploadProgressBar.value = 0;
+    uploadProgressLabel.textContent = `0% · 0 of ${items.length}`;
+    postNote.textContent = `Uploading 0 of ${items.length} photos… Please keep this page open.`;
+    await keepScreenAwake();
+    let uploaded = 0;
+    const failed = [];
+    let stopped = [];
+    try {
+      let nextIndex = 0;
+      const activeNames = new Map();
+      const updateActiveNames = () => {
+        uploadCurrentFile.textContent = activeNames.size
+          ? `Uploading ${[...activeNames.values()].join(" + ")}`
+          : "Finishing upload…";
+      };
+      const uploadNext = async () => {
+        if (stopUploadRequested || nextIndex >= items.length) return;
+        const item = items[nextIndex];
+        nextIndex += 1;
+        const { file, uploadId } = item;
+        activeNames.set(uploadId, file.name);
+        updateActiveNames();
+        let lastError;
+        for (let attempt = 1; attempt <= 3; attempt += 1) {
+          const form = new FormData();
+          form.set("date", date);
+          form.set("upload_id", uploadId);
+          form.append("photos", file, file.name);
+          try {
+            await api("/api/staff/posts", { method: "POST", body: form });
+            lastError = null;
+            break;
+          } catch (error) {
+            lastError = error;
+            if (stopUploadRequested || (error.status && error.status < 500)) break;
+            if (attempt < 3) await new Promise(resolve => setTimeout(resolve, attempt * 750));
+          }
+        }
+        activeNames.delete(uploadId);
+        updateActiveNames();
+        if (lastError) failed.push({ item, error: lastError });
+        else uploaded += 1;
+        const processed = uploaded + failed.length;
+        const percent = Math.round((processed / items.length) * 100);
+        uploadProgressBar.value = processed;
+        uploadProgressLabel.textContent = `${percent}% · ${processed} of ${items.length}`;
+        postNote.textContent = `Uploading ${processed} of ${items.length} photos… ${uploaded} completed.`;
+        await uploadNext();
+      };
+      await Promise.all(Array.from(
+        { length: Math.min(UPLOAD_QUEUE_CONCURRENCY, items.length) },
+        () => uploadNext()
+      ));
+      if (stopUploadRequested) stopped = items.slice(nextIndex);
+      retainedUploadItems = [...failed.map(entry => entry.item), ...stopped];
+      retainedUploadDate = retainedUploadItems.length ? date : "";
+      selectedWeek = weekForDate(date)?.slug || selectedWeek;
+      if (retainedUploadItems.length) {
+        uploadProgress.classList.add("has-errors");
+        retryUpload.hidden = false;
+        retryUpload.textContent = failed.length ? `Retry ${retainedUploadItems.length} photos` : `Resume ${stopped.length} photos`;
+        uploadCurrentFile.textContent = stopUploadRequested ? "Upload stopped safely" : "Some photos need another try";
+        uploadProgressLabel.textContent = `${uploaded} uploaded · ${retainedUploadItems.length} remaining`;
+        postNote.textContent = stopUploadRequested
+          ? `${uploaded} uploaded. ${retainedUploadItems.length} photos remain.`
+          : `${uploaded} uploaded; ${failed.length} failed. Tap Retry to continue.`;
+      } else {
+        uploadProgress.classList.add("is-complete");
+        uploadProgressBar.value = items.length;
+        uploadProgressLabel.textContent = `100% · ${uploaded} uploaded`;
+        uploadCurrentFile.textContent = "Upload complete";
+        postForm.reset();
+        clearPreview();
+        daySelect.value = date;
+        postNote.textContent = `${uploaded} photos added successfully.`;
+      }
+      await loadStaffPosts();
+      if (!retainedUploadItems.length) showStaffPanel("manage");
+    } finally {
+      uploadRunning = false;
+      cancelUpload.hidden = true;
+      submit.disabled = Boolean(retainedUploadItems.length);
+      await releaseScreenWakeLock();
+    }
+  }
+
+  cancelUpload.addEventListener("click", () => {
+    stopUploadRequested = true;
+    cancelUpload.disabled = true;
+    cancelUpload.textContent = "Stopping after this photo…";
+  });
+
+  retryUpload.addEventListener("click", () => {
+    runUploadQueue([...retainedUploadItems], retainedUploadDate || String(daySelect.value));
   });
 
   postForm.addEventListener("submit", async event => {
     event.preventDefault();
     const files = [...postForm.elements.photos.files];
-    if (!files.length || files.length > 10) return;
-    submit.disabled = true;
-    postNote.textContent = `Uploading ${files.length} photo${files.length === 1 ? "" : "s"}… Please keep this page open.`;
-    try {
-      const form = new FormData(postForm);
-      const date = String(form.get("date"));
-      const data = await api("/api/staff/posts", { method: "POST", body: form });
-      selectedWeek = weekForDate(date)?.slug || selectedWeek;
-      postForm.reset();
-      clearPreview();
-      daySelect.value = date;
-      postNote.textContent = `${data.added || files.length} photos added successfully.`;
-      await loadStaffPosts();
-      showStaffPanel("manage");
-    } catch (error) {
-      postNote.textContent = error.data?.setupRequired
-        ? "Backend setup is needed before uploads work."
-        : error.message;
-    } finally {
-      submit.disabled = false;
-    }
+    if (!files.length) return;
+    if (files.some(file => !validUploadPhoto(file))) return;
+    const items = files.map(file => ({ file, uploadId: newUploadId() }));
+    await runUploadQueue(items, String(daySelect.value));
   });
 
   function dailyCard(day, post) {
@@ -983,10 +1221,14 @@ async function initDailyStaff() {
       <div class="daily-photo-actions">
         <button type="button" class="add-daily-photos">${count ? "Add more photos" : "Add photos"}</button>
         ${count ? '<button type="button" class="view-daily-photos">View photos</button>' : ""}
+        ${count ? '<button type="button" class="delete-daily-photos">Delete photos</button>' : ""}
       </div>
     `;
     card.querySelector(".add-daily-photos").addEventListener("click", () => openUploader(day.date));
     card.querySelector(".view-daily-photos")?.addEventListener("click", () => openGallery(post.photos));
+    card.querySelector(".delete-daily-photos")?.addEventListener("click", () => {
+      openGallery(post.photos, null, { action: "delete", onChanged: loadStaffPosts });
+    });
     return card;
   }
 

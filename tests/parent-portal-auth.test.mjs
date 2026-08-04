@@ -229,6 +229,9 @@ test("staff uploads append photos to the existing scheduled day", async () => {
             return { success: true };
           }
         };
+      },
+      async batch(statements) {
+        return Promise.all(statements.map(statement => statement.run()));
       }
     },
     PHOTOS: {
@@ -260,10 +263,181 @@ test("staff uploads append photos to the existing scheduled day", async () => {
   assert.equal(data.added, 1);
   assert.equal(uploads.length, 2);
   assert.ok(uploads.some(key => key.endsWith("-thumb.webp")));
+  assert.match(workerSource, /const storageResults = await Promise\.allSettled/);
+  assert.match(workerSource, /await env\.DB\.batch\(\[/);
   assert.ok(writes.some(write =>
     write.sql.includes("INSERT INTO post_photos") &&
     write.args[0] === "existing-songkran-day" &&
     write.args[2] === 69
   ));
   assert.ok(!writes.some(write => write.sql.includes("INSERT OR IGNORE INTO posts")));
+});
+
+test("staff uploads accept iPhone HEIC photos", async () => {
+  const uploads = [];
+  const env = {
+    ...environment(),
+    DB: {
+      prepare(sql) {
+        return {
+          args: [],
+          bind(...args) {
+            this.args = args;
+            return this;
+          },
+          async first() {
+            if (sql.includes("SELECT id FROM posts")) return { id: "iphone-photo-day" };
+            if (sql.includes("MAX(sort_order)")) return { last_order: 0 };
+            return null;
+          },
+          async run() {
+            return { success: true };
+          }
+        };
+      },
+      async batch(statements) {
+        return Promise.all(statements.map(statement => statement.run()));
+      }
+    },
+    PHOTOS: {
+      async put(key) {
+        uploads.push(key);
+      }
+    },
+    IMAGES: mockImages()
+  };
+  const loginResponse = await worker.fetch(apiRequest("/api/auth/password", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ audience: "staff", password: "staff-test-password" })
+  }), env);
+  const cookie = loginResponse.headers.get("set-cookie")?.split(";")[0] || "";
+  const form = new FormData();
+  form.set("date", "2026-08-03");
+  form.append("photos", new Blob(["iphone photo"], { type: "image/heic" }), "IMG_1234.HEIC");
+
+  const response = await worker.fetch(apiRequest("/api/staff/posts", {
+    method: "POST",
+    headers: { cookie },
+    body: form
+  }), env);
+
+  assert.equal(response.status, 200);
+  assert.equal(uploads.length, 2);
+});
+
+test("staff upload retries do not duplicate an already stored photo", async () => {
+  const writes = [];
+  const uploads = [];
+  const env = {
+    ...environment(),
+    DB: {
+      prepare(sql) {
+        return {
+          args: [],
+          bind(...args) {
+            this.args = args;
+            return this;
+          },
+          async first() {
+            if (sql.includes("SELECT id FROM posts")) return { id: "existing-ocean-day" };
+            if (sql.includes("SELECT id FROM photos")) return { id: "retry-upload-123456" };
+            return null;
+          },
+          async run() {
+            writes.push({ sql, args: this.args });
+            return { success: true };
+          }
+        };
+      }
+    },
+    PHOTOS: {
+      async put(key) {
+        uploads.push(key);
+      }
+    },
+    IMAGES: mockImages()
+  };
+  const loginResponse = await worker.fetch(apiRequest("/api/auth/password", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ audience: "staff", password: "staff-test-password" })
+  }), env);
+  const cookie = loginResponse.headers.get("set-cookie")?.split(";")[0] || "";
+  const form = new FormData();
+  form.set("date", "2026-08-03");
+  form.set("upload_id", "retry-upload-123456");
+  form.append("photos", new Blob(["same photo"], { type: "image/jpeg" }), "ocean.jpg");
+
+  const response = await worker.fetch(apiRequest("/api/staff/posts", {
+    method: "POST",
+    headers: { cookie },
+    body: form
+  }), env);
+  const data = await response.json();
+
+  assert.equal(response.status, 200);
+  assert.equal(data.added, 0);
+  assert.equal(data.duplicate, true);
+  assert.equal(uploads.length, 0);
+  assert.ok(!writes.some(write => write.sql.includes("INSERT INTO photos")));
+});
+
+test("staff photo deletion removes the full image and thumbnail", async () => {
+  const deletedObjects = [];
+  const batches = [];
+  const env = {
+    ...environment(),
+    DB: {
+      prepare(sql) {
+        return {
+          sql,
+          args: [],
+          bind(...args) {
+            this.args = args;
+            return this;
+          },
+          async first() {
+            if (sql.includes("JOIN post_photos")) {
+              return {
+                r2_key: "portal/day/photo.webp",
+                thumbnail_r2_key: "portal/day/photo-thumb.webp",
+                post_id: "post-with-photos"
+              };
+            }
+            if (sql.includes("COUNT(*)")) return { count: 2 };
+            return null;
+          },
+          async run() {
+            return { success: true };
+          }
+        };
+      },
+      async batch(statements) {
+        batches.push(statements);
+        return statements.map(() => ({ success: true }));
+      }
+    },
+    PHOTOS: {
+      async delete(keys) {
+        deletedObjects.push(...(Array.isArray(keys) ? keys : [keys]));
+      }
+    }
+  };
+  const loginResponse = await worker.fetch(apiRequest("/api/auth/password", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ audience: "staff", password: "staff-test-password" })
+  }), env);
+  const cookie = loginResponse.headers.get("set-cookie")?.split(";")[0] || "";
+
+  const response = await worker.fetch(apiRequest("/api/staff/photos/photo-to-delete", {
+    method: "DELETE",
+    headers: { cookie }
+  }), env);
+
+  assert.equal(response.status, 200);
+  assert.deepEqual(deletedObjects, ["portal/day/photo.webp", "portal/day/photo-thumb.webp"]);
+  assert.equal(batches.length, 1);
+  assert.equal(batches[0].length, 3);
 });

@@ -25,7 +25,8 @@ const SUMMER_DAYS = [
 const MAX_DAILY_UPLOAD = 10;
 const UPLOAD_CONCURRENCY = 4;
 const MAX_PHOTO_BYTES = 20 * 1024 * 1024;
-const PHOTO_CONTENT_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+const PHOTO_CONTENT_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"]);
+const PHOTO_FILENAME_PATTERN = /\.(?:jpe?g|png|webp|heic|heif)$/i;
 const PHOTO_WIDTH = 1600;
 const THUMBNAIL_WIDTH = 480;
 
@@ -336,6 +337,8 @@ async function createStaffPost(request, env) {
   const session = await requireSession(request, env, "staff");
   const form = await request.formData();
   const date = String(form.get("date") || "").trim();
+  const requestedUploadId = String(form.get("upload_id") || "").trim();
+  const uploadId = /^[a-zA-Z0-9_-]{16,100}$/.test(requestedUploadId) ? requestedUploadId : "";
   const day = summerDay(date);
   const files = form.getAll("photos").filter(value => value && typeof value === "object" && value.size);
 
@@ -344,9 +347,12 @@ async function createStaffPost(request, env) {
   if (files.length > MAX_DAILY_UPLOAD) {
     return json({ error: `Upload up to ${MAX_DAILY_UPLOAD} photos at a time` }, 400);
   }
-  const invalidFile = files.find(file => !PHOTO_CONTENT_TYPES.has(file.type) || file.size > MAX_PHOTO_BYTES);
+  const invalidFile = files.find(file =>
+    (!PHOTO_CONTENT_TYPES.has(file.type) && !PHOTO_FILENAME_PATTERN.test(file.name || "")) ||
+    file.size > MAX_PHOTO_BYTES
+  );
   if (invalidFile) {
-    return json({ error: "Photos must be JPEG, PNG, or WebP files no larger than 20 MB each" }, 400);
+    return json({ error: "Photos must be JPEG, PNG, WebP, HEIC, or HEIF files no larger than 20 MB each" }, 400);
   }
 
   const now = new Date().toISOString();
@@ -369,13 +375,21 @@ async function createStaffPost(request, env) {
   await env.DB.prepare(
     "UPDATE posts SET week_slug = ?1, title = ?2, status = 'published', updated_at = ?3 WHERE id = ?4"
   ).bind(day.week, day.title, now, postId).run();
+  if (uploadId) {
+    const existingUpload = await env.DB.prepare(
+      "SELECT id FROM photos WHERE id = ?1 LIMIT 1"
+    ).bind(uploadId).first();
+    if (existingUpload) {
+      return json({ ok: true, postId, added: 0, duplicate: true, date: day.date });
+    }
+  }
   const orderRow = await env.DB.prepare(
     "SELECT COALESCE(MAX(sort_order), -1) AS last_order FROM post_photos WHERE post_id = ?1"
   ).bind(postId).first();
   const firstSortOrder = Number(orderRow?.last_order ?? -1) + 1;
 
   const storePhoto = async (file, index) => {
-    const photoId = crypto.randomUUID();
+    const photoId = uploadId && files.length === 1 ? uploadId : crypto.randomUUID();
     const source = await file.arrayBuffer();
     const [optimized, thumbnail] = await Promise.all([
       optimizePhoto(env, source, PHOTO_WIDTH, 82),
@@ -387,30 +401,36 @@ async function createStaffPost(request, env) {
     let thumbnailStored = false;
     let photoRowStored = false;
     try {
-      await env.PHOTOS.put(key, optimized, {
-        httpMetadata: { contentType: "image/webp" }
-      });
-      fullStored = true;
-      await env.PHOTOS.put(thumbnailKey, thumbnail, {
-        httpMetadata: { contentType: "image/webp" }
-      });
-      thumbnailStored = true;
-      await env.DB.prepare(
-        "INSERT INTO photos (id, r2_key, thumbnail_r2_key, filename, content_type, size_bytes, uploaded_by, created_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)"
-      ).bind(
-        photoId,
-        key,
-        thumbnailKey,
-        file.name || `${photoId}.webp`,
-        "image/webp",
-        optimized.byteLength + thumbnail.byteLength,
-        session.email || session.subject || "staff",
-        now
-      ).run();
+      const storageResults = await Promise.allSettled([
+        env.PHOTOS.put(key, optimized, {
+          httpMetadata: { contentType: "image/webp" }
+        }),
+        env.PHOTOS.put(thumbnailKey, thumbnail, {
+          httpMetadata: { contentType: "image/webp" }
+        })
+      ]);
+      fullStored = storageResults[0].status === "fulfilled";
+      thumbnailStored = storageResults[1].status === "fulfilled";
+      const storageFailure = storageResults.find(result => result.status === "rejected");
+      if (storageFailure) throw storageFailure.reason;
+      await env.DB.batch([
+        env.DB.prepare(
+          "INSERT INTO photos (id, r2_key, thumbnail_r2_key, filename, content_type, size_bytes, uploaded_by, created_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)"
+        ).bind(
+          photoId,
+          key,
+          thumbnailKey,
+          file.name || `${photoId}.webp`,
+          "image/webp",
+          optimized.byteLength + thumbnail.byteLength,
+          session.email || session.subject || "staff",
+          now
+        ),
+        env.DB.prepare(
+          "INSERT INTO post_photos (post_id, photo_id, sort_order) VALUES (?1, ?2, ?3)"
+        ).bind(postId, photoId, firstSortOrder + index)
+      ]);
       photoRowStored = true;
-      await env.DB.prepare(
-        "INSERT INTO post_photos (post_id, photo_id, sort_order) VALUES (?1, ?2, ?3)"
-      ).bind(postId, photoId, firstSortOrder + index).run();
     } catch (error) {
       if (photoRowStored) await env.DB.prepare("DELETE FROM photos WHERE id = ?1").bind(photoId).run();
       if (thumbnailStored) await env.PHOTOS.delete(thumbnailKey);
@@ -505,14 +525,14 @@ async function deleteStaffPhoto(request, env, url) {
   if (!photoId) return json({ error: "Photo not found" }, 404);
 
   const photo = await env.DB.prepare(
-    `SELECT ph.r2_key, pp.post_id
+    `SELECT ph.r2_key, ph.thumbnail_r2_key, pp.post_id
      FROM photos ph
      JOIN post_photos pp ON pp.photo_id = ph.id
      WHERE ph.id = ?1`
   ).bind(photoId).first();
   if (!photo) return json({ error: "Photo not found" }, 404);
 
-  await env.PHOTOS.delete(photo.r2_key);
+  await env.PHOTOS.delete([photo.r2_key, photo.thumbnail_r2_key].filter(Boolean));
   await env.DB.batch([
     env.DB.prepare("DELETE FROM album_photos WHERE photo_id = ?1").bind(photoId),
     env.DB.prepare("DELETE FROM post_photos WHERE photo_id = ?1").bind(photoId),
