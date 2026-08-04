@@ -1,7 +1,7 @@
 const appKind = document.body.dataset.app;
 
 function isParentPresentation() {
-  return appKind === "parents" || document.body.classList.contains("staff-parent-preview");
+  return appKind === "parents";
 }
 
 const SUMMER_WEEKS = [
@@ -839,10 +839,8 @@ async function initDailyStaff() {
   const manageNote = document.getElementById("manage-note");
   const tabs = document.getElementById("staff-week-tabs");
   const dayTabs = document.getElementById("staff-day-tabs");
-  const parentViewToggle = document.getElementById("parent-view-toggle");
   let posts = [];
   let selectedWeek = SUMMER_WEEKS[0].slug;
-  let parentPreview = false;
   let previewUrls = [];
 
   SUMMER_WEEKS.forEach(week => {
@@ -891,10 +889,6 @@ async function initDailyStaff() {
 
   document.querySelectorAll("[data-staff-view]").forEach(button => {
     button.addEventListener("click", () => {
-      parentPreview = false;
-      document.body.classList.remove("staff-parent-preview");
-      parentViewToggle.setAttribute("aria-pressed", "false");
-      parentViewToggle.textContent = "Parent view";
       if (button.dataset.staffView === "new") openUploader(daySelect.value);
       else showStaffPanel("manage");
     });
@@ -1011,23 +1005,8 @@ async function initDailyStaff() {
     manageList.innerHTML = "";
     dayTabs.innerHTML = "";
     dayTabs.hidden = true;
-    if (parentPreview) {
-      const weekPosts = posts.filter(post => post.week === selectedWeek && post.photos?.length);
-      renderDayTabs(dayTabs, weekPosts);
-      renderDailyCollections(manageList, weekPosts);
-      return;
-    }
     week.days.forEach(day => manageList.append(dailyCard(day, postsByDate.get(day.date))));
   }
-
-  parentViewToggle.addEventListener("click", () => {
-    parentPreview = !parentPreview;
-    document.body.classList.toggle("staff-parent-preview", parentPreview);
-    parentViewToggle.setAttribute("aria-pressed", String(parentPreview));
-    parentViewToggle.textContent = parentPreview ? "Exit parent view" : "Parent view";
-    showStaffPanel("manage");
-    renderStaffDays();
-  });
 
   async function loadStaffPosts() {
     manageNote.textContent = "Loading daily photos…";
