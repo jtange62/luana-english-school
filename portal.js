@@ -176,6 +176,9 @@ let albumObserver;
 let lightboxReturnFocus;
 const ALBUM_BATCH_SIZE = 12;
 const MAX_SELECTED_PHOTOS = 10;
+const MAX_UPLOAD_PHOTO_BYTES = 20 * 1024 * 1024;
+const UPLOAD_PHOTO_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"]);
+const UPLOAD_PHOTO_NAME_PATTERN = /\.(?:jpe?g|png|webp|heic|heif)$/i;
 let albumSelectionMode = false;
 let albumActionMode = "save";
 let galleryChanged = null;
@@ -293,6 +296,11 @@ function setAlbumSelectionMode(enabled) {
   refreshAlbumSelection();
   if (albumActionMode === "delete") updateDeleteReadiness();
   else scheduleShareReadiness();
+}
+
+function validUploadPhoto(file) {
+  const supported = UPLOAD_PHOTO_TYPES.has(file.type) || UPLOAD_PHOTO_NAME_PATTERN.test(file.name || "");
+  return supported && file.size <= MAX_UPLOAD_PHOTO_BYTES;
 }
 
 function toggleSelectedPhoto(index) {
@@ -908,6 +916,9 @@ async function initDailyStaff() {
   const uploadProgress = document.getElementById("upload-progress");
   const uploadProgressBar = document.getElementById("upload-progress-bar");
   const uploadProgressLabel = document.getElementById("upload-progress-label");
+  const uploadCurrentFile = document.getElementById("upload-current-file");
+  const retryUpload = document.getElementById("upload-retry");
+  const cancelUpload = document.getElementById("upload-cancel");
   const daySelect = document.getElementById("staff-day-select");
   const manageList = document.getElementById("manage-list");
   const manageNote = document.getElementById("manage-note");
@@ -918,6 +929,11 @@ async function initDailyStaff() {
   let selectedWeek = SUMMER_WEEKS[0].slug;
   let parentPreview = false;
   let previewUrls = [];
+  let retainedUploadItems = [];
+  let retainedUploadDate = "";
+  let stopUploadRequested = false;
+  let uploadRunning = false;
+  let uploadWakeLock = null;
 
   SUMMER_WEEKS.forEach(week => {
     const group = document.createElement("optgroup");
@@ -942,6 +958,27 @@ async function initDailyStaff() {
     preview.innerHTML = "";
   }
 
+  async function keepScreenAwake() {
+    if (!("wakeLock" in navigator) || uploadWakeLock) return;
+    try {
+      uploadWakeLock = await navigator.wakeLock.request("screen");
+      uploadWakeLock.addEventListener("release", () => {
+        uploadWakeLock = null;
+      }, { once: true });
+    } catch {
+      // Uploads still work when wake lock is unavailable or denied.
+    }
+  }
+
+  async function releaseScreenWakeLock() {
+    if (uploadWakeLock) await uploadWakeLock.release().catch(() => null);
+    uploadWakeLock = null;
+  }
+
+  document.addEventListener("visibilitychange", () => {
+    if (uploadRunning && document.visibilityState === "visible") keepScreenAwake();
+  });
+
   function showStaffPanel(view) {
     document.querySelectorAll("[data-staff-view]").forEach(item => {
       item.classList.toggle("is-active", item.dataset.staffView === view);
@@ -952,13 +989,23 @@ async function initDailyStaff() {
   }
 
   function openUploader(date) {
+    if (uploadRunning) {
+      showStaffPanel("new");
+      return;
+    }
     daySelect.value = date;
     selectedWeek = weekForDate(date)?.slug || selectedWeek;
     clearPreview();
     postForm.reset();
     daySelect.value = date;
     postNote.textContent = "";
-    submit.disabled = false;
+    retainedUploadItems = [];
+    retainedUploadDate = "";
+    uploadProgress.hidden = true;
+    retryUpload.hidden = true;
+    cancelUpload.hidden = true;
+    uploadCurrentFile.textContent = "";
+    submit.disabled = true;
     showStaffPanel("new");
     daySelect.focus();
   }
@@ -1004,11 +1051,17 @@ async function initDailyStaff() {
 
   postForm.elements.photos.addEventListener("change", () => {
     clearPreview();
+    retainedUploadItems = [];
     uploadProgress.hidden = true;
     uploadProgress.classList.remove("is-complete", "has-errors");
+    retryUpload.hidden = true;
+    cancelUpload.hidden = true;
     const files = [...postForm.elements.photos.files];
-    postNote.textContent = files.length ? `${files.length} photo${files.length === 1 ? "" : "s"} ready to upload.` : "";
-    submit.disabled = !files.length;
+    const invalid = files.filter(file => !validUploadPhoto(file));
+    postNote.textContent = invalid.length
+      ? `${invalid[0].name} cannot be uploaded. Use JPEG, PNG, WebP, HEIC, or HEIF files up to 20 MB each.`
+      : files.length ? `${files.length} photo${files.length === 1 ? "" : "s"} ready to upload.` : "";
+    submit.disabled = !files.length || Boolean(invalid.length);
     files.slice(0, 12).forEach(file => {
       const image = document.createElement("img");
       const url = URL.createObjectURL(file);
@@ -1025,23 +1078,35 @@ async function initDailyStaff() {
     }
   });
 
-  postForm.addEventListener("submit", async event => {
-    event.preventDefault();
-    const files = [...postForm.elements.photos.files];
-    if (!files.length) return;
+  async function runUploadQueue(items, date) {
+    if (!items.length || uploadRunning) return;
+    uploadRunning = true;
+    stopUploadRequested = false;
+    retainedUploadItems = [];
     submit.disabled = true;
+    retryUpload.hidden = true;
+    cancelUpload.hidden = false;
+    cancelUpload.disabled = false;
+    cancelUpload.textContent = "Stop upload";
     uploadProgress.hidden = false;
     uploadProgress.classList.remove("is-complete", "has-errors");
-    uploadProgressBar.max = files.length;
+    uploadProgressBar.max = items.length;
     uploadProgressBar.value = 0;
-    uploadProgressLabel.textContent = `0% · 0 of ${files.length}`;
-    postNote.textContent = `Uploading 0 of ${files.length} photos… Please keep this page open.`;
+    uploadProgressLabel.textContent = `0% · 0 of ${items.length}`;
+    postNote.textContent = `Uploading 0 of ${items.length} photos… Please keep this page open.`;
+    await keepScreenAwake();
+    let uploaded = 0;
+    const failed = [];
+    let stopped = [];
     try {
-      const date = String(daySelect.value);
-      let uploaded = 0;
-      const failed = [];
-      for (const file of files) {
-        const uploadId = newUploadId();
+      for (let index = 0; index < items.length; index += 1) {
+        if (stopUploadRequested) {
+          stopped = items.slice(index);
+          break;
+        }
+        const item = items[index];
+        const { file, uploadId } = item;
+        uploadCurrentFile.textContent = `Uploading ${file.name}`;
         let lastError;
         for (let attempt = 1; attempt <= 3; attempt += 1) {
           const form = new FormData();
@@ -1054,40 +1119,67 @@ async function initDailyStaff() {
             break;
           } catch (error) {
             lastError = error;
-            if (error.status && error.status < 500) break;
+            if (stopUploadRequested || (error.status && error.status < 500)) break;
             if (attempt < 3) await new Promise(resolve => setTimeout(resolve, attempt * 750));
           }
         }
-        if (lastError) failed.push({ file, error: lastError });
+        if (lastError) failed.push({ item, error: lastError });
         else uploaded += 1;
         const processed = uploaded + failed.length;
-        const percent = Math.round((processed / files.length) * 100);
+        const percent = Math.round((processed / items.length) * 100);
         uploadProgressBar.value = processed;
-        uploadProgressLabel.textContent = `${percent}% · ${processed} of ${files.length}`;
-        postNote.textContent = `Uploading ${processed} of ${files.length} photos… ${uploaded} completed.`;
+        uploadProgressLabel.textContent = `${percent}% · ${processed} of ${items.length}`;
+        postNote.textContent = `Uploading ${processed} of ${items.length} photos… ${uploaded} completed.`;
       }
+      retainedUploadItems = [...failed.map(entry => entry.item), ...stopped];
+      retainedUploadDate = retainedUploadItems.length ? date : "";
       selectedWeek = weekForDate(date)?.slug || selectedWeek;
-      if (failed.length) {
+      if (retainedUploadItems.length) {
         uploadProgress.classList.add("has-errors");
-        uploadProgressLabel.textContent = `${uploaded} uploaded · ${failed.length} failed`;
-        postNote.textContent = `${uploaded} uploaded; ${failed.length} failed. ${failed[0].error.message} Select the failed photos and try again.`;
+        retryUpload.hidden = false;
+        retryUpload.textContent = failed.length ? `Retry ${retainedUploadItems.length} photos` : `Resume ${stopped.length} photos`;
+        uploadCurrentFile.textContent = stopUploadRequested ? "Upload stopped safely" : "Some photos need another try";
+        uploadProgressLabel.textContent = `${uploaded} uploaded · ${retainedUploadItems.length} remaining`;
+        postNote.textContent = stopUploadRequested
+          ? `${uploaded} uploaded. ${stopped.length} photos were not started.`
+          : `${uploaded} uploaded; ${failed.length} failed. Tap Retry to continue.`;
       } else {
         uploadProgress.classList.add("is-complete");
+        uploadProgressBar.value = items.length;
         uploadProgressLabel.textContent = `100% · ${uploaded} uploaded`;
+        uploadCurrentFile.textContent = "Upload complete";
         postForm.reset();
         clearPreview();
         daySelect.value = date;
         postNote.textContent = `${uploaded} photos added successfully.`;
       }
       await loadStaffPosts();
-      if (!failed.length) showStaffPanel("manage");
-    } catch (error) {
-      postNote.textContent = error.data?.setupRequired
-        ? "Backend setup is needed before uploads work."
-        : error.message;
+      if (!retainedUploadItems.length) showStaffPanel("manage");
     } finally {
-      submit.disabled = false;
+      uploadRunning = false;
+      cancelUpload.hidden = true;
+      submit.disabled = Boolean(retainedUploadItems.length);
+      await releaseScreenWakeLock();
     }
+  }
+
+  cancelUpload.addEventListener("click", () => {
+    stopUploadRequested = true;
+    cancelUpload.disabled = true;
+    cancelUpload.textContent = "Stopping after this photo…";
+  });
+
+  retryUpload.addEventListener("click", () => {
+    runUploadQueue([...retainedUploadItems], retainedUploadDate || String(daySelect.value));
+  });
+
+  postForm.addEventListener("submit", async event => {
+    event.preventDefault();
+    const files = [...postForm.elements.photos.files];
+    if (!files.length) return;
+    if (files.some(file => !validUploadPhoto(file))) return;
+    const items = files.map(file => ({ file, uploadId: newUploadId() }));
+    await runUploadQueue(items, String(daySelect.value));
   });
 
   function dailyCard(day, post) {

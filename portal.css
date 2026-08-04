@@ -1734,6 +1734,35 @@ button:disabled {
   gap: 12px;
 }
 
+.upload-progress p {
+  grid-column: 1 / -1;
+  margin: 0;
+  overflow: hidden;
+  color: #4f463d;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.upload-progress-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 10px;
+}
+
+.upload-progress-actions button {
+  width: auto;
+  min-height: 42px;
+  padding: 8px 14px;
+}
+
+#upload-cancel {
+  border: 1px solid rgba(112, 72, 20, 0.22);
+  background: #fff;
+  color: #6a5a48;
+}
+
 .upload-progress[hidden] {
   display: none;
 }
