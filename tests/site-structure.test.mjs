@@ -104,7 +104,8 @@ test("daily photo collections keep parent navigation and a simple staff upload f
   assert.match(portal, /touchstart/);
   assert.match(portal, /touchend/);
   assert.match(portal, /ALBUM_BATCH_SIZE/);
-  assert.match(portal, /MAX_DAILY_UPLOAD|files\.length > 10/);
+  assert.match(portal, /Uploading \$\{uploaded \+ failed\.length\} of \$\{files\.length\}/);
+  assert.match(portal, /form\.set\("upload_id", uploadId\)/);
   assert.match(portal, /Add more photos/);
   assert.match(portal, /daily-photo-manage-card/);
   assert.doesNotMatch(portal, /class="daily-photo-cover"/);

@@ -336,6 +336,8 @@ async function createStaffPost(request, env) {
   const session = await requireSession(request, env, "staff");
   const form = await request.formData();
   const date = String(form.get("date") || "").trim();
+  const requestedUploadId = String(form.get("upload_id") || "").trim();
+  const uploadId = /^[a-zA-Z0-9_-]{16,100}$/.test(requestedUploadId) ? requestedUploadId : "";
   const day = summerDay(date);
   const files = form.getAll("photos").filter(value => value && typeof value === "object" && value.size);
 
@@ -369,13 +371,21 @@ async function createStaffPost(request, env) {
   await env.DB.prepare(
     "UPDATE posts SET week_slug = ?1, title = ?2, status = 'published', updated_at = ?3 WHERE id = ?4"
   ).bind(day.week, day.title, now, postId).run();
+  if (uploadId) {
+    const existingUpload = await env.DB.prepare(
+      "SELECT id FROM photos WHERE id = ?1 LIMIT 1"
+    ).bind(uploadId).first();
+    if (existingUpload) {
+      return json({ ok: true, postId, added: 0, duplicate: true, date: day.date });
+    }
+  }
   const orderRow = await env.DB.prepare(
     "SELECT COALESCE(MAX(sort_order), -1) AS last_order FROM post_photos WHERE post_id = ?1"
   ).bind(postId).first();
   const firstSortOrder = Number(orderRow?.last_order ?? -1) + 1;
 
   const storePhoto = async (file, index) => {
-    const photoId = crypto.randomUUID();
+    const photoId = uploadId && files.length === 1 ? uploadId : crypto.randomUUID();
     const source = await file.arrayBuffer();
     const [optimized, thumbnail] = await Promise.all([
       optimizePhoto(env, source, PHOTO_WIDTH, 82),

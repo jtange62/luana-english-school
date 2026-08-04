@@ -131,6 +131,12 @@ function localDateValue(date = new Date()) {
   return `${year}-${month}-${day}`;
 }
 
+function newUploadId() {
+  if (crypto.randomUUID) return crypto.randomUUID();
+  const random = crypto.getRandomValues(new Uint32Array(2));
+  return `upload-${Date.now()}-${random[0]}-${random[1]}`;
+}
+
 function initialWeek(posts, availableWeeks = SUMMER_WEEKS) {
   const allowed = new Set(availableWeeks.map(week => week.slug));
   const latest = posts.find(post => allowed.has(post.week));
@@ -145,8 +151,14 @@ async function api(path, options = {}) {
   });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
-    const error = new Error(data.error || "Request failed");
+    const fallbackMessage = response.status === 413
+      ? "This photo is too large to upload. Try a smaller version."
+      : response.status >= 500
+        ? "The upload was interrupted. Please try again."
+        : "Request failed";
+    const error = new Error(data.error || fallbackMessage);
     error.data = data;
+    error.status = response.status;
     throw error;
   }
   return data;
@@ -931,14 +943,9 @@ async function initDailyStaff() {
   postForm.elements.photos.addEventListener("change", () => {
     clearPreview();
     const files = [...postForm.elements.photos.files];
-    if (files.length > 10) {
-      postNote.textContent = "Please choose 10 photos or fewer. You can add another group after this upload.";
-      submit.disabled = true;
-      return;
-    }
     postNote.textContent = files.length ? `${files.length} photo${files.length === 1 ? "" : "s"} ready to upload.` : "";
     submit.disabled = !files.length;
-    files.forEach(file => {
+    files.slice(0, 12).forEach(file => {
       const image = document.createElement("img");
       const url = URL.createObjectURL(file);
       previewUrls.push(url);
@@ -946,25 +953,57 @@ async function initDailyStaff() {
       image.src = url;
       preview.append(image);
     });
+    if (files.length > 12) {
+      const more = document.createElement("p");
+      more.className = "upload-preview-more";
+      more.textContent = `+ ${files.length - 12} more`;
+      preview.append(more);
+    }
   });
 
   postForm.addEventListener("submit", async event => {
     event.preventDefault();
     const files = [...postForm.elements.photos.files];
-    if (!files.length || files.length > 10) return;
+    if (!files.length) return;
     submit.disabled = true;
-    postNote.textContent = `Uploading ${files.length} photo${files.length === 1 ? "" : "s"}… Please keep this page open.`;
+    postNote.textContent = `Uploading 0 of ${files.length} photos… Please keep this page open.`;
     try {
-      const form = new FormData(postForm);
-      const date = String(form.get("date"));
-      const data = await api("/api/staff/posts", { method: "POST", body: form });
+      const date = String(daySelect.value);
+      let uploaded = 0;
+      const failed = [];
+      for (const file of files) {
+        const uploadId = newUploadId();
+        let lastError;
+        for (let attempt = 1; attempt <= 3; attempt += 1) {
+          const form = new FormData();
+          form.set("date", date);
+          form.set("upload_id", uploadId);
+          form.append("photos", file, file.name);
+          try {
+            await api("/api/staff/posts", { method: "POST", body: form });
+            lastError = null;
+            break;
+          } catch (error) {
+            lastError = error;
+            if (error.status && error.status < 500) break;
+            if (attempt < 3) await new Promise(resolve => setTimeout(resolve, attempt * 750));
+          }
+        }
+        if (lastError) failed.push({ file, error: lastError });
+        else uploaded += 1;
+        postNote.textContent = `Uploading ${uploaded + failed.length} of ${files.length} photos… ${uploaded} completed.`;
+      }
       selectedWeek = weekForDate(date)?.slug || selectedWeek;
-      postForm.reset();
-      clearPreview();
-      daySelect.value = date;
-      postNote.textContent = `${data.added || files.length} photos added successfully.`;
+      if (failed.length) {
+        postNote.textContent = `${uploaded} uploaded; ${failed.length} failed. ${failed[0].error.message} Select the failed photos and try again.`;
+      } else {
+        postForm.reset();
+        clearPreview();
+        daySelect.value = date;
+        postNote.textContent = `${uploaded} photos added successfully.`;
+      }
       await loadStaffPosts();
-      showStaffPanel("manage");
+      if (!failed.length) showStaffPanel("manage");
     } catch (error) {
       postNote.textContent = error.data?.setupRequired
         ? "Backend setup is needed before uploads work."
