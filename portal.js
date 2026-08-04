@@ -177,7 +177,7 @@ let lightboxReturnFocus;
 const ALBUM_BATCH_SIZE = 12;
 const MAX_SELECTED_PHOTOS = 10;
 const MAX_UPLOAD_PHOTO_BYTES = 20 * 1024 * 1024;
-const UPLOAD_QUEUE_CONCURRENCY = 2;
+const UPLOAD_QUEUE_CONCURRENCY = 1;
 const UPLOAD_PHOTO_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"]);
 const UPLOAD_PHOTO_NAME_PATTERN = /\.(?:jpe?g|png|webp|heic|heif)$/i;
 let albumSelectionMode = false;

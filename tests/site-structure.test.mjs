@@ -115,7 +115,7 @@ test("daily photo collections keep parent navigation and a simple staff upload f
   assert.match(portal, /navigator\.wakeLock\.request\("screen"\)/);
   assert.match(portal, /validUploadPhoto/);
   assert.match(portal, /retainedUploadItems/);
-  assert.match(portal, /UPLOAD_QUEUE_CONCURRENCY = 2/);
+  assert.match(portal, /UPLOAD_QUEUE_CONCURRENCY = 1/);
   assert.match(portal, /Promise\.all\(Array\.from/);
   assert.match(portal, /files\.slice\(0, 4\)/);
   assert.match(portal, /Add more photos/);
