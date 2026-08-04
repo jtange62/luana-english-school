@@ -305,15 +305,14 @@ function validUploadPhoto(file) {
 
 function toggleSelectedPhoto(index) {
   const help = document.getElementById("album-selection-help");
+  const selectionLimit = albumActionMode === "delete" ? lightboxPhotos.length : MAX_SELECTED_PHOTOS;
   if (selectedPhotoIndexes.has(index)) {
     selectedPhotoIndexes.delete(index);
     shareFilePromises.delete(index);
-  } else if (selectedPhotoIndexes.size < MAX_SELECTED_PHOTOS) {
+  } else if (selectedPhotoIndexes.size < selectionLimit) {
     selectedPhotoIndexes.add(index);
   } else {
-    if (help) help.textContent = albumActionMode === "delete"
-      ? "You can delete up to 10 photos at a time"
-      : isParentPresentation()
+    if (help) help.textContent = isParentPresentation()
       ? "一度に保存できる写真は10枚までです"
       : "You can save up to 10 photos at a time";
     return;
@@ -336,6 +335,7 @@ function refreshAlbumSelection(changedIndex = null) {
   const bar = document.getElementById("album-selection-bar");
   const toggle = document.getElementById("album-select-toggle");
   const count = document.getElementById("album-selection-count");
+  const selectAll = document.getElementById("album-select-all");
   const parentView = isParentPresentation();
   if (bar) bar.hidden = !albumSelectionMode;
   if (toggle) {
@@ -346,9 +346,15 @@ function refreshAlbumSelection(changedIndex = null) {
         : parentView ? "写真をまとめて保存" : "Save multiple";
     toggle.setAttribute("aria-pressed", String(albumSelectionMode));
   }
-  if (count) count.textContent = parentView && albumActionMode !== "delete"
-    ? `${selectedPhotoIndexes.size} / ${MAX_SELECTED_PHOTOS}枚選択中`
-    : `${selectedPhotoIndexes.size} / ${MAX_SELECTED_PHOTOS} selected`;
+  if (count) count.textContent = albumActionMode === "delete"
+    ? `${selectedPhotoIndexes.size} of ${lightboxPhotos.length} selected`
+    : parentView
+      ? `${selectedPhotoIndexes.size} / ${MAX_SELECTED_PHOTOS}枚選択中`
+      : `${selectedPhotoIndexes.size} / ${MAX_SELECTED_PHOTOS} selected`;
+  if (selectAll) {
+    selectAll.hidden = albumActionMode !== "delete";
+    selectAll.textContent = selectedPhotoIndexes.size === lightboxPhotos.length ? "Clear all" : "Select all";
+  }
   const selector = changedIndex === null
     ? ".album-browser-photo"
     : `.album-browser-photo[data-photo-index="${changedIndex}"]`;
@@ -534,11 +540,13 @@ function openGallery(photos, startIndex = null, options = {}) {
   galleryChanged = options.onChanged || null;
   const selectToggle = document.getElementById("album-select-toggle");
   const actionButton = document.getElementById("album-share-selected");
+  const selectAll = document.getElementById("album-select-all");
   if (selectToggle) selectToggle.textContent = albumActionMode === "delete" ? "Select photos" : "Save multiple";
   if (actionButton) {
     actionButton.textContent = albumActionMode === "delete" ? "Delete selected" : "Save selected photos";
     actionButton.classList.toggle("delete-selected", albumActionMode === "delete");
   }
+  if (selectAll) selectAll.hidden = albumActionMode !== "delete";
   lightboxReturnFocus = document.activeElement;
   box.hidden = false;
   document.body.classList.add("lightbox-open");
@@ -571,12 +579,19 @@ function setupLightbox() {
   const previous = document.getElementById("lightbox-prev");
   const next = document.getElementById("lightbox-next");
   const selectToggle = document.getElementById("album-select-toggle");
+  const selectAll = document.getElementById("album-select-all");
   const shareSelected = document.getElementById("album-share-selected");
   if (!box || !close) return;
   close.addEventListener("click", closeGallery);
   viewerClose?.addEventListener("click", closeGallery);
   viewerBack?.addEventListener("click", showAlbumBrowser);
   selectToggle?.addEventListener("click", () => setAlbumSelectionMode(!albumSelectionMode));
+  selectAll?.addEventListener("click", () => {
+    if (selectedPhotoIndexes.size === lightboxPhotos.length) selectedPhotoIndexes.clear();
+    else selectedPhotoIndexes = new Set(lightboxPhotos.map((_, index) => index));
+    refreshAlbumSelection();
+    updateDeleteReadiness();
+  });
   shareSelected?.addEventListener("click", () => {
     if (albumActionMode === "delete") deleteSelectedPhotos();
     else shareSelectedPhotos();
