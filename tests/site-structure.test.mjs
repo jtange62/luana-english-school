@@ -96,6 +96,8 @@ test("daily photo collections keep parent navigation and a simple staff upload f
   assert.match(staff, /id="staff-day-select"/);
   assert.match(staff, /name="photos"[^>]*required/);
   assert.match(staff, />Upload photos</);
+  assert.match(staff, /id="upload-progress-bar"/);
+  assert.match(staff, /id="upload-progress-label"/);
   assert.doesNotMatch(staff, /name="title"/);
   assert.doesNotMatch(staff, /name="body"/);
   assert.doesNotMatch(staff, /name="activities"/);
@@ -104,8 +106,9 @@ test("daily photo collections keep parent navigation and a simple staff upload f
   assert.match(portal, /touchstart/);
   assert.match(portal, /touchend/);
   assert.match(portal, /ALBUM_BATCH_SIZE/);
-  assert.match(portal, /Uploading \$\{uploaded \+ failed\.length\} of \$\{files\.length\}/);
+  assert.match(portal, /Uploading \$\{processed\} of \$\{files\.length\}/);
   assert.match(portal, /form\.set\("upload_id", uploadId\)/);
+  assert.match(portal, /Math\.round\(\(processed \/ files\.length\) \* 100\)/);
   assert.match(portal, /Add more photos/);
   assert.match(portal, /Delete photos/);
   assert.match(portal, /deleteSelectedPhotos/);

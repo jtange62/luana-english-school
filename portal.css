@@ -1727,6 +1727,39 @@ button:disabled {
   white-space: nowrap;
 }
 
+.upload-progress {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.upload-progress[hidden] {
+  display: none;
+}
+
+.upload-progress progress {
+  width: 100%;
+  height: 14px;
+  accent-color: #ef8f3c;
+}
+
+.upload-progress span {
+  min-width: 92px;
+  color: #63584c;
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-align: right;
+}
+
+.upload-progress.is-complete progress {
+  accent-color: #39875c;
+}
+
+.upload-progress.has-errors progress {
+  accent-color: #a93224;
+}
+
 .album-selection-bar .delete-selected {
   background: #a93224;
   color: #fff;

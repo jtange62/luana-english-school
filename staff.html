@@ -73,6 +73,10 @@
       </label>
       <div class="preview-grid" id="upload-preview"></div>
       <button type="submit" id="upload-submit">Upload photos</button>
+      <div class="upload-progress" id="upload-progress" hidden>
+        <progress id="upload-progress-bar" value="0" max="1"></progress>
+        <span id="upload-progress-label">0%</span>
+      </div>
       <p class="form-note" id="post-note"></p>
     </form>
 
@@ -130,6 +134,6 @@
   </section>
 </div>
 
-<script src="/portal.js?v=20260804-photo-delete1"></script>
+<script src="/portal.js?v=20260804-upload-progress1"></script>
 </body>
 </html>

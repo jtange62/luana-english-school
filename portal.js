@@ -901,6 +901,9 @@ async function initDailyStaff() {
   const postNote = document.getElementById("post-note");
   const submit = document.getElementById("upload-submit");
   const preview = document.getElementById("upload-preview");
+  const uploadProgress = document.getElementById("upload-progress");
+  const uploadProgressBar = document.getElementById("upload-progress-bar");
+  const uploadProgressLabel = document.getElementById("upload-progress-label");
   const daySelect = document.getElementById("staff-day-select");
   const manageList = document.getElementById("manage-list");
   const manageNote = document.getElementById("manage-note");
@@ -997,6 +1000,8 @@ async function initDailyStaff() {
 
   postForm.elements.photos.addEventListener("change", () => {
     clearPreview();
+    uploadProgress.hidden = true;
+    uploadProgress.classList.remove("is-complete", "has-errors");
     const files = [...postForm.elements.photos.files];
     postNote.textContent = files.length ? `${files.length} photo${files.length === 1 ? "" : "s"} ready to upload.` : "";
     submit.disabled = !files.length;
@@ -1021,6 +1026,11 @@ async function initDailyStaff() {
     const files = [...postForm.elements.photos.files];
     if (!files.length) return;
     submit.disabled = true;
+    uploadProgress.hidden = false;
+    uploadProgress.classList.remove("is-complete", "has-errors");
+    uploadProgressBar.max = files.length;
+    uploadProgressBar.value = 0;
+    uploadProgressLabel.textContent = `0% · 0 of ${files.length}`;
     postNote.textContent = `Uploading 0 of ${files.length} photos… Please keep this page open.`;
     try {
       const date = String(daySelect.value);
@@ -1046,12 +1056,20 @@ async function initDailyStaff() {
         }
         if (lastError) failed.push({ file, error: lastError });
         else uploaded += 1;
-        postNote.textContent = `Uploading ${uploaded + failed.length} of ${files.length} photos… ${uploaded} completed.`;
+        const processed = uploaded + failed.length;
+        const percent = Math.round((processed / files.length) * 100);
+        uploadProgressBar.value = processed;
+        uploadProgressLabel.textContent = `${percent}% · ${processed} of ${files.length}`;
+        postNote.textContent = `Uploading ${processed} of ${files.length} photos… ${uploaded} completed.`;
       }
       selectedWeek = weekForDate(date)?.slug || selectedWeek;
       if (failed.length) {
+        uploadProgress.classList.add("has-errors");
+        uploadProgressLabel.textContent = `${uploaded} uploaded · ${failed.length} failed`;
         postNote.textContent = `${uploaded} uploaded; ${failed.length} failed. ${failed[0].error.message} Select the failed photos and try again.`;
       } else {
+        uploadProgress.classList.add("is-complete");
+        uploadProgressLabel.textContent = `100% · ${uploaded} uploaded`;
         postForm.reset();
         clearPreview();
         daySelect.value = date;
