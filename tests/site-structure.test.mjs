@@ -270,6 +270,20 @@ test("homepage exposes local business and website identity to search engines", a
   assert.doesNotMatch(html, /<meta name="keywords"/);
 });
 
+test("homepage gives prospective families a clear trial booking path", async () => {
+  const homepage = await source("index.html");
+  for (const message of [
+    "1歳から小学生まで｜府中市・中河原",
+    "体験レッスンを予約する",
+    "クラスを選ぶ",
+    "フォームを送信",
+    "日程をご案内",
+    "LINEでクラスを相談する"
+  ]) {
+    assert.ok(homepage.includes(message), `Homepage is missing conversion guidance: ${message}`);
+  }
+});
+
 test("Worker permanently redirects the www hostname to the canonical domain", async () => {
   const worker = await source("worker.js");
   assert.match(worker, /url\.hostname === "www\.luanaenglishschool\.jp"/);

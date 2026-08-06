@@ -238,6 +238,15 @@
   }
   .hero-cta:hover { transform: translateY(-3px); box-shadow: 0 9px 0 #9E3524; }
   .hero-cta:active { transform: translateY(2px); box-shadow: 0 4px 0 #9E3524; }
+  .hero-audience {
+    display: inline-flex; align-items: center; gap: 7px;
+    margin: 0 0 12px; padding: 7px 12px; border-radius: 999px;
+    background: rgba(255,255,255,0.9); color: #704814;
+    font-size: 0.84rem; font-weight: 800;
+  }
+  .hero-cta-note {
+    margin-top: 12px; color: #555; font-size: 0.84rem; font-weight: 700;
+  }
 
   .hero-photo {
     position: relative; width: 100%; max-width: 430px;
@@ -284,6 +293,25 @@
     background: #ffffff;
     padding: 52px 20px 60px;
     text-align: center;
+  }
+  .trial-process {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px;
+    max-width: 760px; margin: 28px auto 0; text-align: left;
+  }
+  .trial-step {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 16px; border-radius: 16px; background: var(--cream);
+    color: #4d443b; font-size: 0.88rem; line-height: 1.55;
+  }
+  .trial-step strong { display: block; color: #704814; margin-bottom: 2px; }
+  .trial-step-number {
+    display: inline-flex; align-items: center; justify-content: center; flex: 0 0 28px;
+    width: 28px; height: 28px; border-radius: 50%; background: var(--coral);
+    color: white; font-weight: 800;
+  }
+  .trial-help {
+    display: inline-block; margin-top: 18px; color: #176b3a; font-weight: 800;
+    text-underline-offset: 3px;
   }
   .trial-choice .section-sub { margin: 0 auto; }
   .trial-actions {
@@ -795,6 +823,7 @@
       margin: 8px 0 !important; font-size: 0.95rem;
     }
     .trial-actions { grid-template-columns: 1fr; gap: 12px; }
+    .trial-process { grid-template-columns: 1fr; }
     .moments-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
     .moments-grid a:first-child { grid-column:1 / -1; aspect-ratio:16/9; }
 
@@ -941,12 +970,14 @@ document.querySelectorAll(".nav-links a").forEach(link => {
         <span class="hero-school-name">Luana English School</span>
         <span class="hero-motto">Learn, Play, and Shine in English</span>
       </div>
+      <div class="hero-audience">1歳から小学生まで｜府中市・中河原</div>
       <h1><em>府中市中河原の<br>子ども英語スクール</em></h1>
       <p class="hero-sub">
         遊びや体験を通して、英語を「勉強」ではなく自然に使える力へ。
       </p>
       <div>
         <a href="#trial" class="hero-cta">体験レッスンを予約する</a>
+        <p class="hero-cta-note">年齢に合うクラスを選ぶだけ。フォーム送信後、体験日程をご案内します。</p>
       </div>
       <div class="hero-trust" aria-label="スクールの特徴">
         <span>少人数制</span>
@@ -978,7 +1009,13 @@ document.querySelectorAll(".nav-links a").forEach(link => {
       <a class="trial-action" href="https://docs.google.com/forms/d/e/1FAIpQLSe1fLxRno8bzY1DzSxAqpGnieWfcCrWDZJTVNnzL8yoUu-zdQ/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_kinder')">🌻 幼稚園児クラス</a>
       <a class="trial-action" href="https://docs.google.com/forms/d/e/1FAIpQLSc-GqYR10IOEfLaSN1hieuvVi3gziH-jySSuas-caJ3-MEclw/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_afterschool')">🎒 小学生クラス</a>
     </div>
-    <p class="trial-note">どのクラスか迷う場合は、下のお問い合わせからお気軽にご相談ください。</p>
+    <div class="trial-process" aria-label="体験レッスン予約の流れ">
+      <div class="trial-step"><span class="trial-step-number">1</span><span><strong>クラスを選ぶ</strong>お子さまの年齢から選択します。</span></div>
+      <div class="trial-step"><span class="trial-step-number">2</span><span><strong>フォームを送信</strong>希望日や連絡先をご入力ください。</span></div>
+      <div class="trial-step"><span class="trial-step-number">3</span><span><strong>日程をご案内</strong>スクールから体験日をご連絡します。</span></div>
+    </div>
+    <p class="trial-note">どのクラスか迷う場合も、お子さまの年齢やご希望を伺いながらご案内します。</p>
+    <a class="trial-help" href="https://lin.ee/SOqP6Vz" target="_blank" rel="noopener" onclick="gtag('event','trial_help_line')">LINEでクラスを相談する →</a>
   </div>
 </section>
 
