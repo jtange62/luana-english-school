@@ -33,18 +33,18 @@ try {
     throw "worker.js syntax check failed."
   }
 
-  & npx --yes wrangler@4.114.0 deploy --dry-run
+  & npx --yes wrangler@4.119.0 deploy --dry-run
   if ($LASTEXITCODE -ne 0) {
     throw "Cloudflare deployment dry run failed."
   }
 
   if (-not $DryRun) {
-    & npx --yes wrangler@4.114.0 d1 migrations apply luana_parent_portal --remote
+    & npx --yes wrangler@4.119.0 d1 migrations apply luana_parent_portal --remote
     if ($LASTEXITCODE -ne 0) {
       throw "Production database migrations failed."
     }
 
-    & npx --yes wrangler@4.114.0 deploy
+    & npx --yes wrangler@4.119.0 deploy
     if ($LASTEXITCODE -ne 0) {
       throw "Cloudflare deployment failed."
     }

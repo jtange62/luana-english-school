@@ -29,18 +29,18 @@ try {
     throw "worker.js syntax check failed."
   }
 
-  & npx --yes wrangler@4.114.0 deploy --env staging --dry-run
+  & npx --yes wrangler@4.119.0 deploy --env staging --dry-run
   if ($LASTEXITCODE -ne 0) {
     throw "Cloudflare staging deployment dry run failed."
   }
 
   if (-not $DryRun) {
-    & npx --yes wrangler@4.114.0 d1 migrations apply luana_parent_portal_staging --remote --env staging
+    & npx --yes wrangler@4.119.0 d1 migrations apply luana_parent_portal_staging --remote --env staging
     if ($LASTEXITCODE -ne 0) {
       throw "Staging database migrations failed."
     }
 
-    & npx --yes wrangler@4.114.0 deploy --env staging
+    & npx --yes wrangler@4.119.0 deploy --env staging
     if ($LASTEXITCODE -ne 0) {
       throw "Cloudflare staging deployment failed."
     }
