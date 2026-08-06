@@ -35,6 +35,7 @@ const photos = new Map([
 ]);
 
 function mockDb() {
+  const rateLimits = new Map();
   return {
     prepare(sql) {
       return {
@@ -53,10 +54,24 @@ function mockDb() {
           return { results: [] };
         },
         async first() {
+          if (sql.includes("FROM auth_rate_limits")) return rateLimits.get(this.args[0]) || null;
           if (!sql.includes("FROM photos ph")) return null;
           const photo = photos.get(this.args[0]);
           if (!photo || !this.args.includes(photo.week)) return null;
           return photo;
+        },
+        async run() {
+          if (sql.includes("INSERT INTO auth_rate_limits")) {
+            rateLimits.set(this.args[0], {
+              attempts: this.args[1],
+              window_started_at: this.args[2],
+              blocked_until: this.args[3],
+              updated_at: this.args[4]
+            });
+          } else if (sql.includes("DELETE FROM auth_rate_limits")) {
+            rateLimits.delete(this.args[0]);
+          }
+          return { success: true };
         }
       };
     }
@@ -271,6 +286,21 @@ test("staff uploads append photos to the existing scheduled day", async () => {
     write.args[2] === 69
   ));
   assert.ok(!writes.some(write => write.sql.includes("INSERT OR IGNORE INTO posts")));
+});
+
+test("repeated incorrect access codes are rate limited", async () => {
+  const env = environment();
+  let response;
+  for (let attempt = 0; attempt < 8; attempt += 1) {
+    ({ response } = await login(env, "wrong-code"));
+  }
+
+  assert.equal(response.status, 429);
+  assert.equal(response.headers.get("retry-after"), "1800");
+  assert.deepEqual(await response.json(), { error: "Too many attempts. Please try again later." });
+
+  const stillBlocked = await login(env, "sunny-one");
+  assert.equal(stillBlocked.response.status, 429);
 });
 
 test("staff uploads accept iPhone HEIC photos", async () => {

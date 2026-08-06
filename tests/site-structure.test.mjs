@@ -234,7 +234,10 @@ test("private implementation files cannot become static assets", async () => {
     "scripts",
     "tests",
     "worker.js",
-    "wrangler.jsonc"
+    "wrangler.jsonc",
+    "*.md",
+    ".assetsignore",
+    ".gitignore"
   ]) {
     assert.ok(ignored.has(path), `${path} must be listed in .assetsignore`);
   }

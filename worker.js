@@ -25,6 +25,9 @@ const SUMMER_DAYS = [
 const MAX_DAILY_UPLOAD = 10;
 const UPLOAD_CONCURRENCY = 4;
 const MAX_PHOTO_BYTES = 20 * 1024 * 1024;
+const LOGIN_WINDOW_SECONDS = 15 * 60;
+const LOGIN_MAX_FAILURES = 8;
+const LOGIN_BLOCK_SECONDS = 30 * 60;
 const PHOTO_CONTENT_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"]);
 const PHOTO_FILENAME_PATTERN = /\.(?:jpe?g|png|webp|heic|heif)$/i;
 const PHOTO_WIDTH = 1600;
@@ -40,21 +43,18 @@ export default {
         url.hostname = "luanaenglishschool.jp";
         return Response.redirect(url.toString(), 301);
       }
-      if (
-        url.pathname === "/worker.js" ||
-        url.pathname === "/wrangler.jsonc" ||
-        url.pathname.startsWith("/migrations/") ||
-        url.pathname.startsWith("/docs/")
-      ) return text("Not found", 404);
+      if (isPrivateAssetPath(url.pathname)) return text("Not found", 404);
       if (url.pathname === "/parents") return asset(request, env, "/parents.html?v=20260727-visible-code1");
       if (url.pathname === "/staff") return asset(request, env, "/staff.html");
       if (url.pathname.startsWith("/api/")) return await handleApi(request, env, url);
       return asset(request, env);
     } catch (error) {
+      const status = Number(error.status) || 500;
+      if (status >= 500) console.error("Worker request failed", error);
       return json({
-        error: error.message || "Something went wrong",
+        error: status < 500 || error.setupRequired ? (error.message || "Request failed") : "Something went wrong",
         setupRequired: Boolean(error.setupRequired)
-      }, error.status || 500);
+      }, status);
     }
   }
 };
@@ -76,17 +76,23 @@ async function handleApi(request, env, url) {
 }
 
 async function passwordLogin(request, env) {
-  requireSetup(env, ["SESSION_SECRET"]);
+  requireSetup(env, ["DB", "SESSION_SECRET"]);
   const body = await request.json();
   const audience = body.audience === "staff" ? "staff" : "parent";
   const password = String(body.password || "");
+  const rateKey = await loginRateKey(request, audience);
+  const retryAfter = await loginRetryAfter(env, rateKey);
+  if (retryAfter > 0) return rateLimitResponse(retryAfter);
 
   if (audience === "staff") {
     if (!env.STAFF_PORTAL_PASSWORD) throw setupError("Staff password is not configured yet");
     if (!password || !(await constantEqual(password, env.STAFF_PORTAL_PASSWORD))) {
+      const blockedFor = await recordLoginFailure(env, rateKey);
+      if (blockedFor > 0) return rateLimitResponse(blockedFor);
       return json({ error: "Incorrect password" }, 401);
     }
 
+    await clearLoginFailures(env, rateKey);
     const session = await signSession(env, {
       role: "staff",
       subject: "staff-password",
@@ -102,8 +108,13 @@ async function passwordLogin(request, env) {
   for (const week of configuredWeeks) {
     if (password && await constantEqual(password, env[week.secret])) matchedWeeks.push(week.slug);
   }
-  if (!matchedWeeks.length) return json({ error: "Incorrect access code" }, 401);
+  if (!matchedWeeks.length) {
+    const blockedFor = await recordLoginFailure(env, rateKey);
+    if (blockedFor > 0) return rateLimitResponse(blockedFor);
+    return json({ error: "Incorrect access code" }, 401);
+  }
 
+  await clearLoginFailures(env, rateKey);
   const existing = await optionalSession(request, env, "parent");
   const weeks = validSessionWeeks([...(existing?.weeks || []), ...matchedWeeks]);
   const session = await signSession(env, {
@@ -128,6 +139,50 @@ function setupError(message) {
   error.status = 503;
   error.setupRequired = true;
   return error;
+}
+
+async function loginRateKey(request, audience) {
+  const address = request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
+  return sha256(`${audience}:${address}`);
+}
+
+async function loginRetryAfter(env, key) {
+  const row = await env.DB.prepare(
+    "SELECT attempts, window_started_at, blocked_until FROM auth_rate_limits WHERE rate_key = ?1"
+  ).bind(key).first();
+  if (!row?.blocked_until) return 0;
+  return Math.max(0, Math.ceil((new Date(row.blocked_until).getTime() - Date.now()) / 1000));
+}
+
+async function recordLoginFailure(env, key) {
+  const now = new Date();
+  const row = await env.DB.prepare(
+    "SELECT attempts, window_started_at, blocked_until FROM auth_rate_limits WHERE rate_key = ?1"
+  ).bind(key).first();
+  const windowExpired = !row?.window_started_at || now.getTime() - new Date(row.window_started_at).getTime() >= LOGIN_WINDOW_SECONDS * 1000;
+  const attempts = windowExpired ? 1 : Number(row.attempts || 0) + 1;
+  const windowStartedAt = windowExpired ? now.toISOString() : row.window_started_at;
+  const blockedUntil = attempts >= LOGIN_MAX_FAILURES
+    ? new Date(now.getTime() + LOGIN_BLOCK_SECONDS * 1000).toISOString()
+    : null;
+
+  await env.DB.prepare(
+    `INSERT INTO auth_rate_limits (rate_key, attempts, window_started_at, blocked_until, updated_at)
+     VALUES (?1, ?2, ?3, ?4, ?5)
+     ON CONFLICT(rate_key) DO UPDATE SET attempts = excluded.attempts, window_started_at = excluded.window_started_at,
+       blocked_until = excluded.blocked_until, updated_at = excluded.updated_at`
+  ).bind(key, attempts, windowStartedAt, blockedUntil, now.toISOString()).run();
+  return blockedUntil ? LOGIN_BLOCK_SECONDS : 0;
+}
+
+async function clearLoginFailures(env, key) {
+  await env.DB.prepare("DELETE FROM auth_rate_limits WHERE rate_key = ?1").bind(key).run();
+}
+
+function rateLimitResponse(retryAfter) {
+  return json({ error: "Too many attempts. Please try again later." }, 429, {
+    "retry-after": String(retryAfter)
+  });
 }
 
 async function requestLogin(request, env) {
@@ -922,6 +977,13 @@ function postIdFromUrl(url) {
 async function asset(request, env, pathname) {
   const target = pathname ? new Request(new URL(pathname, request.url), request) : request;
   return env.ASSETS.fetch(target);
+}
+
+function isPrivateAssetPath(pathname) {
+  const firstSegment = pathname.split("/").filter(Boolean)[0] || "";
+  if (firstSegment.startsWith(".")) return true;
+  if (["docs", "migrations", "scripts", "tests"].includes(firstSegment)) return true;
+  return ["worker.js", "wrangler.jsonc", "SETUP.md", "WORKFLOW_RECOMMENDATIONS.md"].includes(firstSegment);
 }
 
 function json(body, status = 200, headers = {}) {

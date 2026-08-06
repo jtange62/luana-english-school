@@ -11,3 +11,6 @@ wrangler.jsonc
 migrations
 docs
 tests
+*.md
+.assetsignore
+.gitignore

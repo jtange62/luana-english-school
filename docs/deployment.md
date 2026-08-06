@@ -23,6 +23,8 @@ To validate without publishing:
 
 The script refuses to deploy when the Git working tree contains uncommitted
 changes. This prevents unrelated local edits from being uploaded accidentally.
+On a real deployment, it applies pending D1 migrations before publishing the
+Worker. Dry runs never modify the database.
 
 ## Testing before production
 
