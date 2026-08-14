@@ -386,6 +386,7 @@ test("staff upload retries do not duplicate an already stored photo", async () =
 test("staff photo deletion removes the full image and thumbnail", async () => {
   const deletedObjects = [];
   const batches = [];
+  const operations = [];
   const env = {
     ...environment(),
     DB: {
@@ -414,12 +415,14 @@ test("staff photo deletion removes the full image and thumbnail", async () => {
         };
       },
       async batch(statements) {
+        operations.push("database");
         batches.push(statements);
         return statements.map(() => ({ success: true }));
       }
     },
     PHOTOS: {
       async delete(keys) {
+        operations.push("storage");
         deletedObjects.push(...(Array.isArray(keys) ? keys : [keys]));
       }
     }
@@ -438,6 +441,53 @@ test("staff photo deletion removes the full image and thumbnail", async () => {
 
   assert.equal(response.status, 200);
   assert.deepEqual(deletedObjects, ["portal/day/photo.webp", "portal/day/photo-thumb.webp"]);
+  assert.deepEqual(operations, ["database", "storage"]);
   assert.equal(batches.length, 1);
   assert.equal(batches[0].length, 3);
+});
+
+test("staff photo deletion preserves R2 objects when the database deletion fails", async () => {
+  let storageDeleteCalled = false;
+  const env = {
+    ...environment(),
+    DB: {
+      prepare(sql) {
+        return {
+          bind() { return this; },
+          async first() {
+            if (sql.includes("JOIN post_photos")) {
+              return {
+                r2_key: "portal/day/photo.webp",
+                thumbnail_r2_key: "portal/day/photo-thumb.webp",
+                post_id: "post-with-photos"
+              };
+            }
+            return null;
+          }
+        };
+      },
+      async batch() {
+        throw new Error("D1 unavailable");
+      }
+    },
+    PHOTOS: {
+      async delete() {
+        storageDeleteCalled = true;
+      }
+    }
+  };
+  const loginResponse = await worker.fetch(apiRequest("/api/auth/password", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ audience: "staff", password: "staff-test-password" })
+  }), env);
+  const cookie = loginResponse.headers.get("set-cookie")?.split(";")[0] || "";
+
+  const response = await worker.fetch(apiRequest("/api/staff/photos/photo-to-delete", {
+    method: "DELETE",
+    headers: { cookie }
+  }), env);
+
+  assert.equal(response.status, 500);
+  assert.equal(storageDeleteCalled, false);
 });

@@ -506,14 +506,14 @@ async function deleteStaffPost(request, env, url) {
   const objectKeys = photos.results.flatMap(photo =>
     [photo.r2_key, photo.thumbnail_r2_key].filter(Boolean)
   );
-  if (objectKeys.length) await env.PHOTOS.delete(objectKeys);
-
   await env.DB.batch([
     env.DB.prepare("DELETE FROM album_photos WHERE photo_id IN (SELECT photo_id FROM post_photos WHERE post_id = ?1)").bind(postId),
     env.DB.prepare("DELETE FROM post_photos WHERE post_id = ?1").bind(postId),
     ...photos.results.map(photo => env.DB.prepare("DELETE FROM photos WHERE id = ?1").bind(photo.id)),
     env.DB.prepare("DELETE FROM posts WHERE id = ?1").bind(postId)
   ]);
+
+  await deletePhotoObjects(env, objectKeys, { postId });
 
   return json({ ok: true });
 }
@@ -532,7 +532,6 @@ async function deleteStaffPhoto(request, env, url) {
   ).bind(photoId).first();
   if (!photo) return json({ error: "Photo not found" }, 404);
 
-  await env.PHOTOS.delete([photo.r2_key, photo.thumbnail_r2_key].filter(Boolean));
   await env.DB.batch([
     env.DB.prepare("DELETE FROM album_photos WHERE photo_id = ?1").bind(photoId),
     env.DB.prepare("DELETE FROM post_photos WHERE photo_id = ?1").bind(photoId),
@@ -546,7 +545,27 @@ async function deleteStaffPhoto(request, env, url) {
     await env.DB.prepare("DELETE FROM posts WHERE id = ?1").bind(photo.post_id).run();
   }
 
+  await deletePhotoObjects(
+    env,
+    [photo.r2_key, photo.thumbnail_r2_key].filter(Boolean),
+    { photoId, postId: photo.post_id }
+  );
+
   return json({ ok: true });
+}
+
+async function deletePhotoObjects(env, objectKeys, context) {
+  if (!objectKeys.length) return;
+  try {
+    await env.PHOTOS.delete(objectKeys);
+  } catch (error) {
+    console.error(JSON.stringify({
+      message: "R2 photo cleanup failed after database deletion",
+      ...context,
+      objectKeys,
+      error: error instanceof Error ? error.message : String(error)
+    }));
+  }
 }
 
 async function getPhoto(request, env, url) {
