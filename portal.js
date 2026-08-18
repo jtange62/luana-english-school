@@ -177,7 +177,7 @@ let lightboxReturnFocus;
 const ALBUM_BATCH_SIZE = 12;
 const MAX_SELECTED_PHOTOS = 10;
 const MAX_UPLOAD_PHOTO_BYTES = 20 * 1024 * 1024;
-const UPLOAD_QUEUE_CONCURRENCY = 1;
+const UPLOAD_QUEUE_CONCURRENCY = 2;
 const UPLOAD_PHOTO_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"]);
 const UPLOAD_PHOTO_NAME_PATTERN = /\.(?:jpe?g|png|webp|heic|heif)$/i;
 let albumSelectionMode = false;
@@ -947,6 +947,8 @@ async function initDailyStaff() {
   let previewUrls = [];
   let retainedUploadItems = [];
   let retainedUploadDate = "";
+  let retainedUploadTotal = 0;
+  let retainedUploadedCount = 0;
   let stopUploadRequested = false;
   let uploadRunning = false;
   let uploadWakeLock = null;
@@ -1017,6 +1019,8 @@ async function initDailyStaff() {
     postNote.textContent = "";
     retainedUploadItems = [];
     retainedUploadDate = "";
+    retainedUploadTotal = 0;
+    retainedUploadedCount = 0;
     uploadProgress.hidden = true;
     retryUpload.hidden = true;
     cancelUpload.hidden = true;
@@ -1068,6 +1072,8 @@ async function initDailyStaff() {
   postForm.elements.photos.addEventListener("change", () => {
     clearPreview();
     retainedUploadItems = [];
+    retainedUploadTotal = 0;
+    retainedUploadedCount = 0;
     uploadProgress.hidden = true;
     uploadProgress.classList.remove("is-complete", "has-errors");
     retryUpload.hidden = true;
@@ -1094,7 +1100,7 @@ async function initDailyStaff() {
     }
   });
 
-  async function runUploadQueue(items, date) {
+  async function runUploadQueue(items, date, uploadedBefore = 0, uploadTotal = items.length) {
     if (!items.length || uploadRunning) return;
     uploadRunning = true;
     stopUploadRequested = false;
@@ -1106,10 +1112,11 @@ async function initDailyStaff() {
     cancelUpload.textContent = "Stop upload";
     uploadProgress.hidden = false;
     uploadProgress.classList.remove("is-complete", "has-errors");
-    uploadProgressBar.max = items.length;
-    uploadProgressBar.value = 0;
-    uploadProgressLabel.textContent = `0% · 0 of ${items.length}`;
-    postNote.textContent = `Uploading 0 of ${items.length} photos… Please keep this page open.`;
+    uploadProgressBar.max = uploadTotal;
+    uploadProgressBar.value = uploadedBefore;
+    const startingPercent = Math.round((uploadedBefore / uploadTotal) * 100);
+    uploadProgressLabel.textContent = `${startingPercent}% · ${uploadedBefore} of ${uploadTotal}`;
+    postNote.textContent = `Uploading ${uploadedBefore} of ${uploadTotal} photos… Please keep this page open.`;
     await keepScreenAwake();
     let uploaded = 0;
     const failed = [];
@@ -1149,11 +1156,12 @@ async function initDailyStaff() {
         updateActiveNames();
         if (lastError) failed.push({ item, error: lastError });
         else uploaded += 1;
-        const processed = uploaded + failed.length;
-        const percent = Math.round((processed / items.length) * 100);
+        const processed = uploadedBefore + uploaded + failed.length;
+        const completed = uploadedBefore + uploaded;
+        const percent = Math.round((processed / uploadTotal) * 100);
         uploadProgressBar.value = processed;
-        uploadProgressLabel.textContent = `${percent}% · ${processed} of ${items.length}`;
-        postNote.textContent = `Uploading ${processed} of ${items.length} photos… ${uploaded} completed.`;
+        uploadProgressLabel.textContent = `${percent}% · ${processed} of ${uploadTotal}`;
+        postNote.textContent = `Uploading ${processed} of ${uploadTotal} photos… ${completed} completed.`;
         await uploadNext();
       };
       await Promise.all(Array.from(
@@ -1163,25 +1171,29 @@ async function initDailyStaff() {
       if (stopUploadRequested) stopped = items.slice(nextIndex);
       retainedUploadItems = [...failed.map(entry => entry.item), ...stopped];
       retainedUploadDate = retainedUploadItems.length ? date : "";
+      retainedUploadTotal = retainedUploadItems.length ? uploadTotal : 0;
+      retainedUploadedCount = retainedUploadItems.length ? uploadedBefore + uploaded : 0;
+      const totalUploaded = uploadedBefore + uploaded;
       selectedWeek = weekForDate(date)?.slug || selectedWeek;
       if (retainedUploadItems.length) {
         uploadProgress.classList.add("has-errors");
         retryUpload.hidden = false;
         retryUpload.textContent = failed.length ? `Retry ${retainedUploadItems.length} photos` : `Resume ${stopped.length} photos`;
         uploadCurrentFile.textContent = stopUploadRequested ? "Upload stopped safely" : "Some photos need another try";
-        uploadProgressLabel.textContent = `${uploaded} uploaded · ${retainedUploadItems.length} remaining`;
+        uploadProgressBar.value = totalUploaded;
+        uploadProgressLabel.textContent = `${totalUploaded} uploaded · ${retainedUploadItems.length} remaining`;
         postNote.textContent = stopUploadRequested
-          ? `${uploaded} uploaded. ${retainedUploadItems.length} photos remain.`
-          : `${uploaded} uploaded; ${failed.length} failed. Tap Retry to continue.`;
+          ? `${totalUploaded} uploaded. ${retainedUploadItems.length} photos remain.`
+          : `${totalUploaded} uploaded; ${failed.length} failed. Tap Retry to continue.`;
       } else {
         uploadProgress.classList.add("is-complete");
-        uploadProgressBar.value = items.length;
-        uploadProgressLabel.textContent = `100% · ${uploaded} uploaded`;
+        uploadProgressBar.value = uploadTotal;
+        uploadProgressLabel.textContent = `100% · ${totalUploaded} uploaded`;
         uploadCurrentFile.textContent = "Upload complete";
         postForm.reset();
         clearPreview();
         daySelect.value = date;
-        postNote.textContent = `${uploaded} photos added successfully.`;
+        postNote.textContent = `${totalUploaded} photos added successfully.`;
       }
       await loadStaffPosts();
       if (!retainedUploadItems.length) showStaffPanel("manage");
@@ -1200,7 +1212,12 @@ async function initDailyStaff() {
   });
 
   retryUpload.addEventListener("click", () => {
-    runUploadQueue([...retainedUploadItems], retainedUploadDate || String(daySelect.value));
+    runUploadQueue(
+      [...retainedUploadItems],
+      retainedUploadDate || String(daySelect.value),
+      retainedUploadedCount,
+      retainedUploadTotal || retainedUploadItems.length
+    );
   });
 
   postForm.addEventListener("submit", async event => {

@@ -109,13 +109,14 @@ test("daily photo collections keep parent navigation and a simple staff upload f
   assert.match(portal, /touchstart/);
   assert.match(portal, /touchend/);
   assert.match(portal, /ALBUM_BATCH_SIZE/);
-  assert.match(portal, /Uploading \$\{processed\} of \$\{items\.length\}/);
+  assert.match(portal, /Uploading \$\{processed\} of \$\{uploadTotal\}/);
   assert.match(portal, /form\.set\("upload_id", uploadId\)/);
-  assert.match(portal, /Math\.round\(\(processed \/ items\.length\) \* 100\)/);
+  assert.match(portal, /Math\.round\(\(processed \/ uploadTotal\) \* 100\)/);
   assert.match(portal, /navigator\.wakeLock\.request\("screen"\)/);
   assert.match(portal, /validUploadPhoto/);
   assert.match(portal, /retainedUploadItems/);
-  assert.match(portal, /UPLOAD_QUEUE_CONCURRENCY = 1/);
+  assert.match(portal, /UPLOAD_QUEUE_CONCURRENCY = 2/);
+  assert.match(portal, /retainedUploadedCount/);
   assert.match(portal, /Promise\.all\(Array\.from/);
   assert.match(portal, /files\.slice\(0, 4\)/);
   assert.match(portal, /Add more photos/);
