@@ -63,6 +63,13 @@
   nav img {
     height: 70px; width: auto; object-fit: contain;
   }
+  .nav-logo { display: block; line-height: 0; }
+  nav .nav-logo img {
+    display: block; width: 120px; height: 120px; object-fit: contain;
+    filter:
+      drop-shadow(0 0 2px rgba(255,255,255,0.95))
+      drop-shadow(0 3px 3px rgba(90,60,35,0.18));
+  }
   .nav-links {
     display: flex; flex-direction: row;
     gap: 4px; list-style: none; padding: 0; margin: 0 0 0 16px;
@@ -745,7 +752,7 @@
       border-bottom: 3px dashed rgba(100,210,205,0.6);
       top: 0; left: 0;
     }
-    nav img { height: 54px !important; width: 54px !important; margin-bottom: 0 !important; }
+    nav .nav-logo img { height: 80px; width: 80px; }
     .hamburger { display: flex; }
     .nav-links { display: none; width: auto; padding: 0; flex-direction: row; }
     .nav-links.open {
@@ -787,8 +794,6 @@
 
     /* Nav */
     nav { padding: 6px 12px; min-height: 60px; }
-    nav img { height: 54px !important; width: 54px !important; }
-
     /* Hero buttons - stack on mobile */
     .hero-cta {
       display: block; width: 100%; text-align: center;
@@ -905,7 +910,7 @@ window.addEventListener('load',function(){
 });
 </script>
 <nav style="top:42px;">
-  <div style="display:flex;align-items:center;gap:8px;"><a href="/"><img src="images/optimized/logo-128.webp?v=20260814-transparent" srcset="images/optimized/logo-128.webp?v=20260814-transparent 128w, images/optimized/logo-256.webp?v=20260814-transparent 256w" sizes="100px" alt="Luana English School" style="height:100px;width:100px;object-fit:contain;margin-bottom:12px;" width="128" height="128"></a>
+  <div style="display:flex;align-items:center;gap:8px;"><a class="nav-logo" href="/"><img src="images/optimized/logo-128.webp?v=20260814-transparent" srcset="images/optimized/logo-128.webp?v=20260814-transparent 128w, images/optimized/logo-256.webp?v=20260814-transparent 256w" sizes="(max-width: 600px) 80px, 120px" alt="Luana English School" width="120" height="120"></a>
   <button class="hamburger" onclick="this.nextElementSibling.classList.toggle('open')" aria-label="Menu"><span></span><span></span><span></span></button>
   <ul class="nav-links">
     <li><a href="/#about">スクール紹介</a></li>
