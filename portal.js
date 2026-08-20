@@ -1164,9 +1164,12 @@ async function initDailyStaff() {
         retryUpload.textContent = failed.length ? `Retry ${retainedUploadItems.length} photos` : `Resume ${stopped.length} photos`;
         uploadCurrentFile.textContent = stopUploadRequested ? "Upload stopped safely" : "Some photos need another try";
         uploadProgressLabel.textContent = `${uploaded} uploaded · ${retainedUploadItems.length} remaining`;
+        const failureMessage = failed[0]?.error?.message;
         postNote.textContent = stopUploadRequested
           ? `${uploaded} uploaded. ${retainedUploadItems.length} photos remain.`
-          : `${uploaded} uploaded; ${failed.length} failed. Tap Retry to continue.`;
+          : failureMessage
+            ? `${uploaded} uploaded; ${failed.length} failed: ${failureMessage}`
+            : `${uploaded} uploaded; ${failed.length} failed. Tap Retry to continue.`;
       } else {
         uploadProgress.classList.add("is-complete");
         uploadProgressBar.value = items.length;

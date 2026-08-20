@@ -51,6 +51,12 @@ export default {
       if (url.pathname.startsWith("/api/")) return await handleApi(request, env, url);
       return asset(request, env);
     } catch (error) {
+      console.error("Request failed", {
+        method: request.method,
+        pathname: url.pathname,
+        message: error?.message || String(error),
+        stack: error?.stack || ""
+      });
       return json({
         error: error.message || "Something went wrong",
         setupRequired: Boolean(error.setupRequired)

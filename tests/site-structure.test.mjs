@@ -115,6 +115,7 @@ test("daily photo collections keep parent navigation and a simple staff upload f
   assert.match(portal, /navigator\.wakeLock\.request\("screen"\)/);
   assert.match(portal, /validUploadPhoto/);
   assert.match(portal, /retainedUploadItems/);
+  assert.match(portal, /failed\[0\]\?\.error\?\.message/);
   assert.match(portal, /UPLOAD_QUEUE_CONCURRENCY = 1/);
   assert.match(portal, /Promise\.all\(Array\.from/);
   assert.match(portal, /files\.slice\(0, 4\)/);
@@ -272,4 +273,10 @@ test("Worker permanently redirects the www hostname to the canonical domain", as
   assert.match(worker, /url\.hostname === "www\.luanaenglishschool\.jp"/);
   assert.match(worker, /url\.hostname = "luanaenglishschool\.jp"/);
   assert.match(worker, /Response\.redirect\(url\.toString\(\), 301\)/);
+});
+
+test("production request failures are logged without exposing request data", async () => {
+  const worker = await source("worker.js");
+  assert.match(worker, /console\.error\("Request failed"/);
+  assert.match(worker, /pathname: url\.pathname/);
 });
