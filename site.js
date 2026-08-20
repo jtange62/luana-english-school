@@ -18,7 +18,7 @@
     once: true,
     passive: true
   }));
-  window.addEventListener('load', () => window.setTimeout(loadAnalytics, 2500), { once: true });
+  window.addEventListener('load', () => window.setTimeout(loadAnalytics, 5000), { once: true });
 })();
 
 document.addEventListener('DOMContentLoaded', () => {
