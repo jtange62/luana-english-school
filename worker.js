@@ -396,26 +396,36 @@ async function createStaffPost(request, env) {
 
   const storePhoto = async (file, index) => {
     const photoId = uploadId && files.length === 1 ? uploadId : crypto.randomUUID();
-    const [optimized, thumbnail] = await Promise.all([
-      optimizePhoto(env, file.stream(), PHOTO_WIDTH, 82),
-      optimizePhoto(env, file.stream(), THUMBNAIL_WIDTH, 76)
-    ]);
-    const key = `portal/summer-2026/${date}/${photoId}.webp`;
-    const thumbnailKey = `portal/summer-2026/${date}/${photoId}-thumb.webp`;
+    let fullImage;
+    let thumbnail = null;
+    let contentType = "image/webp";
+    let extension = "webp";
+    try {
+      [fullImage, thumbnail] = await Promise.all([
+        optimizePhoto(env, file.stream(), PHOTO_WIDTH, 82),
+        optimizePhoto(env, file.stream(), THUMBNAIL_WIDTH, 76)
+      ]);
+    } catch (error) {
+      if (!isImagesQuotaError(error)) throw error;
+      fullImage = await file.arrayBuffer();
+      contentType = file.type || "application/octet-stream";
+      extension = photoExtension(file);
+    }
+    const key = `portal/summer-2026/${date}/${photoId}.${extension}`;
+    const thumbnailKey = thumbnail ? `portal/summer-2026/${date}/${photoId}-thumb.webp` : null;
     let fullStored = false;
     let thumbnailStored = false;
     let photoRowStored = false;
     try {
-      const storageResults = await Promise.allSettled([
-        env.PHOTOS.put(key, optimized, {
-          httpMetadata: { contentType: "image/webp" }
-        }),
-        env.PHOTOS.put(thumbnailKey, thumbnail, {
-          httpMetadata: { contentType: "image/webp" }
-        })
-      ]);
+      const storageOperations = [env.PHOTOS.put(key, fullImage, {
+        httpMetadata: { contentType }
+      })];
+      if (thumbnailKey) storageOperations.push(env.PHOTOS.put(thumbnailKey, thumbnail, {
+        httpMetadata: { contentType: "image/webp" }
+      }));
+      const storageResults = await Promise.allSettled(storageOperations);
       fullStored = storageResults[0].status === "fulfilled";
-      thumbnailStored = storageResults[1].status === "fulfilled";
+      thumbnailStored = Boolean(thumbnailKey && storageResults[1]?.status === "fulfilled");
       const storageFailure = storageResults.find(result => result.status === "rejected");
       if (storageFailure) throw storageFailure.reason;
       await env.DB.batch([
@@ -425,9 +435,9 @@ async function createStaffPost(request, env) {
           photoId,
           key,
           thumbnailKey,
-          file.name || `${photoId}.webp`,
-          "image/webp",
-          optimized.byteLength + thumbnail.byteLength,
+          file.name || `${photoId}.${extension}`,
+          contentType,
+          fullImage.byteLength + (thumbnail?.byteLength || 0),
           session.email || session.subject || "staff",
           now
         ),
@@ -461,6 +471,16 @@ async function optimizePhoto(env, source, width, quality) {
   const response = output.response();
   if (!response.ok) throw new Error("Could not optimize an uploaded photo");
   return response.arrayBuffer();
+}
+
+function isImagesQuotaError(error) {
+  return /IMAGES_TRANSFORM_ERROR 9422|unique transformations.*exhausted/i.test(error?.message || "");
+}
+
+function photoExtension(file) {
+  const match = String(file.name || "").match(/\.(jpe?g|png|webp|heic|heif)$/i);
+  if (match) return match[1].toLowerCase().replace("jpeg", "jpg");
+  return file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg";
 }
 
 async function updateStaffPost(request, env, url) {
