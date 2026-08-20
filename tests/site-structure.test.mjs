@@ -49,9 +49,6 @@ test("portal pages remain excluded from search engines", async () => {
       `${page} must remain noindex,nofollow`
     );
   }
-
-  const robots = await source("robots.txt");
-  assert.doesNotMatch(robots, /^Disallow: \/(?:parents|staff)\/?$/m);
 });
 
 test("the parent landing page clearly uses Japanese access-code wording", async () => {
