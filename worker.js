@@ -396,10 +396,9 @@ async function createStaffPost(request, env) {
 
   const storePhoto = async (file, index) => {
     const photoId = uploadId && files.length === 1 ? uploadId : crypto.randomUUID();
-    const source = await file.arrayBuffer();
     const [optimized, thumbnail] = await Promise.all([
-      optimizePhoto(env, source, PHOTO_WIDTH, 82),
-      optimizePhoto(env, source, THUMBNAIL_WIDTH, 76)
+      optimizePhoto(env, file.stream(), PHOTO_WIDTH, 82),
+      optimizePhoto(env, file.stream(), THUMBNAIL_WIDTH, 76)
     ]);
     const key = `portal/summer-2026/${date}/${photoId}.webp`;
     const thumbnailKey = `portal/summer-2026/${date}/${photoId}-thumb.webp`;

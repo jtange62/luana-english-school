@@ -326,6 +326,12 @@ test("staff uploads accept iPhone HEIC photos", async () => {
   assert.equal(uploads.length, 2);
 });
 
+test("staff image transformations use a fresh stream for each output", () => {
+  assert.doesNotMatch(workerSource, /file\.arrayBuffer\(\)/);
+  assert.match(workerSource, /optimizePhoto\(env, file\.stream\(\), PHOTO_WIDTH/);
+  assert.match(workerSource, /optimizePhoto\(env, file\.stream\(\), THUMBNAIL_WIDTH/);
+});
+
 test("staff upload retries do not duplicate an already stored photo", async () => {
   const writes = [];
   const uploads = [];
