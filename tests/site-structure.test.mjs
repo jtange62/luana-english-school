@@ -275,6 +275,20 @@ test("Worker permanently redirects the www hostname to the canonical domain", as
   assert.match(worker, /Response\.redirect\(url\.toString\(\), 301\)/);
 });
 
+test("the parent portal explains availability and photo saving without flashing the login form", async () => {
+  const parents = await source("parents.html");
+  const portal = await source("portal.js");
+  const styles = await source("portal.css");
+  assert.match(parents, /id="parent-session-check" role="status"/);
+  assert.match(parents, /id="parent-login" hidden/);
+  assert.match(parents, /2026年10月31日まで/);
+  assert.match(parents, /写真をまとめて保存/);
+  assert.match(parents, /1回につき10枚まで/);
+  assert.match(portal, /sessionCheck\.hidden = true/);
+  assert.match(styles, /\.portal-availability-notice/);
+  assert.match(styles, /\.portal-download-guide/);
+});
+
 test("production request failures are logged without exposing request data", async () => {
   const worker = await source("worker.js");
   assert.match(worker, /console\.error\("Request failed"/);

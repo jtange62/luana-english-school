@@ -825,6 +825,7 @@ function renderParentActivities(posts, selectedWeek) {
 async function initParents() {
   setupLightbox();
   const login = document.getElementById("parent-login");
+  const sessionCheck = document.getElementById("parent-session-check");
   const note = document.getElementById("login-note");
   const portal = document.getElementById("portal-app");
   const tabs = document.getElementById("week-tabs");
@@ -900,6 +901,7 @@ async function initParents() {
     availableWeeks = SUMMER_WEEKS.filter(week => (data.weeks || []).includes(week.slug));
     selectedWeek = initialWeek(posts, availableWeeks);
     document.body.classList.add("parent-authenticated");
+    sessionCheck.hidden = true;
     login.hidden = true;
     portal.hidden = false;
     render();
@@ -909,12 +911,14 @@ async function initParents() {
       availableWeeks = [SUMMER_WEEKS[0]];
       selectedWeek = initialWeek(posts, availableWeeks);
       document.body.classList.add("parent-authenticated");
+      sessionCheck.hidden = true;
       portal.hidden = false;
       showSetupBanner("setup-banner");
       render();
       return;
     }
     document.body.classList.remove("parent-authenticated");
+    sessionCheck.hidden = true;
     login.hidden = false;
     portal.hidden = true;
   }

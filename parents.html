@@ -26,7 +26,11 @@
         <h1>サマースクール<br>ご家族専用ページ</h1>
         <p class="portal-lead">お子さまが参加する週の写真や、スクールからのお知らせをご覧いただけます。</p>
       </div>
-      <form class="login-card" id="parent-login">
+      <div class="login-card portal-session-check" id="parent-session-check" role="status">
+        <h2>ページを確認しています…</h2>
+        <p>この端末のアクセス状況を確認しています。少しだけお待ちください。</p>
+      </div>
+      <form class="login-card" id="parent-login" hidden>
         <h2>アクセスコードを入力</h2>
         <p>スクールからお知らせした、お子さまが参加する週のアクセスコードを入力してください。ご家族や祖父母の方とも共有していただけます。</p>
         <label>
@@ -71,9 +75,15 @@
       現在準備中です。公開までしばらくお待ちください。
     </div>
 
+    <aside class="portal-availability-notice" aria-label="写真公開期間">
+      <strong>写真は2026年10月31日までご覧いただけます。</strong>
+      <span>お手元に残したい写真は、公開期間内に保存してください。</span>
+    </aside>
+
     <nav class="week-tabs" id="week-tabs" aria-label="サマースクールの参加週"></nav>
     <div class="week-heading" id="week-heading"></div>
     <nav class="day-tabs" id="day-tabs" aria-label="日にちから選ぶ"></nav>
+    <p class="portal-download-guide"><strong>写真をタップ</strong>すると大きく表示できます。複数枚を保存する場合は、アルバム内の<strong>「写真をまとめて保存」</strong>をご利用ください（1回につき10枚まで）。</p>
     <aside class="photo-privacy-notice" aria-labelledby="photo-privacy-title">
       <span class="photo-privacy-icon" aria-hidden="true">🔒</span>
       <div>

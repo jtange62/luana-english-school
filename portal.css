@@ -181,6 +181,43 @@
   line-height: 1.55;
 }
 
+.portal-session-check {
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.portal-session-check[hidden] {
+  display: none;
+}
+
+.portal-availability-notice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  align-items: baseline;
+  margin: 0 0 20px;
+  padding: 14px 18px;
+  border: 1px solid rgba(204, 70, 50, 0.24);
+  border-radius: 16px;
+  background: #fff4e8;
+  color: #664326;
+}
+
+.portal-availability-notice strong {
+  color: #9e3524;
+}
+
+.portal-download-guide {
+  margin: 14px 0 18px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.78);
+  color: #5b5148;
+  line-height: 1.65;
+}
+
 .panel-intro {
   border-radius: 8px;
   background: #fff8dc;
