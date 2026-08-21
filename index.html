@@ -879,39 +879,7 @@
 <body>
 
 <!-- NAV -->
-<div id="summer-banner" style="
-  position:fixed; top:0; left:0; width:100%; z-index:200;
-  background: linear-gradient(90deg, #FF7F6E, #FFD95A, #FF7F6E);
-  text-align:center; padding:10px 20px;
-  font-family:'Baloo 2',cursive; font-weight:800; font-size:0.95rem;
-  color: #7A4A0A; letter-spacing:0.5px;
-">
-  ☀️ Summer School 2026 受付中！&nbsp;
-  <a href="https://docs.google.com/forms/d/e/1FAIpQLSdOMr6tBK_ql0omv56ILcO3X_gxkgirsDRfkBSVzMbuwPGG7A/viewform?usp=header" target="_blank" onclick="gtag('event','summer_signup')" style="color:#7A4A0A; text-decoration:underline; font-weight:800;" rel="noopener noreferrer">申し込む →</a>
-</div>
-<script>
-function _fixNavTop(){var b=document.getElementById('summer-banner'),n=document.querySelector('nav');if(b&&n){n.style.top=b.offsetHeight+'px';document.documentElement.style.setProperty('--header-h',(b.offsetHeight+n.offsetHeight+12)+'px');}}
-document.addEventListener('DOMContentLoaded',_fixNavTop);
-window.addEventListener('resize',_fixNavTop);
-window.addEventListener('load',function(){
-  if(!location.hash)return;
-  var t=document.querySelector(location.hash);if(!t)return;
-  var stop=false;
-  ['touchstart','wheel','keydown'].forEach(function(e){window.addEventListener(e,function(){stop=true;},{passive:true,once:true});});
-  var tries=0,iv=setInterval(function(){
-    if(stop||++tries>14){clearInterval(iv);return;}
-    _fixNavTop();
-    var top=t.getBoundingClientRect().top;
-    var want=parseFloat(getComputedStyle(t).scrollMarginTop)||0;
-    if(Math.abs(top-want)>6){
-      var h=document.documentElement;h.style.scrollBehavior='auto';
-      window.scrollTo(0,window.scrollY+top-want);
-      h.style.scrollBehavior='';
-    }
-  },150);
-});
-</script>
-<nav style="top:42px;">
+<nav>
   <div style="display:flex;align-items:center;gap:8px;"><a class="nav-logo" href="/"><img src="images/optimized/logo-128.webp?v=20260820-responsive" srcset="images/optimized/logo-128.webp?v=20260820-responsive 128w, images/optimized/logo-160.webp?v=20260820-responsive 160w, images/optimized/logo-256.webp?v=20260820-responsive 256w" sizes="(max-width: 600px) 80px, 120px" alt="Luana English School" width="120" height="120"></a>
   <button class="hamburger" onclick="this.nextElementSibling.classList.toggle('open')" aria-label="Menu"><span></span><span></span><span></span></button>
   <ul class="nav-links">
