@@ -180,29 +180,7 @@
 </script></head>
 <body>
 
-<div id="summer-banner" style="
-  position:fixed; top:0; left:0; width:100%; z-index:200;
-  background: linear-gradient(90deg, #FF7F6E, #FFD95A, #FF7F6E);
-  background-size: 200% 100%;
-  animation: shimmer 3s linear infinite;
-  text-align:center; padding:10px 20px;
-  font-family:'Baloo 2',cursive; font-weight:800; font-size:0.95rem;
-  color: #7A4A0A;
-  letter-spacing:0.5px;
-">
-  ☀️ Summer School 2026 受付中！&nbsp;
-  <a href="https://docs.google.com/forms/d/e/1FAIpQLSdOMr6tBK_ql0omv56ILcO3X_gxkgirsDRfkBSVzMbuwPGG7A/viewform?usp=header" target="_blank" onclick="gtag('event','summer_signup')" style="color:#7A4A0A; text-decoration:underline; font-weight:800;" rel="noopener noreferrer">申し込む →</a>
-</div>
-<style>
-@keyframes shimmer { 0%{background-position:0% 50%} 100%{background-position:200% 50%} }
-@media(max-width:760px){#summer-banner{font-size:0.78rem;padding:7px 10px;}}
-</style>
-<script>
-function _fixNavTop(){var b=document.getElementById('summer-banner'),n=document.querySelector('nav');if(b&&n){n.style.top=b.offsetHeight+'px';document.documentElement.style.setProperty('--header-h',(b.offsetHeight+n.offsetHeight+12)+'px');}}
-document.addEventListener('DOMContentLoaded',_fixNavTop);
-window.addEventListener('resize',_fixNavTop);
-</script>
-<nav style="top:42px;">
+<nav style="top:0;">
   <div class="nav-inner">
     <a href="/"><img src="logo.png?v=20260814-transparent" alt="Luana English School" style="height:70px;width:auto;" width="157" height="140"></a>
     <ul class="nav-links">
