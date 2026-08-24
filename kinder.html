@@ -327,6 +327,24 @@
 </script></head>
 <body>
 
+<div id="seasonal-banner" style="
+  position:fixed; top:0; left:0; width:100%; z-index:200;
+  background:linear-gradient(90deg,#FF7F6E,#FFD95A,#FF7F6E); text-align:center;
+  padding:10px 20px; font-family:'Baloo 2',cursive; font-weight:800; font-size:0.95rem;
+  color:#7A4A0A; letter-spacing:0.3px;
+">
+  🌺 秋の入会受付中！まずは体験レッスンへ&nbsp;
+  <a href="/#trial" onclick="gtag('event','autumn_trial_banner')" style="color:#7A4A0A;text-decoration:underline;font-weight:800;">体験を予約する →</a>
+</div>
+<style>
+@media(max-width:760px){#seasonal-banner{font-size:0.78rem;padding:7px 10px;}}
+</style>
+<script>
+function _fixSeasonalNav(){var b=document.getElementById('seasonal-banner'),n=document.querySelector('nav');if(b&&n){n.style.top=b.offsetHeight+'px';document.documentElement.style.setProperty('--header-h',(b.offsetHeight+n.offsetHeight+12)+'px');}}
+document.addEventListener('DOMContentLoaded',_fixSeasonalNav);
+window.addEventListener('resize',_fixSeasonalNav);
+</script>
+
 <nav style="top:0;">
   <a href="/#classes" class="back-btn">← Back</a>
   <div style="display:flex;align-items:center;gap:8px;"><a href="/"><img src="logo.png?v=20260814-transparent" alt="Luana English School" width="161" height="144"></a>

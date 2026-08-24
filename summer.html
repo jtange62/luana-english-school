@@ -320,6 +320,24 @@
 </script></head>
 <body>
 
+<div id="seasonal-banner" style="
+  position:fixed; top:0; left:0; width:100%; z-index:200;
+  background:linear-gradient(90deg,#FF7F6E,#FFD95A,#FF7F6E); text-align:center;
+  padding:10px 20px; font-family:'Baloo 2',cursive; font-weight:800; font-size:0.95rem;
+  color:#7A4A0A; letter-spacing:0.3px;
+">
+  🌺 秋の入会受付中！まずは体験レッスンへ&nbsp;
+  <a href="/#trial" onclick="gtag('event','autumn_trial_banner')" style="color:#7A4A0A;text-decoration:underline;font-weight:800;">体験を予約する →</a>
+</div>
+<style>
+@media(max-width:760px){#seasonal-banner{font-size:0.78rem;padding:7px 10px;}}
+</style>
+<script>
+function _fixSeasonalNav(){var b=document.getElementById('seasonal-banner'),n=document.querySelector('nav');if(b&&n){n.style.top=b.offsetHeight+'px';document.documentElement.style.setProperty('--header-h',(b.offsetHeight+n.offsetHeight+12)+'px');}}
+document.addEventListener('DOMContentLoaded',_fixSeasonalNav);
+window.addEventListener('resize',_fixSeasonalNav);
+</script>
+
 <nav>
 <div style="display:flex;align-items:center;gap:8px;"><a href="/"><img src="logo.png?v=20260814-transparent" alt="Luana English School" style="height:70px;width:auto;object-fit:contain;" width="157" height="140"></a>
     <ul class="nav-links">
@@ -348,6 +366,7 @@
       <div class="summer-status" role="status">
         <strong>Summer School 2026は終了しました</strong>
         <span>ご参加いただいた皆さま、ありがとうございました。以下の日程・内容・料金は、2026年度の実施内容としてご参考までに掲載しています。</span>
+        <span>次回のサマースクール情報をお待ちください。通常クラスの体験レッスンも受付中です。</span>
       </div>
 
       <div class="summer-overview" aria-label="サマースクール概要">
@@ -453,6 +472,14 @@
           <p>Luana English Schoolは東京都府中市住吉町1-24-19 1Fにあります。中河原駅近くで、府中市内から通いやすい立地です。</p>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section class="cta-section" aria-labelledby="trial-heading">
+    <div class="container">
+      <h2 id="trial-heading" style="font-family:'Baloo 2',cursive;font-size:clamp(1.7rem,4vw,2.3rem);font-weight:800;margin-bottom:12px;">通常クラスの体験レッスン受付中</h2>
+      <p style="margin-bottom:24px;color:#6E6E6E;">お子さまの年齢に合ったクラスをご案内します。</p>
+      <a class="cta-btn" href="/#trial" onclick="gtag('event','summer_archive_trial')">体験レッスンを見る →</a>
     </div>
   </section>
 

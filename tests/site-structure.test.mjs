@@ -31,6 +31,15 @@ test("every public header links to the Japanese Summer School page", async () =>
   }
 });
 
+test("every public page promotes autumn trial lessons", async () => {
+  for (const page of publicPages) {
+    const html = await source(page);
+    assert.match(html, /id="seasonal-banner"/, `${page} is missing the autumn banner`);
+    assert.match(html, /href="\/#trial"/, `${page} is missing the trial link`);
+    assert.match(html, /秋の入会受付中/, `${page} is missing the autumn enrollment message`);
+  }
+});
+
 test("the Summer School page remains canonical and indexed", async () => {
   const html = await source("summer.html");
   assert.match(html, /<link rel="canonical" href="https:\/\/luanaenglishschool\.jp\/summer">/);
