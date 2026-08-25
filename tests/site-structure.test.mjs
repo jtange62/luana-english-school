@@ -44,6 +44,7 @@ test("the Summer School page remains canonical and indexed", async () => {
   const html = await source("summer.html");
   assert.match(html, /<link rel="canonical" href="https:\/\/luanaenglishschool\.jp\/summer">/);
   assert.doesNotMatch(html, /<meta name="robots" content="noindex/);
+  assert.doesNotMatch(html, /"@type": "Event"/);
 
   const sitemap = await source("sitemap.xml");
   assert.match(sitemap, /<loc>https:\/\/luanaenglishschool\.jp\/summer<\/loc>/);
