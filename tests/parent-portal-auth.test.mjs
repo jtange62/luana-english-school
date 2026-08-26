@@ -174,6 +174,30 @@ test("parent week codes filter feeds and direct photo access", async () => {
   assert.equal(sharedPhoto.headers.get("content-type"), "image/jpeg");
 });
 
+test("photo sharing falls back to the stored image when JPEG preparation fails", async () => {
+  const env = environment();
+  env.IMAGES = {
+    input() {
+      return {
+        transform() {
+          return this;
+        },
+        async output() {
+          throw new Error("IMAGES_TRANSFORM_ERROR 9422: transformation limit exhausted");
+        }
+      };
+    }
+  };
+  const weekTwoLogin = await login(env, "ocean-two");
+  const response = await worker.fetch(apiRequest("/api/photos/photo-week-2?share=1", {
+    headers: { cookie: weekTwoLogin.cookie }
+  }), env);
+
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get("content-type"), "image/jpeg");
+  assert.equal(await response.text(), "week-2.jpg");
+});
+
 test("incorrect week codes are rejected", async () => {
   const result = await login(environment(), "wrong-code");
   assert.equal(result.response.status, 401);

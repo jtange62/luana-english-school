@@ -628,18 +628,34 @@ async function getPhoto(request, env, url) {
   if (!object) return json({ error: "Photo not found" }, 404);
 
   if (shareRequested) {
-    const output = await env.IMAGES
-      .input(object.body)
-      .transform({ width: PHOTO_WIDTH, fit: "scale-down" })
-      .output({ format: "image/jpeg", quality: 85 });
-    const response = output.response();
-    if (!response.ok) throw new Error("Could not prepare photo for saving");
-    return new Response(response.body, {
-      headers: {
-        "content-type": "image/jpeg",
-        "cache-control": "private, max-age=31536000, immutable"
-      }
-    });
+    try {
+      const output = await env.IMAGES
+        .input(object.body)
+        .transform({ width: PHOTO_WIDTH, fit: "scale-down" })
+        .output({ format: "image/jpeg", quality: 85 });
+      const response = output.response();
+      if (!response.ok) throw new Error("Could not prepare photo for saving");
+      return new Response(response.body, {
+        headers: {
+          "content-type": "image/jpeg",
+          "cache-control": "private, max-age=31536000, immutable"
+        }
+      });
+    } catch (error) {
+      console.error(JSON.stringify({
+        message: "Photo JPEG preparation failed; returning the stored image",
+        photoId,
+        error: error instanceof Error ? error.message : String(error)
+      }));
+      const fallbackObject = await env.PHOTOS.get(objectKey);
+      if (!fallbackObject) return json({ error: "Photo not found" }, 404);
+      return new Response(fallbackObject.body, {
+        headers: {
+          "content-type": photo.content_type || fallbackObject.httpMetadata?.contentType || "application/octet-stream",
+          "cache-control": "private, max-age=31536000, immutable"
+        }
+      });
+    }
   }
 
   const headers = {

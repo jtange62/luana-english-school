@@ -387,8 +387,17 @@ function prepareShareFile(index) {
   }).then(async response => {
     if (!response.ok) throw new Error("Could not prepare photo");
     const blob = await response.blob();
-    return new File([blob], `luana-photo-${String(index + 1).padStart(2, "0")}.jpg`, {
-      type: "image/jpeg"
+    const extensionByType = {
+      "image/jpeg": "jpg",
+      "image/png": "png",
+      "image/webp": "webp",
+      "image/heic": "heic",
+      "image/heif": "heif"
+    };
+    const type = blob.type || "image/jpeg";
+    const extension = extensionByType[type] || "jpg";
+    return new File([blob], `luana-photo-${String(index + 1).padStart(2, "0")}.${extension}`, {
+      type
     });
   });
   shareFilePromises.set(index, promise);
