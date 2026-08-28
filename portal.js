@@ -4,6 +4,10 @@ function isParentPresentation() {
   return appKind === "parents";
 }
 
+function isStaffPresentation() {
+  return appKind === "staff";
+}
+
 const SUMMER_WEEKS = [
   {
     slug: "week-1-festivals",
@@ -306,7 +310,9 @@ function validUploadPhoto(file) {
 
 function toggleSelectedPhoto(index) {
   const help = document.getElementById("album-selection-help");
-  const selectionLimit = albumActionMode === "delete" ? lightboxPhotos.length : MAX_SELECTED_PHOTOS;
+  const selectionLimit = albumActionMode === "delete" || isStaffPresentation()
+    ? lightboxPhotos.length
+    : MAX_SELECTED_PHOTOS;
   if (selectedPhotoIndexes.has(index)) {
     selectedPhotoIndexes.delete(index);
     shareFilePromises.delete(index);
@@ -349,11 +355,13 @@ function refreshAlbumSelection(changedIndex = null) {
   }
   if (count) count.textContent = albumActionMode === "delete"
     ? `${selectedPhotoIndexes.size} of ${lightboxPhotos.length} selected`
+    : isStaffPresentation()
+      ? `${selectedPhotoIndexes.size} selected`
     : parentView
       ? `${selectedPhotoIndexes.size} / ${MAX_SELECTED_PHOTOS}枚選択中`
       : `${selectedPhotoIndexes.size} / ${MAX_SELECTED_PHOTOS} selected`;
   if (selectAll) {
-    selectAll.hidden = albumActionMode !== "delete";
+    selectAll.hidden = albumActionMode !== "delete" && !isStaffPresentation();
     selectAll.textContent = selectedPhotoIndexes.size === lightboxPhotos.length ? "Clear all" : "Select all";
   }
   const selector = changedIndex === null
@@ -426,6 +434,11 @@ async function updateShareReadiness() {
     return;
   }
   if (help) help.textContent = parentView ? "写真を準備しています…" : "Preparing photos…";
+  if (isStaffPresentation()) {
+    if (button) button.disabled = false;
+    if (help) help.textContent = `${selectedPhotoIndexes.size} photos will download to this device`;
+    return;
+  }
   try {
     const indexes = [...selectedPhotoIndexes].sort((a, b) => a - b);
     const files = await Promise.all(indexes.map(prepareShareFile));
@@ -451,9 +464,57 @@ async function updateShareReadiness() {
   }
 }
 
-function shareSelectedPhotos() {
+async function shareSelectedPhotos() {
   const help = document.getElementById("album-selection-help");
   const parentView = isParentPresentation();
+  if (isStaffPresentation()) {
+    const indexes = [...selectedPhotoIndexes].sort((a, b) => a - b);
+    if (!indexes.length) return;
+    if (typeof window.showDirectoryPicker === "function") {
+      try {
+        const directory = await window.showDirectoryPicker({ mode: "readwrite" });
+        for (const [position, index] of indexes.entries()) {
+          if (help) help.textContent = `Saving ${position + 1} of ${indexes.length} photos…`;
+          const response = await fetch(photoUrlWithParameter(lightboxPhotos[index], "download=1"), {
+            credentials: "same-origin"
+          });
+          if (!response.ok) throw new Error("Could not download photo");
+          const blob = await response.blob();
+          const extensionByType = {
+            "image/jpeg": "jpg",
+            "image/png": "png",
+            "image/webp": "webp",
+            "image/heic": "heic",
+            "image/heif": "heif"
+          };
+          const extension = extensionByType[blob.type] || "jpg";
+          const uniqueId = String(lightboxPhotos[index].id || index + 1).replace(/[^a-z0-9_-]/gi, "-");
+          const albumDate = String(lightboxPhotos[index].albumDate || "").replace(/[^0-9-]/g, "");
+          const datePrefix = albumDate ? `${albumDate}-` : "";
+          const filename = `${datePrefix}luana-photo-${String(index + 1).padStart(3, "0")}-${uniqueId}.${extension}`;
+          const fileHandle = await directory.getFileHandle(filename, { create: true });
+          const writable = await fileHandle.createWritable();
+          await writable.write(blob);
+          await writable.close();
+        }
+        if (help) help.textContent = `${indexes.length} photos saved`;
+      } catch (error) {
+        if (error.name !== "AbortError" && help) help.textContent = "Could not save every photo. Please try again";
+      }
+      return;
+    }
+    indexes.forEach(index => {
+      const link = document.createElement("a");
+      link.href = photoUrlWithParameter(lightboxPhotos[index], "download=1");
+      link.download = "";
+      link.hidden = true;
+      document.body.append(link);
+      link.click();
+      link.remove();
+    });
+    if (help) help.textContent = `${indexes.length} downloads started`;
+    return;
+  }
   if (!selectedPhotoFiles.length) return;
   if (nativeFileShareAvailable) {
     navigator.share({
@@ -551,12 +612,14 @@ function openGallery(photos, startIndex = null, options = {}) {
   const selectToggle = document.getElementById("album-select-toggle");
   const actionButton = document.getElementById("album-share-selected");
   const selectAll = document.getElementById("album-select-all");
+  const title = document.getElementById("album-browser-title");
+  if (title) title.textContent = options.title || "All photos";
   if (selectToggle) selectToggle.textContent = albumActionMode === "delete" ? "Select photos" : "Save multiple";
   if (actionButton) {
     actionButton.textContent = albumActionMode === "delete" ? "Delete selected" : "Save selected photos";
     actionButton.classList.toggle("delete-selected", albumActionMode === "delete");
   }
-  if (selectAll) selectAll.hidden = albumActionMode !== "delete";
+  if (selectAll) selectAll.hidden = albumActionMode !== "delete" && !isStaffPresentation();
   lightboxReturnFocus = document.activeElement;
   box.hidden = false;
   document.body.classList.add("lightbox-open");
@@ -600,7 +663,8 @@ function setupLightbox() {
     if (selectedPhotoIndexes.size === lightboxPhotos.length) selectedPhotoIndexes.clear();
     else selectedPhotoIndexes = new Set(lightboxPhotos.map((_, index) => index));
     refreshAlbumSelection();
-    updateDeleteReadiness();
+    if (albumActionMode === "delete") updateDeleteReadiness();
+    else scheduleShareReadiness();
   });
   shareSelected?.addEventListener("click", () => {
     if (albumActionMode === "delete") deleteSelectedPhotos();
@@ -1272,6 +1336,8 @@ async function initDailyStaff() {
       const data = await api("/api/staff/posts");
       posts = data.posts || [];
       renderStaffDays();
+      const downloadAll = document.getElementById("download-all-photos");
+      if (downloadAll) downloadAll.disabled = !posts.some(post => post.photos?.length);
       manageNote.textContent = "";
     } catch (error) {
       manageNote.textContent = error.data?.setupRequired
@@ -1281,6 +1347,12 @@ async function initDailyStaff() {
   }
 
   document.getElementById("refresh-posts").addEventListener("click", loadStaffPosts);
+  document.getElementById("download-all-photos").addEventListener("click", () => {
+    const photosAcrossAlbums = posts.flatMap(post =>
+      (post.photos || []).map(photo => ({ ...photo, albumDate: post.date }))
+    );
+    openGallery(photosAcrossAlbums, null, { title: "Photos across all albums" });
+  });
 
   try {
     await api("/api/staff/me");

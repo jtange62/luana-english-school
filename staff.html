@@ -91,7 +91,10 @@
           <h2 id="manage-title">Photos by daily theme</h2>
           <p id="staff-mode-description">Each day has one shared collection. Add more photos without creating another album.</p>
         </div>
-        <button type="button" id="refresh-posts">Refresh</button>
+        <div class="portal-actions">
+          <button type="button" id="download-all-photos" disabled>Download across albums</button>
+          <button type="button" id="refresh-posts">Refresh</button>
+        </div>
       </div>
       <nav class="week-tabs" id="staff-week-tabs" aria-label="Summer program weeks"></nav>
       <div class="week-heading" id="staff-week-heading"></div>
@@ -119,10 +122,10 @@
     <div class="album-browser-sentinel" id="album-browser-sentinel" aria-hidden="true"></div>
     <div class="album-selection-bar" id="album-selection-bar" hidden>
       <div>
-        <strong id="album-selection-count">0 / 10 selected</strong>
+        <strong id="album-selection-count">0 selected</strong>
         <span id="album-selection-help">Tap the photos you want to save</span>
       </div>
-      <button type="button" id="album-select-all" hidden>Select all</button>
+      <button type="button" id="album-select-all">Select all</button>
       <button type="button" id="album-share-selected" disabled>Save selected photos</button>
     </div>
   </section>
@@ -139,6 +142,6 @@
   </section>
 </div>
 
-<script src="/portal.js?v=20260804-reliable-one1"></script>
+<script src="/portal.js?v=20260828-cross-album-downloads"></script>
 </body>
 </html>

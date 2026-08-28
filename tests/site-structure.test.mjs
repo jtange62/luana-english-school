@@ -111,6 +111,7 @@ test("daily photo collections keep parent navigation and a simple staff upload f
   assert.match(staff, /id="upload-retry"/);
   assert.match(staff, /id="upload-cancel"/);
   assert.match(staff, /id="album-select-all"/);
+  assert.match(staff, /id="download-all-photos"/);
   assert.doesNotMatch(staff, /name="title"/);
   assert.doesNotMatch(staff, /name="body"/);
   assert.doesNotMatch(staff, /name="activities"/);
@@ -133,6 +134,8 @@ test("daily photo collections keep parent navigation and a simple staff upload f
   assert.match(portal, /Delete photos/);
   assert.match(portal, /deleteSelectedPhotos/);
   assert.match(portal, /new Set\(lightboxPhotos\.map/);
+  assert.match(portal, /photosAcrossAlbums/);
+  assert.match(portal, /albumDate: post\.date/);
   assert.match(portal, /albumActionMode === "delete"\) setAlbumSelectionMode\(true\)/);
   assert.match(portal, /daily-photo-manage-card/);
   assert.doesNotMatch(portal, /class="daily-photo-cover"/);
