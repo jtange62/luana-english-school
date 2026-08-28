@@ -489,9 +489,7 @@ async function shareSelectedPhotos() {
           };
           const extension = extensionByType[blob.type] || "jpg";
           const uniqueId = String(lightboxPhotos[index].id || index + 1).replace(/[^a-z0-9_-]/gi, "-");
-          const albumDate = String(lightboxPhotos[index].albumDate || "").replace(/[^0-9-]/g, "");
-          const datePrefix = albumDate ? `${albumDate}-` : "";
-          const filename = `${datePrefix}luana-photo-${String(index + 1).padStart(3, "0")}-${uniqueId}.${extension}`;
+          const filename = `luana-photo-${String(index + 1).padStart(3, "0")}-${uniqueId}.${extension}`;
           const fileHandle = await directory.getFileHandle(filename, { create: true });
           const writable = await fileHandle.createWritable();
           await writable.write(blob);
@@ -612,8 +610,6 @@ function openGallery(photos, startIndex = null, options = {}) {
   const selectToggle = document.getElementById("album-select-toggle");
   const actionButton = document.getElementById("album-share-selected");
   const selectAll = document.getElementById("album-select-all");
-  const title = document.getElementById("album-browser-title");
-  if (title) title.textContent = options.title || "All photos";
   if (selectToggle) selectToggle.textContent = albumActionMode === "delete" ? "Select photos" : "Save multiple";
   if (actionButton) {
     actionButton.textContent = albumActionMode === "delete" ? "Delete selected" : "Save selected photos";
@@ -1336,8 +1332,6 @@ async function initDailyStaff() {
       const data = await api("/api/staff/posts");
       posts = data.posts || [];
       renderStaffDays();
-      const downloadAll = document.getElementById("download-all-photos");
-      if (downloadAll) downloadAll.disabled = !posts.some(post => post.photos?.length);
       manageNote.textContent = "";
     } catch (error) {
       manageNote.textContent = error.data?.setupRequired
@@ -1347,12 +1341,6 @@ async function initDailyStaff() {
   }
 
   document.getElementById("refresh-posts").addEventListener("click", loadStaffPosts);
-  document.getElementById("download-all-photos").addEventListener("click", () => {
-    const photosAcrossAlbums = posts.flatMap(post =>
-      (post.photos || []).map(photo => ({ ...photo, albumDate: post.date }))
-    );
-    openGallery(photosAcrossAlbums, null, { title: "Photos across all albums" });
-  });
 
   try {
     await api("/api/staff/me");
