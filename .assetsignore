@@ -2,6 +2,9 @@
 .github
 .wrangler
 .claude
+.codex-tools
+.face-blur-models
+.face-blur-review
 .agents
 .sixth
 node_modules
