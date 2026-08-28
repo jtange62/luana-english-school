@@ -289,6 +289,19 @@ test("Worker permanently redirects the www hostname to the canonical domain", as
   assert.match(worker, /Response\.redirect\(url\.toString\(\), 301\)/);
 });
 
+test("the September newsletter is the latest downloadable issue", async () => {
+  const html = await source("newsletter.html");
+  const pdf = await readFile(new URL("../pdfs/newsletters/2026-09.pdf", import.meta.url));
+  const preview = await readFile(new URL("../pdfs/newsletters/2026-09.webp", import.meta.url));
+  assert.match(html, /href="pdfs\/newsletters\/2026-09\.pdf"/);
+  assert.match(html, /src="pdfs\/newsletters\/2026-09\.webp"/);
+  assert.match(html, /September 2026/);
+  assert.ok(html.indexOf("September 2026") < html.indexOf("August 2026"));
+  assert.equal((html.match(/class="new-badge">NEW/g) || []).length, 2);
+  assert.equal(pdf.subarray(0, 4).toString(), "%PDF");
+  assert.equal(preview.subarray(0, 4).toString(), "RIFF");
+});
+
 test("the parent portal explains availability and photo saving without flashing the login form", async () => {
   const parents = await source("parents.html");
   const portal = await source("portal.js");
