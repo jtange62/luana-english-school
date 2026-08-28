@@ -194,6 +194,64 @@ let shareFilePromises = new Map();
 let shareReadinessRevision = 0;
 let shareReadinessTimer = 0;
 
+const ZIP_CRC_TABLE = Array.from({ length: 256 }, (_, value) => {
+  let crc = value;
+  for (let bit = 0; bit < 8; bit += 1) crc = (crc >>> 1) ^ (crc & 1 ? 0xedb88320 : 0);
+  return crc >>> 0;
+});
+
+function zipCrc32(bytes) {
+  let crc = 0xffffffff;
+  for (const byte of bytes) crc = (crc >>> 8) ^ ZIP_CRC_TABLE[(crc ^ byte) & 0xff];
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
+function zipHeader(length) {
+  const bytes = new Uint8Array(length);
+  return { bytes, view: new DataView(bytes.buffer) };
+}
+
+function createStoredZip(files) {
+  const encoder = new TextEncoder();
+  const localParts = [];
+  const centralParts = [];
+  let offset = 0;
+  files.forEach(file => {
+    const name = encoder.encode(file.name);
+    const crc = zipCrc32(file.bytes);
+    const local = zipHeader(30);
+    local.view.setUint32(0, 0x04034b50, true);
+    local.view.setUint16(4, 20, true);
+    local.view.setUint16(6, 0x0800, true);
+    local.view.setUint32(14, crc, true);
+    local.view.setUint32(18, file.bytes.length, true);
+    local.view.setUint32(22, file.bytes.length, true);
+    local.view.setUint16(26, name.length, true);
+    localParts.push(local.bytes, name, file.bytes);
+
+    const central = zipHeader(46);
+    central.view.setUint32(0, 0x02014b50, true);
+    central.view.setUint16(4, 20, true);
+    central.view.setUint16(6, 20, true);
+    central.view.setUint16(8, 0x0800, true);
+    central.view.setUint32(16, crc, true);
+    central.view.setUint32(20, file.bytes.length, true);
+    central.view.setUint32(24, file.bytes.length, true);
+    central.view.setUint16(28, name.length, true);
+    central.view.setUint32(42, offset, true);
+    centralParts.push(central.bytes, name);
+    offset += local.bytes.length + name.length + file.bytes.length;
+  });
+  const centralSize = centralParts.reduce((total, part) => total + part.length, 0);
+  const end = zipHeader(22);
+  end.view.setUint32(0, 0x06054b50, true);
+  end.view.setUint16(8, files.length, true);
+  end.view.setUint16(10, files.length, true);
+  end.view.setUint32(12, centralSize, true);
+  end.view.setUint32(16, offset, true);
+  return new Blob([...localParts, ...centralParts, end.bytes], { type: "application/zip" });
+}
+
 function photoUrlWithParameter(photo, parameter) {
   const separator = photo.url.includes("?") ? "&" : "?";
   return `${photo.url}${separator}${parameter}`;
@@ -470,67 +528,48 @@ async function shareSelectedPhotos() {
   if (isStaffPresentation()) {
     const indexes = [...selectedPhotoIndexes].sort((a, b) => a - b);
     if (!indexes.length) return;
-    if (typeof window.showDirectoryPicker === "function") {
-      try {
-        const directory = await window.showDirectoryPicker({ mode: "readwrite" });
-        for (const [position, index] of indexes.entries()) {
-          if (help) help.textContent = `Saving ${position + 1} of ${indexes.length} photos…`;
-          const response = await fetch(photoUrlWithParameter(lightboxPhotos[index], "download=1"), {
-            credentials: "same-origin"
-          });
-          if (!response.ok) throw new Error("Could not download photo");
-          const blob = await response.blob();
-          const extensionByType = {
-            "image/jpeg": "jpg",
-            "image/png": "png",
-            "image/webp": "webp",
-            "image/heic": "heic",
-            "image/heif": "heif"
-          };
-          const extension = extensionByType[blob.type] || "jpg";
-          const uniqueId = String(lightboxPhotos[index].id || index + 1).replace(/[^a-z0-9_-]/gi, "-");
-          const filename = `luana-photo-${String(index + 1).padStart(3, "0")}-${uniqueId}.${extension}`;
-          const fileHandle = await directory.getFileHandle(filename, { create: true });
-          const writable = await fileHandle.createWritable();
-          await writable.write(blob);
-          await writable.close();
-        }
-        if (help) help.textContent = `${indexes.length} photos saved`;
-      } catch (error) {
-        if (error.name !== "AbortError" && help) help.textContent = "Could not save every photo. Please try again";
-      }
-      return;
-    }
-    for (const [position, index] of indexes.entries()) {
-      if (help) help.textContent = `Preparing ${position + 1} of ${indexes.length} downloads…`;
-      const response = await fetch(photoUrlWithParameter(lightboxPhotos[index], "download=1"), {
-        credentials: "same-origin"
-      });
-      if (!response.ok) {
-        if (help) help.textContent = "Could not download every photo. Please try again";
-        return;
-      }
-      const blob = await response.blob();
-      const extensionByType = {
-        "image/jpeg": "jpg",
-        "image/png": "png",
-        "image/webp": "webp",
-        "image/heic": "heic",
-        "image/heif": "heif"
-      };
-      const extension = extensionByType[blob.type] || "jpg";
-      const uniqueId = String(lightboxPhotos[index].id || index + 1).replace(/[^a-z0-9_-]/gi, "-");
-      const objectUrl = URL.createObjectURL(blob);
+    const button = document.getElementById("album-share-selected");
+    if (button) button.disabled = true;
+    if (help) help.textContent = `Preparing 0 of ${indexes.length} photos for one ZIP…`;
+    let prepared = 0;
+    try {
+      const files = await Promise.all(indexes.map(async index => {
+        const response = await fetch(photoUrlWithParameter(lightboxPhotos[index], "download=1"), {
+          credentials: "same-origin"
+        });
+        if (!response.ok) throw new Error("Could not download photo");
+        const blob = await response.blob();
+        const extensionByType = {
+          "image/jpeg": "jpg",
+          "image/png": "png",
+          "image/webp": "webp",
+          "image/heic": "heic",
+          "image/heif": "heif"
+        };
+        const extension = extensionByType[blob.type] || "jpg";
+        const uniqueId = String(lightboxPhotos[index].id || index + 1).replace(/[^a-z0-9_-]/gi, "-");
+        prepared += 1;
+        if (help) help.textContent = `Preparing ${prepared} of ${indexes.length} photos for one ZIP…`;
+        return {
+          name: `luana-photo-${String(index + 1).padStart(3, "0")}-${uniqueId}.${extension}`,
+          bytes: new Uint8Array(await blob.arrayBuffer())
+        };
+      }));
+      const objectUrl = URL.createObjectURL(createStoredZip(files));
       const link = document.createElement("a");
       link.href = objectUrl;
-      link.download = `luana-photo-${String(index + 1).padStart(3, "0")}-${uniqueId}.${extension}`;
+      link.download = "luana-album-photos.zip";
       link.hidden = true;
       document.body.append(link);
       link.click();
       link.remove();
       window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60000);
+      if (help) help.textContent = `${indexes.length} photos downloaded in one ZIP`;
+    } catch {
+      if (help) help.textContent = "Could not create the album ZIP. Please try again";
+    } finally {
+      if (button) button.disabled = false;
     }
-    if (help) help.textContent = `${indexes.length} downloads started`;
     return;
   }
   if (!selectedPhotoFiles.length) return;
