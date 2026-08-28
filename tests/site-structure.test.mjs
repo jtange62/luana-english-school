@@ -133,6 +133,8 @@ test("daily photo collections keep parent navigation and a simple staff upload f
   assert.match(portal, /Delete photos/);
   assert.match(portal, /deleteSelectedPhotos/);
   assert.match(portal, /new Set\(lightboxPhotos\.map/);
+  assert.match(portal, /Preparing \$\{position \+ 1\} of \$\{indexes\.length\} downloads/);
+  assert.match(portal, /link\.href = objectUrl/);
   assert.match(portal, /albumActionMode === "delete"\) setAlbumSelectionMode\(true\)/);
   assert.match(portal, /daily-photo-manage-card/);
   assert.doesNotMatch(portal, /class="daily-photo-cover"/);

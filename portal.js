@@ -501,15 +501,35 @@ async function shareSelectedPhotos() {
       }
       return;
     }
-    indexes.forEach(index => {
+    for (const [position, index] of indexes.entries()) {
+      if (help) help.textContent = `Preparing ${position + 1} of ${indexes.length} downloads…`;
+      const response = await fetch(photoUrlWithParameter(lightboxPhotos[index], "download=1"), {
+        credentials: "same-origin"
+      });
+      if (!response.ok) {
+        if (help) help.textContent = "Could not download every photo. Please try again";
+        return;
+      }
+      const blob = await response.blob();
+      const extensionByType = {
+        "image/jpeg": "jpg",
+        "image/png": "png",
+        "image/webp": "webp",
+        "image/heic": "heic",
+        "image/heif": "heif"
+      };
+      const extension = extensionByType[blob.type] || "jpg";
+      const uniqueId = String(lightboxPhotos[index].id || index + 1).replace(/[^a-z0-9_-]/gi, "-");
+      const objectUrl = URL.createObjectURL(blob);
       const link = document.createElement("a");
-      link.href = photoUrlWithParameter(lightboxPhotos[index], "download=1");
-      link.download = "";
+      link.href = objectUrl;
+      link.download = `luana-photo-${String(index + 1).padStart(3, "0")}-${uniqueId}.${extension}`;
       link.hidden = true;
       document.body.append(link);
       link.click();
       link.remove();
-    });
+      window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60000);
+    }
     if (help) help.textContent = `${indexes.length} downloads started`;
     return;
   }
