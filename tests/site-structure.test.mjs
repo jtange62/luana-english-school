@@ -326,5 +326,7 @@ test("summer page presents three equally weighted weeks with the approved final 
   );
   assert.equal(photoNames.size, 24, "Summer page should use all 24 approved photos");
   assert.match(html, /summer-2026\/summer-og\.webp/);
+  assert.match(html, /年中・年長・小学生向け英語サマースクール/);
+  assert.doesNotMatch(html, /幼児・小学生/);
   assert.doesNotMatch(html, /参加費|円（税込）/);
 });
