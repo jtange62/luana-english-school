@@ -244,6 +244,7 @@ test("private implementation files cannot become static assets", async () => {
     "migrations",
     "scripts",
     "tests",
+    "tools",
     "worker.js",
     "wrangler.jsonc"
   ]) {
