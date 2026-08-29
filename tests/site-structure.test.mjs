@@ -304,3 +304,26 @@ test("production request failures are logged without exposing request data", asy
   assert.match(worker, /console\.error\("Request failed"/);
   assert.match(worker, /pathname: url\.pathname/);
 });
+
+test("summer page presents three equally weighted weeks with the approved final photos", async () => {
+  const html = await source("summer.html");
+
+  for (const story of [
+    "Festivals of the World",
+    "Ocean Explorers",
+    "Adventure &amp; Survival",
+    "Friday: teamLab",
+    "Friday: Aquarium &amp; Beach",
+    "Friday: Hug-Hug &amp; Bouldering"
+  ]) {
+    assert.ok(html.includes(story), `Summer page is missing ${story}`);
+  }
+
+  const photoNames = new Set(
+    [...html.matchAll(/summer-2026\/(?:960|1600)\/([^\"'\s,]+\.webp)/g)]
+      .map(match => match[1])
+  );
+  assert.equal(photoNames.size, 24, "Summer page should use all 24 approved photos");
+  assert.match(html, /summer-2026\/summer-og\.webp/);
+  assert.doesNotMatch(html, /参加費|円（税込）/);
+});

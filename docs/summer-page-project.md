@@ -17,12 +17,12 @@ The page should help a prospective parent understand:
 ## Current state
 
 - The permanent page is `summer.html`, published at `/summer`.
-- The current page is primarily an archive of the 2026 schedule, themes, fees, daily timetable, and FAQs.
+- The redesigned page is an evergreen, photo-led retrospective of the 2026 program.
 - It correctly states that Summer School 2026 has ended.
-- The repository contains many photos from July 2026, including optimized WebP versions.
+- The approved final set contains 24 manually reviewed, cropped, and blurred photos: eight for each of three themed weeks.
 - No local Summer School video files were found during the initial review.
 - The permanent `/summer` URL should be retained to preserve search history and avoid splitting authority across yearly URLs.
-- The existing page remains unchanged while this project is in planning.
+- A local review candidate is implemented in `summer.html`; it has not been released by this project.
 
 ## Proposed audience
 
@@ -74,7 +74,7 @@ Evergreen status message:
 
 A short proof bar summarizing confirmed program highlights, such as:
 
-- Four themed weeks
+- Three equally weighted themed weeks
 - English throughout the day
 - Creative projects and games
 - Special field trips
@@ -321,9 +321,17 @@ After Summer School:
 - Return the main CTA to next-year notifications.
 - Preserve prior years in a concise archive when useful.
 
+## Confirmed editorial decisions
+
+- Present all three weeks with equal weight because different students attended each week.
+- Use eight final photos per week and include teachers where they help tell the program story.
+- Week 1: World Festivals, ending with teamLab.
+- Week 2: Ocean Adventures, ending with the aquarium and beach.
+- Week 3: Adventure, ending with Hug-Hug and bouldering.
+- The day-folder structure was for internal organization and should not dictate the public page hierarchy.
+
 ## Information and assets still needed
 
-- Confirmation that the July 2026 repository photos include Summer School activities, and identification of any that should not be public.
 - Three to five suitable video clips.
 - Confirmed names and descriptions for the 2026 weekly themes.
 - Teacher reflections or notable moments.
@@ -335,9 +343,9 @@ After Summer School:
 
 ## Current project status
 
-- Planning brief created.
-- No production page changes made.
-- Next recommended task: review and shortlist the existing 2026 photographs, then identify the missing content and media.
+- The final 24 photographs are selected, manually reviewed, and exported as responsive WebP assets.
+- The evergreen three-week page and social-sharing image are implemented as a local review candidate.
+- Next recommended task: review the page on desktop and mobile, confirm publication permissions, then approve or revise the release candidate.
 
 ## Cross-device working method
 
