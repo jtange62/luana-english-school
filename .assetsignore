@@ -3,6 +3,9 @@
 .wrangler
 .claude
 .agents
+.codex-tools
+.face-blur-models
+.face-blur-review
 .sixth
 node_modules
 scripts
