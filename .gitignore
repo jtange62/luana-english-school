@@ -1,3 +1,7 @@
 .claude/settings.local.json
 .wrangler/
 **/blurred/
+.codex-tools/
+.face-blur-models/
+.face-blur-review/
+summer-raw/
