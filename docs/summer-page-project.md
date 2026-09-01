@@ -23,7 +23,7 @@ The page should help a prospective parent understand:
 - The primary hero and mobile actions lead to regular-class information or a trial lesson; Summer memories remain available as a secondary path.
 - The repository contains selected July and August 2026 photos, including optimized WebP versions.
 - The visible photo story has been tightened to 18 images—six per week—to reduce repetition and page length while retaining activity, learning, teacher, and field-trip moments.
-- No local Summer School video files were found during the initial review.
+- A Week 1 Songkran source video has now been received and preserved locally: 42 seconds, vertical 720×1280, approximately 10.6 MB. It has not yet been edited, approved, or added to the page.
 - The permanent `/summer` URL should be retained to preserve search history and avoid splitting authority across yearly URLs.
 - Production remains unchanged. The prototype is not approved or ready for production release.
 
@@ -327,7 +327,7 @@ After Summer School:
 ## Information and assets still needed
 
 - Confirmation that the July 2026 repository photos include Summer School activities, and identification of any that should not be public.
-- Three to five suitable video clips.
+- Suitable clips for Weeks 2 and 3, plus a final selection from all received source videos.
 - Confirmed names and descriptions for the 2026 weekly themes.
 - Teacher reflections or notable moments.
 - Two or three permission-cleared parent testimonials.
