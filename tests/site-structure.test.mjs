@@ -31,6 +31,14 @@ test("every public header links to the Japanese Summer School page", async () =>
   }
 });
 
+test("program pages have only one fixed-header navigation element", async () => {
+  for (const page of ["preschool.html", "kinder.html", "afterschool.html"]) {
+    const html = await source(page);
+    assert.equal((html.match(/<nav(?:\s|>)/g) || []).length, 1, `${page} has a competing nav element`);
+    assert.match(html, /role="navigation" aria-label="その他のクラス"/);
+  }
+});
+
 test("every public page promotes autumn trial lessons", async () => {
   for (const page of publicPages) {
     const html = await source(page);
