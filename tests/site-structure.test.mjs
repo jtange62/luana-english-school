@@ -303,6 +303,9 @@ test("the Summer School page presents summer as an extension of year-round learn
   assert.match(html, /Luanaの中心は年間を通した通常クラスです/);
   assert.match(html, /class="mobile-signup-bar"[^>]*>[\s\S]*?href="\/#trial"[^>]*>通常クラスを体験する<\/a>/);
   assert.equal((html.match(/class="story-photo(?: featured| wide)?"/g) || []).length, 18);
+  assert.match(html, /nav\{position:fixed;z-index:190/);
+  assert.match(html, /\.nav-links\{display:flex;align-items:center/);
+  assert.match(html, /\.hamburger\{display:none;position:absolute/);
 });
 
 test("the September newsletter is the latest downloadable issue", async () => {
