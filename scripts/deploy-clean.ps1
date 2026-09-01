@@ -5,10 +5,11 @@ param(
 
 $ErrorActionPreference = "Stop"
 $repositoryRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "..")).Path
+$repositoryRootForGit = $repositoryRoot.Replace('\', '/')
 
 Push-Location $repositoryRoot
 try {
-  $workingChanges = git status --porcelain
+  $workingChanges = & git '-c' "safe.directory=$repositoryRootForGit" 'status' '--porcelain'
   if ($LASTEXITCODE -ne 0) {
     throw "Unable to inspect the Git working tree."
   }

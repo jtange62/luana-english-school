@@ -3,6 +3,16 @@
   "name": "luana-english-school",
   "main": "worker.js",
   "compatibility_date": "2026-07-08",
+  "routes": [
+    {
+      "pattern": "luanaenglishschool.jp",
+      "custom_domain": true
+    },
+    {
+      "pattern": "www.luanaenglishschool.jp",
+      "custom_domain": true
+    }
+  ],
   "observability": {
     "enabled": true
   },
