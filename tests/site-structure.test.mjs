@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
 import test from "node:test";
 
 const publicPages = [
@@ -306,6 +306,34 @@ test("the Summer School page presents summer as an extension of year-round learn
   assert.match(html, /nav\{position:fixed;z-index:190/);
   assert.match(html, /\.nav-links\{display:flex;align-items:center/);
   assert.match(html, /\.hamburger\{display:none;position:absolute/);
+});
+
+test("the Summer School page presents four accessible, click-to-play recap videos", async () => {
+  const html = await source("summer.html");
+  const videos = html.match(/<video[\s\S]*?<\/video>/g) || [];
+  assert.equal(videos.length, 4);
+
+  for (const name of [
+    "week-1-songkran",
+    "week-2-oceans",
+    "week-3-adventure",
+    "week-3-bouldering"
+  ]) {
+    const video = videos.find(block => block.includes(`${name}.mp4`));
+    assert.ok(video, `Summer page is missing ${name}`);
+    assert.match(video, / controls/);
+    assert.match(video, / playsinline/);
+    assert.match(video, / preload="metadata"/);
+    assert.match(video, new RegExp(`poster="videos/summer-2026/${name}-poster\\.webp"`));
+    assert.match(video, / aria-label="[^"]+"/);
+    assert.doesNotMatch(video, / autoplay/);
+
+    for (const extension of ["mp4", "webp"]) {
+      const suffix = extension === "mp4" ? "" : "-poster";
+      const asset = new URL(`../videos/summer-2026/${name}${suffix}.${extension}`, import.meta.url);
+      assert.ok((await stat(asset)).size > 0, `${name} ${extension} asset is empty`);
+    }
+  }
 });
 
 test("the September newsletter is the latest downloadable issue", async () => {
