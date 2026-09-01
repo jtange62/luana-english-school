@@ -289,6 +289,22 @@ test("Worker permanently redirects the www hostname to the canonical domain", as
   assert.match(worker, /Response\.redirect\(url\.toString\(\), 301\)/);
 });
 
+test("the Summer School page presents summer as an extension of year-round learning", async () => {
+  const html = await source("summer.html");
+  const yearRoundPosition = html.indexOf('id="year-round"');
+  const summerStoryPosition = html.indexOf('id="summer-story"');
+
+  assert.ok(yearRoundPosition > -1, "summer.html is missing the year-round bridge");
+  assert.ok(summerStoryPosition > yearRoundPosition, "year-round programs must appear before the summer retrospective");
+  assert.match(html, /href="#year-round">通常クラスを見る<\/a>/);
+  assert.match(html, /href="\/preschool"/);
+  assert.match(html, /href="\/kinder"/);
+  assert.match(html, /href="\/afterschool"/);
+  assert.match(html, /Luanaの中心は年間を通した通常クラスです/);
+  assert.match(html, /class="mobile-signup-bar"[^>]*>[\s\S]*?href="\/#trial"[^>]*>通常クラスを体験する<\/a>/);
+  assert.equal((html.match(/class="story-photo(?: featured| wide)?"/g) || []).length, 18);
+});
+
 test("the September newsletter is the latest downloadable issue", async () => {
   const html = await source("newsletter.html");
   const pdf = await readFile(new URL("../pdfs/newsletters/2026-09.pdf", import.meta.url));
