@@ -22,6 +22,7 @@ The page should help a prospective parent understand:
 - The page now introduces Preschool, Kindergarten, and Afterschool before the Summer retrospective so Summer is clearly a seasonal expression of Luana's year-round learning, not its flagship offer.
 - The primary hero and mobile actions lead to regular-class information or a trial lesson; Summer memories remain available as a secondary path.
 - The repository contains selected July and August 2026 photos, including optimized WebP versions.
+- The visible photo story has been tightened to 18 images—six per week—to reduce repetition and page length while retaining activity, learning, teacher, and field-trip moments.
 - No local Summer School video files were found during the initial review.
 - The permanent `/summer` URL should be retained to preserve search history and avoid splitting authority across yearly URLs.
 - Production remains unchanged. The prototype is not approved or ready for production release.
@@ -339,6 +340,7 @@ After Summer School:
 
 - Planning brief and a private staging prototype have been created on `feature/summer-evergreen`.
 - The prototype has been reframed so the school-year Preschool, Kindergarten, and Afterschool programs have clear priority over the seasonal Summer School story.
+- The three weekly stories have been edited to six photos each for a more focused, faster-moving page.
 - No production page changes have been made.
 - The prototype is still missing approved video assets, permission confirmation, parent or teacher voices, and a confirmed next-Summer contact path.
 - Next recommended task: review the revised hierarchy and photo story on staging, then identify approved video clips and remaining content before further design refinement.
