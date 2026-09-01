@@ -39,6 +39,19 @@ test("program pages have only one fixed-header navigation element", async () => 
   }
 });
 
+test("program Back buttons restore the visitor's prior page and scroll position", async () => {
+  for (const page of ["preschool.html", "kinder.html", "afterschool.html"]) {
+    const html = await source(page);
+    assert.match(html, /<a href="\/#classes" class="back-btn" data-history-back>← Back<\/a>/);
+  }
+
+  const script = await source("site.js");
+  assert.match(script, /document\.querySelectorAll\('\[data-history-back\]'\)/);
+  assert.match(script, /previousPage\.origin !== window\.location\.origin/);
+  assert.match(script, /history\.length <= 1/);
+  assert.match(script, /history\.back\(\)/);
+});
+
 test("every public page promotes autumn trial lessons", async () => {
   for (const page of publicPages) {
     const html = await source(page);

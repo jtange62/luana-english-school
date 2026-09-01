@@ -36,6 +36,22 @@ document.addEventListener('DOMContentLoaded', () => {
     link.setAttribute('rel', Array.from(rel).join(' '));
   });
 
+  document.querySelectorAll('[data-history-back]').forEach(link => {
+    link.addEventListener('click', event => {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+      try {
+        const previousPage = new URL(document.referrer);
+        if (history.length <= 1 || previousPage.origin !== window.location.origin) return;
+      } catch {
+        return;
+      }
+
+      event.preventDefault();
+      history.back();
+    });
+  });
+
   document.querySelectorAll('.hamburger').forEach((button, index) => {
     const menu = button.parentElement.querySelector('.nav-links') || document.querySelector('.nav-links');
     if (!menu) return;
