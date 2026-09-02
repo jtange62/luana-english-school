@@ -359,13 +359,20 @@ test("the Summer School page presents four accessible, click-to-play recap video
 
 test("the September newsletter is the latest downloadable issue", async () => {
   const html = await source("newsletter.html");
+  const prekPdf = await readFile(new URL("../pdfs/newsletters/2026-09-prek.pdf", import.meta.url));
+  const prekPreview = await readFile(new URL("../pdfs/newsletters/2026-09-prek.webp", import.meta.url));
   const pdf = await readFile(new URL("../pdfs/newsletters/2026-09.pdf", import.meta.url));
   const preview = await readFile(new URL("../pdfs/newsletters/2026-09.webp", import.meta.url));
+  assert.match(html, /href="pdfs\/newsletters\/2026-09-prek\.pdf"/);
+  assert.match(html, /src="pdfs\/newsletters\/2026-09-prek\.webp"/);
+  assert.match(html, /September 2026 · Pre-K/);
   assert.match(html, /href="pdfs\/newsletters\/2026-09\.pdf"/);
   assert.match(html, /src="pdfs\/newsletters\/2026-09\.webp"/);
   assert.match(html, /September 2026/);
   assert.ok(html.indexOf("September 2026") < html.indexOf("August 2026"));
   assert.equal((html.match(/class="new-badge">NEW/g) || []).length, 2);
+  assert.equal(prekPdf.subarray(0, 4).toString(), "%PDF");
+  assert.equal(prekPreview.subarray(0, 4).toString(), "RIFF");
   assert.equal(pdf.subarray(0, 4).toString(), "%PDF");
   assert.equal(preview.subarray(0, 4).toString(), "RIFF");
 });
