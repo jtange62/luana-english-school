@@ -95,7 +95,8 @@ npx --yes wrangler@4.114.0 email routing rules list luanaenglishschool.jp
 # Local dev — emulated D1/R2/Images under .wrangler/state, touches nothing remote
 .\scripts\dev.ps1
 
-# Staging (luana-english-school-staging) — permits a dirty working tree
+# Staging (luana-english-school-staging) — permits a dirty working tree.
+# Serves only from its own workers.dev URL; must never hold a custom domain.
 .\scripts\deploy-staging.ps1
 
 # Production — runs tests, both syntax checks, and a dry run first; REFUSES a dirty tree
@@ -115,6 +116,7 @@ There is no linter or formatter. Do not introduce one without being asked.
 - **Do not add `Review` or `AggregateRating` schema** to any page — self-published reviews of your own organization violate Google's structured-data guidelines. Reviews belong on the Google Business Profile.
 - **Do not add `Offer`/price schema to a page that does not visibly display those prices.** Prices live on `fees.html` only.
 - **Lighthouse SEO 92 is expected, not a defect.** The lone failure is Cloudflare's injected `Content-Signal` directive, which Lighthouse does not recognize. Do not "fix" it by disabling Cloudflare's managed `robots.txt` — that block also denies GPTBot, Google-Extended, Bytespider, Amazonbot, Applebot-Extended, and meta-externalagent.
+- **Never remove `"routes": []` or `"workers_dev": true` from `env.staging`.** Wrangler environments inherit the top-level `routes` unless they declare their own; without these keys a staging deploy reassigns `luanaenglishschool.jp` to the staging Worker and points the live site at the empty staging D1 and R2. This happened on 2026-09-03. If a staging dry run warns about reassigning custom domains, stop — do not deploy. Recovery is `.\scripts\deploy-clean.ps1`.
 - **Never deploy a dirty working tree**, and never bypass `deploy-clean.ps1` by calling `wrangler deploy` directly for production.
 - **Photographs of children require confirmed publication permission** before being added to any public page or external profile. When in doubt, do not publish.
 - Do not commit without being asked; the maintainer reviews changes first.

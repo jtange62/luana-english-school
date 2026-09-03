@@ -54,6 +54,8 @@
   "env": {
     "staging": {
       "name": "luana-english-school-staging",
+      "routes": [],
+      "workers_dev": true,
       "vars": {
         "LOGIN_FROM_EMAIL": "Luana English School <portal@luanaenglishschool.jp>"
       },

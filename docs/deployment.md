@@ -59,6 +59,17 @@ Unlike `deploy-clean.ps1`, this script allows an uncommitted working tree —
 staging exists specifically to test changes before they're committed. It still
 runs the full test suite, syntax checks, and a dry run first.
 
+> **Why `env.staging` must keep `"routes": []`.** Wrangler environments inherit
+> the top-level `routes` unless they define their own. On 2026-09-03 a staging
+> deploy inherited the production custom domains and reassigned
+> `luanaenglishschool.jp` and `www.luanaenglishschool.jp` to the staging Worker,
+> pointing the live site at the empty staging D1 and R2 for about four minutes.
+> `env.staging` now sets `"routes": []` and `"workers_dev": true`, so it serves
+> only from its own `workers.dev` URL. Do not remove either key, and if a staging
+> dry run ever warns about reassigning custom domains, stop and fix the config
+> before deploying. Recovery, if it happens again, is to run
+> `.\scripts\deploy-clean.ps1`, which reclaims the domains for production.
+
 Staging secrets (`SESSION_SECRET`, `STAFF_PORTAL_PASSWORD`,
 `SUMMER_WEEK_1_CODE`, `SUMMER_WEEK_2_CODE`, `SUMMER_WEEK_3_CODE`) are set
 independently of production via:

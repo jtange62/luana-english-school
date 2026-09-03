@@ -294,6 +294,27 @@ test("Worker configuration keeps required bindings and secrets", async () => {
   }
 });
 
+test("the staging environment cannot take over the production custom domains", async () => {
+  const config = JSON.parse(await source("wrangler.jsonc"));
+  const staging = config.env?.staging;
+
+  assert.ok(staging, "env.staging must exist");
+  assert.deepEqual(
+    staging.routes,
+    [],
+    "env.staging must declare an empty routes array; otherwise it inherits the " +
+      "top-level custom domains and a staging deploy reassigns luanaenglishschool.jp " +
+      "to the staging Worker, pointing the live site at the staging D1 and R2"
+  );
+  assert.equal(
+    staging.workers_dev,
+    true,
+    "env.staging serves no custom domain, so it needs workers_dev for a reachable URL"
+  );
+  assert.equal(staging.d1_databases?.[0]?.database_name, "luana_parent_portal_staging");
+  assert.equal(staging.r2_buckets?.[0]?.bucket_name, "luana-parent-photos-staging");
+});
+
 test("homepage exposes local business and website identity to search engines", async () => {
   const html = await source("index.html");
   assert.match(html, /"@type": \["EducationalOrganization", "LocalBusiness"\]/);
