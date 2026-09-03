@@ -56,7 +56,7 @@
       }
     },
     {
-      "@type": "Service",
+      "@type": ["Service", "Course"],
       "@id": "https://luanaenglishschool.jp/afterschool#service",
       "name": "アフタースクール",
       "serviceType": "小学生向け英語アフタースクール",
@@ -72,6 +72,22 @@
         "@id": "https://luanaenglishschool.jp/#organization",
         "name": "Luana English School",
         "url": "https://luanaenglishschool.jp/"
+      },
+      "hasCourseInstance": {
+        "@type": "CourseInstance",
+        "courseMode": "Onsite",
+        "location": {
+          "@type": "Place",
+          "name": "Luana English School",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "住吉町1-24-19 1F",
+            "addressLocality": "府中市",
+            "addressRegion": "東京都",
+            "postalCode": "183-0034",
+            "addressCountry": "JP"
+          }
+        }
       }
     }
   ]
