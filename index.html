@@ -322,6 +322,28 @@
   .trial-action:hover { transform: translateY(-2px); box-shadow: 0 7px 0 rgba(91,200,245,0.28); }
   .trial-note { margin-top: 18px; color: #666; font-size: 0.92rem; }
 
+  .trial-or {
+    display: flex; align-items: center; gap: 14px;
+    max-width: 560px; margin: 30px auto 24px;
+    color: #7A6A55; font-family: 'Baloo 2', cursive; font-weight: 700; font-size: 0.95rem;
+  }
+  .trial-or::before, .trial-or::after {
+    content: ""; flex: 1; height: 2px; border-radius: 2px; background: rgba(139,94,42,0.18);
+  }
+  .trial-line { max-width: 560px; margin: 0 auto; }
+  .trial-line-lead { color: #555; font-size: 0.95rem; line-height: 1.75; margin-bottom: 16px; }
+  .trial-line-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    min-height: 64px; padding: 14px 30px;
+    border-radius: 8px;
+    background: #06C755; color: #14352A;
+    font-family: 'Baloo 2', cursive; font-size: 1.05rem; font-weight: 800;
+    text-decoration: none;
+    box-shadow: 0 5px 0 #04913D;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .trial-line-btn:hover { transform: translateY(-2px); box-shadow: 0 7px 0 #04913D; }
+
   .moments { background:#EAF8FE; padding:64px 20px; text-align:center; }
   .moments-grid {
     display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px;
@@ -971,7 +993,17 @@ document.querySelectorAll(".nav-links a").forEach(link => {
       <a class="trial-action" href="https://docs.google.com/forms/d/e/1FAIpQLSe1fLxRno8bzY1DzSxAqpGnieWfcCrWDZJTVNnzL8yoUu-zdQ/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_kinder')">🌻 幼稚園児クラス 無料体験</a>
       <a class="trial-action" href="https://docs.google.com/forms/d/e/1FAIpQLSc-GqYR10IOEfLaSN1hieuvVi3gziH-jySSuas-caJ3-MEclw/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_afterschool')">🎒 小学生クラス 無料体験</a>
     </div>
-    <p class="trial-note">フォーム送信後、スクールから日程をご案内します。クラス選びに迷う場合は<a href="https://lin.ee/SOqP6Vz" target="_blank" rel="noopener" onclick="gtag('event','contact_line_trial')">LINEでご相談ください</a>。</p>
+    <p class="trial-note">フォーム送信後、スクールから日程をご案内します。</p>
+
+    <div class="trial-or"><span>または</span></div>
+
+    <div class="trial-line">
+      <p class="trial-line-lead">フォームの入力なしで、LINEからそのままご相談・ご予約いただけます。<br>クラス選びのご質問だけでも大丈夫です。</p>
+      <a class="trial-line-btn" href="https://lin.ee/SOqP6Vz" target="_blank" rel="noopener" onclick="gtag('event','trial_line_primary')">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2C6.48 2 2 5.69 2 10.23c0 2.64 1.5 4.99 3.85 6.52.2.13.31.36.28.6l-.32 2.2c-.06.4.36.7.71.5l2.7-1.55c.17-.1.37-.13.56-.09.72.14 1.47.22 2.22.22 5.52 0 10-3.69 10-8.4C22 5.69 17.52 2 12 2z"/></svg>
+        LINEで相談・予約する
+      </a>
+    </div>
   </div>
 </section>
 
