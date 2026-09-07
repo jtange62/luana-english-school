@@ -77,6 +77,37 @@
 
   .content { max-width:1000px; margin:0 auto; padding:40px 16px 80px; }
 
+  /* Program gallery navigation */
+  .gallery-intro { text-align:center; margin-bottom:28px; }
+  .gallery-intro h2 {
+    font-family:'Baloo 2',cursive; font-size:clamp(1.5rem,4vw,2rem);
+    color:var(--brown); margin-bottom:8px;
+  }
+  .gallery-intro p { color:#666; line-height:1.7; }
+  .gallery-filters {
+    display:flex; flex-wrap:wrap; justify-content:center; gap:10px;
+    margin:22px 0 38px;
+  }
+  .gallery-filter {
+    min-height:44px; padding:9px 18px; border:2px solid var(--sky);
+    border-radius:24px; background:white; color:var(--brown);
+    font-family:'Baloo 2',cursive; font-size:0.95rem; font-weight:800;
+    cursor:pointer; transition:background 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+  .gallery-filter:hover { transform:translateY(-2px); box-shadow:0 4px 10px rgba(0,0,0,0.08); }
+  .gallery-filter[aria-pressed="true"] { background:var(--sun); border-color:#E3B800; }
+  .gallery-filter[hidden] { display:none; }
+
+  .program-gallery { padding:24px; border-radius:24px; }
+  .program-gallery[data-gallery-category="preschool"] { background:#EAF8FE; }
+  .program-gallery[data-gallery-category="kinder"] { background:#FFF8DC; }
+  .program-gallery[data-gallery-category="afterschool"] { background:#F5F0FF; }
+  .program-gallery-copy { color:#555; line-height:1.65; margin:-8px 0 20px; }
+  .program-gallery-link {
+    display:inline-flex; margin-top:20px; color:#7A4215; font-weight:800;
+    text-decoration-thickness:2px; text-underline-offset:4px;
+  }
+
   /* Instagram CTA */
   .ig-cta {
     display:flex; justify-content:center; margin-bottom:36px;
@@ -141,6 +172,9 @@
   @media(max-width:600px) {
     .photo-grid { grid-template-columns:repeat(2,1fr) !important; gap:8px; }
     .photo-item { border-radius:12px; }
+    .gallery-filters { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .gallery-filter { width:100%; padding:9px 8px; }
+    .program-gallery { padding:20px 14px; }
   }
 
   /* Lightbox */
@@ -228,6 +262,18 @@ window.addEventListener('resize',_fixSeasonalNav);
 
 <div class="content">
 
+  <div class="gallery-intro">
+    <h2>クラス別に見る</h2>
+    <p>年齢やクラスを選んで、Luanaで過ごす子どもたちの様子をご覧いただけます。</p>
+    <div class="gallery-filters" role="group" aria-label="写真をクラス別に絞り込む">
+      <button class="gallery-filter" type="button" data-gallery-filter="all" aria-pressed="true">🌈 すべて</button>
+      <button class="gallery-filter" type="button" data-gallery-filter="preschool" aria-pressed="false">🐣 Preschool</button>
+      <button class="gallery-filter" type="button" data-gallery-filter="kinder" aria-pressed="false">🌻 Kinder</button>
+      <button class="gallery-filter" type="button" data-gallery-filter="afterschool" aria-pressed="false">🎒 After School</button>
+      <button class="gallery-filter" type="button" data-gallery-filter="space" aria-pressed="false">🏫 Our Space</button>
+    </div>
+  </div>
+
   <div class="ig-cta">
     <a href="https://www.instagram.com/luana.english.school?igsh=aGtxZnR4NWYzaDZ0&utm_source=qr" target="_blank" onclick="gtag('event','instagram_click')" class="ig-btn" rel="noopener noreferrer">
       <svg width="24" height="24" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
@@ -240,8 +286,85 @@ window.addEventListener('resize',_fixSeasonalNav);
     </a>
   </div>
 
+  <div class="section-block program-gallery" data-gallery-category="preschool" hidden>
+    <h2 class="section-heading">🐣 Preschool｜1〜2歳</h2>
+    <p class="program-gallery-copy">歌や遊び、先生とのふれあいを通して、英語の音やリズムに楽しく親しみます。</p>
+    <div class="photo-grid">
+      <div class="photo-item" data-src="photos/programs/preschool/1788745924461.jpg"><img src="photos/programs/optimized/480/preschool/1788745924461.webp" srcset="photos/programs/optimized/480/preschool/1788745924461.webp 480w, photos/programs/optimized/960/preschool/1788745924461.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="プリスクールで英語活動を楽しむ子どもたち 1" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/preschool/1788745924493.jpg"><img src="photos/programs/optimized/480/preschool/1788745924493.webp" srcset="photos/programs/optimized/480/preschool/1788745924493.webp 480w, photos/programs/optimized/960/preschool/1788745924493.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="プリスクールで英語活動を楽しむ子どもたち 2" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/preschool/1788745924501.jpg"><img src="photos/programs/optimized/480/preschool/1788745924501.webp" srcset="photos/programs/optimized/480/preschool/1788745924501.webp 480w, photos/programs/optimized/960/preschool/1788745924501.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="プリスクールで英語活動を楽しむ子どもたち 3" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/preschool/1788745924511.jpg"><img src="photos/programs/optimized/480/preschool/1788745924511.webp" srcset="photos/programs/optimized/480/preschool/1788745924511.webp 480w, photos/programs/optimized/960/preschool/1788745924511.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="プリスクールで英語活動を楽しむ子どもたち 4" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/preschool/1788745924515.jpg"><img src="photos/programs/optimized/480/preschool/1788745924515.webp" srcset="photos/programs/optimized/480/preschool/1788745924515.webp 480w, photos/programs/optimized/960/preschool/1788745924515.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="プリスクールで英語活動を楽しむ子どもたち 5" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/preschool/1788745924524.jpg"><img src="photos/programs/optimized/480/preschool/1788745924524.webp" srcset="photos/programs/optimized/480/preschool/1788745924524.webp 480w, photos/programs/optimized/960/preschool/1788745924524.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="プリスクールで英語活動を楽しむ子どもたち 6" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/preschool/1788745924528.jpg"><img src="photos/programs/optimized/480/preschool/1788745924528.webp" srcset="photos/programs/optimized/480/preschool/1788745924528.webp 480w, photos/programs/optimized/960/preschool/1788745924528.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="プリスクールで英語活動を楽しむ子どもたち 7" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/preschool/1788745924535.jpg"><img src="photos/programs/optimized/480/preschool/1788745924535.webp" srcset="photos/programs/optimized/480/preschool/1788745924535.webp 480w, photos/programs/optimized/960/preschool/1788745924535.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="プリスクールで英語活動を楽しむ子どもたち 8" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/preschool/1788745924544.jpg"><img src="photos/programs/optimized/480/preschool/1788745924544.webp" srcset="photos/programs/optimized/480/preschool/1788745924544.webp 480w, photos/programs/optimized/960/preschool/1788745924544.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="プリスクールで英語活動を楽しむ子どもたち 9" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/preschool/1788745924551.jpg"><img src="photos/programs/optimized/480/preschool/1788745924551.webp" srcset="photos/programs/optimized/480/preschool/1788745924551.webp 480w, photos/programs/optimized/960/preschool/1788745924551.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="プリスクールで英語活動を楽しむ子どもたち 10" loading="lazy" decoding="async"></div>
+    </div>
+    <a class="program-gallery-link" href="/preschool">プリスクールについて詳しく見る →</a>
+  </div>
+
+  <div class="section-block program-gallery" data-gallery-category="kinder" hidden>
+    <h2 class="section-heading">🌻 Kinder School｜3〜6歳</h2>
+    <p class="program-gallery-copy">工作、ゲーム、サークルタイムなど、夢中になれる活動の中で自然に英語を使います。</p>
+    <div class="photo-grid">
+      <div class="photo-item" data-src="photos/programs/kinder/1788747367448.jpg"><img src="photos/programs/optimized/480/kinder/1788747367448.webp" srcset="photos/programs/optimized/480/kinder/1788747367448.webp 480w, photos/programs/optimized/960/kinder/1788747367448.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="キンダースクールで英語活動を楽しむ子どもたち 1" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/kinder/1788747367449.jpg"><img src="photos/programs/optimized/480/kinder/1788747367449.webp" srcset="photos/programs/optimized/480/kinder/1788747367449.webp 480w, photos/programs/optimized/960/kinder/1788747367449.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="キンダースクールで英語活動を楽しむ子どもたち 2" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/kinder/1788747367451.jpg"><img src="photos/programs/optimized/480/kinder/1788747367451.webp" srcset="photos/programs/optimized/480/kinder/1788747367451.webp 480w, photos/programs/optimized/960/kinder/1788747367451.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="キンダースクールで英語活動を楽しむ子どもたち 3" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/kinder/1788747367452.jpg"><img src="photos/programs/optimized/480/kinder/1788747367452.webp" srcset="photos/programs/optimized/480/kinder/1788747367452.webp 480w, photos/programs/optimized/960/kinder/1788747367452.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="キンダースクールで英語活動を楽しむ子どもたち 4" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/kinder/1788747367452(1).jpg"><img src="photos/programs/optimized/480/kinder/1788747367452(1).webp" srcset="photos/programs/optimized/480/kinder/1788747367452(1).webp 480w, photos/programs/optimized/960/kinder/1788747367452(1).webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="キンダースクールで英語活動を楽しむ子どもたち 5" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/kinder/1788747367454.jpg"><img src="photos/programs/optimized/480/kinder/1788747367454.webp" srcset="photos/programs/optimized/480/kinder/1788747367454.webp 480w, photos/programs/optimized/960/kinder/1788747367454.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="キンダースクールで英語活動を楽しむ子どもたち 6" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/kinder/1788747367455.jpg"><img src="photos/programs/optimized/480/kinder/1788747367455.webp" srcset="photos/programs/optimized/480/kinder/1788747367455.webp 480w, photos/programs/optimized/960/kinder/1788747367455.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="キンダースクールで英語活動を楽しむ子どもたち 7" loading="lazy" decoding="async"></div>
+    </div>
+    <a class="program-gallery-link" href="/kinder">キンダースクールについて詳しく見る →</a>
+  </div>
+
+  <div class="section-block program-gallery" data-gallery-category="afterschool" hidden>
+    <h2 class="section-heading">🎒 After School｜小学生</h2>
+    <p class="program-gallery-copy">英語で考え、話し、仲間と取り組む。Luanaの放課後の学びをご紹介します。</p>
+    <div class="photo-grid">
+      <div class="photo-item" data-src="photos/programs/afterschool/1780892439892.jpg"><img src="photos/programs/optimized/480/afterschool/1780892439892.webp" srcset="photos/programs/optimized/480/afterschool/1780892439892.webp 480w, photos/programs/optimized/960/afterschool/1780892439892.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 1" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/1780895299591.jpg"><img src="photos/programs/optimized/480/afterschool/1780895299591.webp" srcset="photos/programs/optimized/480/afterschool/1780895299591.webp 480w, photos/programs/optimized/960/afterschool/1780895299591.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 3" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/1780895302559.jpg"><img src="photos/programs/optimized/480/afterschool/1780895302559.webp" srcset="photos/programs/optimized/480/afterschool/1780895302559.webp 480w, photos/programs/optimized/960/afterschool/1780895302559.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 4" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/1782783604103-1.jpg"><img src="photos/programs/optimized/480/afterschool/1782783604103-1.webp" srcset="photos/programs/optimized/480/afterschool/1782783604103-1.webp 480w, photos/programs/optimized/960/afterschool/1782783604103-1.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 5" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/1782783604103-6.jpg"><img src="photos/programs/optimized/480/afterschool/1782783604103-6.webp" srcset="photos/programs/optimized/480/afterschool/1782783604103-6.webp 480w, photos/programs/optimized/960/afterschool/1782783604103-6.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 6" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/1782783604103-10.jpg"><img src="photos/programs/optimized/480/afterschool/1782783604103-10.webp" srcset="photos/programs/optimized/480/afterschool/1782783604103-10.webp 480w, photos/programs/optimized/960/afterschool/1782783604103-10.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 7" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/1788747672657.jpg"><img src="photos/programs/optimized/480/afterschool/1788747672657.webp" srcset="photos/programs/optimized/480/afterschool/1788747672657.webp 480w, photos/programs/optimized/960/afterschool/1788747672657.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 8" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/1788747672854.jpg"><img src="photos/programs/optimized/480/afterschool/1788747672854.webp" srcset="photos/programs/optimized/480/afterschool/1788747672854.webp 480w, photos/programs/optimized/960/afterschool/1788747672854.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 12" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/1788747672875.jpg"><img src="photos/programs/optimized/480/afterschool/1788747672875.webp" srcset="photos/programs/optimized/480/afterschool/1788747672875.webp 480w, photos/programs/optimized/960/afterschool/1788747672875.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 13" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/1788747672915.jpg"><img src="photos/programs/optimized/480/afterschool/1788747672915.webp" srcset="photos/programs/optimized/480/afterschool/1788747672915.webp 480w, photos/programs/optimized/960/afterschool/1788747672915.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 15" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/1788747672937.jpg"><img src="photos/programs/optimized/480/afterschool/1788747672937.webp" srcset="photos/programs/optimized/480/afterschool/1788747672937.webp 480w, photos/programs/optimized/960/afterschool/1788747672937.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 16" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/1788747673005.jpg"><img src="photos/programs/optimized/480/afterschool/1788747673005.webp" srcset="photos/programs/optimized/480/afterschool/1788747673005.webp 480w, photos/programs/optimized/960/afterschool/1788747673005.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 19" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/1788747673026.jpg"><img src="photos/programs/optimized/480/afterschool/1788747673026.webp" srcset="photos/programs/optimized/480/afterschool/1788747673026.webp 480w, photos/programs/optimized/960/afterschool/1788747673026.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 20" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/1788747673153.jpg"><img src="photos/programs/optimized/480/afterschool/1788747673153.webp" srcset="photos/programs/optimized/480/afterschool/1788747673153.webp 480w, photos/programs/optimized/960/afterschool/1788747673153.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 22" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/1788747673188.jpg"><img src="photos/programs/optimized/480/afterschool/1788747673188.webp" srcset="photos/programs/optimized/480/afterschool/1788747673188.webp 480w, photos/programs/optimized/960/afterschool/1788747673188.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 23" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/1788747673265.jpg"><img src="photos/programs/optimized/480/afterschool/1788747673265.webp" srcset="photos/programs/optimized/480/afterschool/1788747673265.webp 480w, photos/programs/optimized/960/afterschool/1788747673265.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 24" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/1788747673305.jpg"><img src="photos/programs/optimized/480/afterschool/1788747673305.webp" srcset="photos/programs/optimized/480/afterschool/1788747673305.webp 480w, photos/programs/optimized/960/afterschool/1788747673305.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 25" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/1788747673465.jpg"><img src="photos/programs/optimized/480/afterschool/1788747673465.webp" srcset="photos/programs/optimized/480/afterschool/1788747673465.webp 480w, photos/programs/optimized/960/afterschool/1788747673465.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 27" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/1788747673496.jpg"><img src="photos/programs/optimized/480/afterschool/1788747673496.webp" srcset="photos/programs/optimized/480/afterschool/1788747673496.webp 480w, photos/programs/optimized/960/afterschool/1788747673496.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 28" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/1788747673564.jpg"><img src="photos/programs/optimized/480/afterschool/1788747673564.webp" srcset="photos/programs/optimized/480/afterschool/1788747673564.webp 480w, photos/programs/optimized/960/afterschool/1788747673564.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 30" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/photo-01.jpg"><img src="photos/programs/optimized/480/afterschool/photo-01.webp" srcset="photos/programs/optimized/480/afterschool/photo-01.webp 480w, photos/programs/optimized/960/afterschool/photo-01.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 34" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/photo-05.jpg"><img src="photos/programs/optimized/480/afterschool/photo-05.webp" srcset="photos/programs/optimized/480/afterschool/photo-05.webp 480w, photos/programs/optimized/960/afterschool/photo-05.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 38" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/photo-07.jpg"><img src="photos/programs/optimized/480/afterschool/photo-07.webp" srcset="photos/programs/optimized/480/afterschool/photo-07.webp 480w, photos/programs/optimized/960/afterschool/photo-07.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 40" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/photo-08.jpg"><img src="photos/programs/optimized/480/afterschool/photo-08.webp" srcset="photos/programs/optimized/480/afterschool/photo-08.webp 480w, photos/programs/optimized/960/afterschool/photo-08.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 41" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/photo-09.jpg"><img src="photos/programs/optimized/480/afterschool/photo-09.webp" srcset="photos/programs/optimized/480/afterschool/photo-09.webp 480w, photos/programs/optimized/960/afterschool/photo-09.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 42" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/photo-14.jpg"><img src="photos/programs/optimized/480/afterschool/photo-14.webp" srcset="photos/programs/optimized/480/afterschool/photo-14.webp 480w, photos/programs/optimized/960/afterschool/photo-14.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 47" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/photo-15.jpg"><img src="photos/programs/optimized/480/afterschool/photo-15.webp" srcset="photos/programs/optimized/480/afterschool/photo-15.webp 480w, photos/programs/optimized/960/afterschool/photo-15.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 48" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/photo-16.jpg"><img src="photos/programs/optimized/480/afterschool/photo-16.webp" srcset="photos/programs/optimized/480/afterschool/photo-16.webp 480w, photos/programs/optimized/960/afterschool/photo-16.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 49" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/photo-17.jpg"><img src="photos/programs/optimized/480/afterschool/photo-17.webp" srcset="photos/programs/optimized/480/afterschool/photo-17.webp 480w, photos/programs/optimized/960/afterschool/photo-17.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 50" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/photo-21.jpg"><img src="photos/programs/optimized/480/afterschool/photo-21.webp" srcset="photos/programs/optimized/480/afterschool/photo-21.webp 480w, photos/programs/optimized/960/afterschool/photo-21.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 54" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/photo-23.jpg"><img src="photos/programs/optimized/480/afterschool/photo-23.webp" srcset="photos/programs/optimized/480/afterschool/photo-23.webp 480w, photos/programs/optimized/960/afterschool/photo-23.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 56" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/photo-26.jpg"><img src="photos/programs/optimized/480/afterschool/photo-26.webp" srcset="photos/programs/optimized/480/afterschool/photo-26.webp 480w, photos/programs/optimized/960/afterschool/photo-26.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 59" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/photo-29.jpg"><img src="photos/programs/optimized/480/afterschool/photo-29.webp" srcset="photos/programs/optimized/480/afterschool/photo-29.webp 480w, photos/programs/optimized/960/afterschool/photo-29.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 61" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/photo-32.jpg"><img src="photos/programs/optimized/480/afterschool/photo-32.webp" srcset="photos/programs/optimized/480/afterschool/photo-32.webp 480w, photos/programs/optimized/960/afterschool/photo-32.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 64" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/photo-33.jpg"><img src="photos/programs/optimized/480/afterschool/photo-33.webp" srcset="photos/programs/optimized/480/afterschool/photo-33.webp 480w, photos/programs/optimized/960/afterschool/photo-33.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 65" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/afterschool/photo-35.jpg"><img src="photos/programs/optimized/480/afterschool/photo-35.webp" srcset="photos/programs/optimized/480/afterschool/photo-35.webp 480w, photos/programs/optimized/960/afterschool/photo-35.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="アフタースクールで英語を学ぶ子どもたち 67" loading="lazy" decoding="async"></div>
+    </div>
+    <a class="program-gallery-link" href="/afterschool">アフタースクールについて詳しく見る →</a>
+  </div>
+
   <!-- Our Space -->
-  <div class="section-block">
+  <div class="section-block" data-gallery-category="space">
     <h2 class="section-heading">🏫 Our Space</h2>
     <div class="photo-grid" style="grid-template-columns:repeat(4,1fr);">
       <div class="photo-item" data-src="photos/our-space/photo-24.jpg"><img src="photos/gallery-optimized/480/our-space/photo-24.webp" alt="ルアナイングリッシュスクールの教室 - 府中市" loading="lazy" width="1108" height="1477" srcset="photos/gallery-optimized/480/our-space/photo-24.webp 480w, photos/gallery-optimized/960/our-space/photo-24.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 360px)" decoding="async"></div>
@@ -260,7 +383,7 @@ window.addEventListener('resize',_fixSeasonalNav);
   </div>
 
   <!-- Every Day Moments -->
-  <div class="section-block">
+  <div class="section-block" data-gallery-category="archive" data-gallery-disabled hidden>
     <h2 class="section-heading">📸 Every Day Moments</h2>
     <div class="month-group" data-month="July 2026">
       <div class="month-pill"><span>July 2026</span></div>
@@ -353,6 +476,44 @@ document.querySelectorAll(".nav-links a").forEach(link => {
 document.querySelectorAll(".month-group[hidden]").forEach(group => {
   if (group.querySelector(".photo-item")) group.hidden = false;
 });
+
+(function() {
+  const filters = Array.from(document.querySelectorAll("[data-gallery-filter]"));
+  document.querySelectorAll("[data-gallery-disabled]").forEach(section => section.remove());
+  const sections = Array.from(document.querySelectorAll("[data-gallery-category]"));
+
+  document.querySelectorAll(".program-gallery .photo-grid").forEach(grid => {
+    const photos = Array.from(grid.children);
+    for (let index = photos.length - 1; index > 0; index -= 1) {
+      const randomIndex = Math.floor(Math.random() * (index + 1));
+      [photos[index], photos[randomIndex]] = [photos[randomIndex], photos[index]];
+    }
+    photos.forEach(photo => grid.appendChild(photo));
+  });
+
+  sections.forEach(section => {
+    if (section.classList.contains("program-gallery") && section.querySelector(".photo-item")) {
+      section.hidden = false;
+    }
+  });
+
+  filters.forEach(button => {
+    const category = button.dataset.galleryFilter;
+    if (category !== "all" && !sections.some(section =>
+      section.dataset.galleryCategory === category && section.querySelector(".photo-item")
+    )) {
+      button.hidden = true;
+    }
+
+    button.addEventListener("click", () => {
+      filters.forEach(filter => filter.setAttribute("aria-pressed", String(filter === button)));
+      sections.forEach(section => {
+        const hasPhotos = Boolean(section.querySelector(".photo-item"));
+        section.hidden = !hasPhotos || (category !== "all" && section.dataset.galleryCategory !== category);
+      });
+    });
+  });
+})();
 
 (function() {
   const items = Array.from(document.querySelectorAll(".photo-item[data-src]"));
