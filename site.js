@@ -22,6 +22,49 @@
 })();
 
 document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('[data-hero-carousel]').forEach(carousel => {
+    const slides = Array.from(carousel.querySelectorAll('[data-hero-slide]'));
+    const captions = Array.from(carousel.querySelectorAll('[data-hero-caption]'));
+    const dots = Array.from(carousel.querySelectorAll('[data-hero-dot]'));
+    const previous = carousel.querySelector('[data-hero-prev]');
+    const next = carousel.querySelector('[data-hero-next]');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let current = 0;
+    let timer = null;
+
+    const show = index => {
+      current = (index + slides.length) % slides.length;
+      slides.forEach((slide, slideIndex) => {
+        const active = slideIndex === current;
+        slide.classList.toggle('is-active', active);
+        slide.setAttribute('aria-hidden', String(!active));
+      });
+      captions.forEach((caption, captionIndex) => caption.classList.toggle('is-active', captionIndex === current));
+      dots.forEach((dot, dotIndex) => dot.setAttribute('aria-current', String(dotIndex === current)));
+    };
+
+    const stop = () => {
+      if (timer) window.clearInterval(timer);
+      timer = null;
+    };
+    const start = () => {
+      stop();
+      if (!reduceMotion && !document.hidden) timer = window.setInterval(() => show(current + 1), 6000);
+    };
+
+    previous?.addEventListener('click', () => { show(current - 1); start(); });
+    next?.addEventListener('click', () => { show(current + 1); start(); });
+    dots.forEach((dot, index) => dot.addEventListener('click', () => { show(index); start(); }));
+    carousel.addEventListener('mouseenter', stop);
+    carousel.addEventListener('mouseleave', start);
+    carousel.addEventListener('focusin', stop);
+    carousel.addEventListener('focusout', event => {
+      if (!carousel.contains(event.relatedTarget)) start();
+    });
+    document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
+    start();
+  });
+
   document.querySelectorAll('.nav-links a').forEach(link => {
     const target = new URL(link.href, window.location.href);
     if (target.pathname === window.location.pathname && !target.hash) {

@@ -21,7 +21,7 @@
 <meta name="twitter:description" content="1〜2歳、幼稚園児、小学生が、ネイティブ講師と保育士によるAll Englishの年齢別レッスンで楽しく学べる子ども英語教室です。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="image" href="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-35.webp" imagesrcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-35.webp 480w, photos/gallery-optimized/720/Everyday%20Moments/July%202026/photo-35.webp 720w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-35.webp 960w" imagesizes="(max-width:600px) calc(100vw - 40px), 45vw" fetchpriority="high">
+<link rel="preload" as="image" href="photos/programs/optimized/480/preschool/1788745924511.webp" imagesrcset="photos/programs/optimized/480/preschool/1788745924511.webp 480w, photos/programs/optimized/960/preschool/1788745924511.webp 960w" imagesizes="(max-width:600px) calc(100vw - 40px), 45vw" fetchpriority="high">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap"></noscript>
 <style>
@@ -249,29 +249,58 @@
   .hero-cta:active { transform: translateY(2px); box-shadow: 0 4px 0 #9E3524; }
 
   .hero-photo {
-    position: relative; width: 100%; max-width: 430px;
+    position: relative; width: 100%; max-width: 520px;
     justify-self: end; animation: popIn 0.8s 0.28s ease both;
   }
   .hero-photo-frame {
-    aspect-ratio: 3 / 4; overflow: hidden; border-radius: 36px;
+    aspect-ratio: 4 / 3; overflow: hidden; border-radius: 36px;
     border: 7px solid rgba(255,255,255,0.96);
     background: var(--white);
     box-shadow: 0 24px 55px rgba(84, 62, 45, 0.2), 10px 10px 0 rgba(91,200,245,0.35);
-    transform: rotate(1.5deg);
+    transform: rotate(1deg); position: relative;
   }
-  .hero-photo-frame img {
+  .hero-slide {
+    position: absolute; inset: 0; margin: 0;
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.65s ease, visibility 0.65s ease;
+  }
+  .hero-slide.is-active { opacity: 1; visibility: visible; }
+  .hero-slide img {
     width: 100%; height: 100%; display: block; object-fit: cover;
     object-position: center center;
   }
+  .hero-captions {
+    position: relative;
+    min-height: 48px;
+    margin-top: 14px;
+  }
   .hero-photo-caption {
-    position: absolute; left: -18px; bottom: 24px;
+    position: absolute; left: -18px; top: 0;
     max-width: calc(100% - 20px); padding: 10px 17px;
     border-radius: 18px; background: rgba(255,255,255,0.96);
     color: #704814; font-family: 'Baloo 2', cursive;
     font-size: 0.95rem; font-weight: 800; line-height: 1.25;
     box-shadow: 0 8px 22px rgba(0,0,0,0.14);
     transform: rotate(-2deg);
+    text-decoration: none; opacity: 0; visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
   }
+  .hero-photo-caption.is-active { opacity: 1; visibility: visible; }
+  .hero-photo-caption:hover { color: #B34B3D; }
+  .hero-carousel-controls {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    margin-top: 6px;
+  }
+  .hero-carousel-arrow, .hero-carousel-dot {
+    border: 0; cursor: pointer; color: #704814; background: rgba(255,255,255,0.9);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  .hero-carousel-arrow {
+    width: 38px; height: 38px; border-radius: 50%; font-size: 1.35rem; line-height: 1;
+  }
+  .hero-carousel-dots { display: flex; align-items: center; gap: 8px; }
+  .hero-carousel-dot { width: 11px; height: 11px; padding: 0; border-radius: 50%; }
+  .hero-carousel-dot[aria-current="true"] { width: 28px; border-radius: 8px; background: var(--coral); }
 
   @media(max-width: 900px) {
     .hero-content { grid-template-columns: 1fr; text-align: center; gap: 40px; }
@@ -284,7 +313,12 @@
     }
     .hero-sub { margin-left: auto; margin-right: auto; }
     .hero-trust { justify-content: center; }
-    .hero-photo { justify-self: center; max-width: 390px; }
+    .hero-photo { justify-self: center; max-width: 520px; }
+    .hero-photo-caption {
+      left: 50%;
+      transform: translateX(-50%) rotate(-2deg);
+      white-space: nowrap;
+    }
   }
 
   .mobile-signup-bar { display: none; }
@@ -969,15 +1003,44 @@ document.querySelectorAll(".nav-links a").forEach(link => {
         <span>初めての英語でも安心</span>
       </div>
     </div>
-    <div class="hero-photo">
+    <div class="hero-photo" data-hero-carousel aria-roledescription="carousel" aria-label="Luanaのクラス紹介">
       <div class="hero-photo-frame">
-        <img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-35.webp"
-          srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-35.webp 480w, photos/gallery-optimized/720/Everyday%20Moments/July%202026/photo-35.webp 720w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-35.webp 960w"
-          sizes="(max-width:600px) calc(100vw - 40px), 45vw"
-          alt="Luana English Schoolの先生と子どもたちが教室で楽しく過ごす様子"
-          width="900" height="1200" loading="eager" fetchpriority="high" decoding="async">
+        <figure class="hero-slide is-active" data-hero-slide aria-hidden="false">
+          <img src="photos/programs/optimized/480/preschool/1788745924511.webp"
+            srcset="photos/programs/optimized/480/preschool/1788745924511.webp 480w, photos/programs/optimized/960/preschool/1788745924511.webp 960w"
+            sizes="(max-width:600px) calc(100vw - 40px), 45vw"
+            alt="プリスクールで先生と英語を楽しむ子ども"
+            width="960" height="540" loading="eager" fetchpriority="high" decoding="async">
+        </figure>
+        <figure class="hero-slide" data-hero-slide aria-hidden="true">
+          <img src="photos/programs/optimized/480/kinder/1788747367455.webp"
+            srcset="photos/programs/optimized/480/kinder/1788747367455.webp 480w, photos/programs/optimized/960/kinder/1788747367455.webp 960w"
+            sizes="(max-width:600px) calc(100vw - 40px), 45vw"
+            alt="キンダースクールで先生と英語を学ぶ子ども"
+            width="960" height="720" loading="lazy" decoding="async">
+        </figure>
+        <figure class="hero-slide" data-hero-slide aria-hidden="true">
+          <img src="photos/programs/optimized/480/afterschool/aftercaro.webp"
+            srcset="photos/programs/optimized/480/afterschool/aftercaro.webp 480w, photos/programs/optimized/960/afterschool/aftercaro.webp 960w"
+            sizes="(max-width:600px) calc(100vw - 40px), 45vw"
+            alt="アフタースクールで仲間と英語を学ぶ子どもたち"
+            width="960" height="720" loading="lazy" decoding="async">
+        </figure>
       </div>
-      <div class="hero-photo-caption">🌈 Everyday at Luana</div>
+      <div class="hero-captions">
+        <a class="hero-photo-caption is-active" data-hero-caption href="/preschool">🐣 Preschool｜1〜2歳 →</a>
+        <a class="hero-photo-caption" data-hero-caption href="/kinder">🌻 Kinder School｜3〜6歳 →</a>
+        <a class="hero-photo-caption" data-hero-caption href="/afterschool">🎒 After School｜小学生 →</a>
+      </div>
+      <div class="hero-carousel-controls">
+        <button class="hero-carousel-arrow" type="button" data-hero-prev aria-label="前のクラス写真">‹</button>
+        <div class="hero-carousel-dots" role="group" aria-label="表示するクラス写真">
+          <button class="hero-carousel-dot" type="button" data-hero-dot aria-label="プリスクールの写真" aria-current="true"></button>
+          <button class="hero-carousel-dot" type="button" data-hero-dot aria-label="キンダースクールの写真" aria-current="false"></button>
+          <button class="hero-carousel-dot" type="button" data-hero-dot aria-label="アフタースクールの写真" aria-current="false"></button>
+        </div>
+        <button class="hero-carousel-arrow" type="button" data-hero-next aria-label="次のクラス写真">›</button>
+      </div>
     </div>
   </div>
 </section>
