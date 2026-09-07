@@ -71,6 +71,34 @@ test("the Summer School page remains canonical and indexed", async () => {
   assert.match(sitemap, /<loc>https:\/\/luanaenglishschool\.jp\/summer<\/loc>/);
 });
 
+test("program pages show a breadcrumb whose labels match their BreadcrumbList", async () => {
+  for (const page of ["preschool.html", "kinder.html", "afterschool.html"]) {
+    const html = await source(page);
+
+    // A second <nav> would trip the single-fixed-header rule, so the breadcrumb
+    // uses role="navigation" the way the other secondary navigation blocks do.
+    const trail = html.match(/<div class="breadcrumb"[\s\S]*?<\/div>/)?.[0];
+    assert.ok(trail, `${page} is missing the visible breadcrumb`);
+    assert.match(trail, /role="navigation" aria-label="パンくずリスト"/);
+    assert.match(trail, /<li><a href="\/">ホーム<\/a><\/li>/);
+    assert.match(trail, /aria-current="page"/);
+
+    const graph = JSON.parse(
+      html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]
+    )["@graph"];
+    const crumbs = graph.find(node => node["@type"] === "BreadcrumbList").itemListElement;
+    assert.equal(crumbs[0].name, "ホーム");
+
+    // Google expects the structured data to describe what the visitor can see.
+    const visible = trail.match(/aria-current="page">([^<]+)</)[1];
+    assert.equal(
+      visible,
+      crumbs[1].name,
+      `${page} breadcrumb text "${visible}" does not match its BreadcrumbList name "${crumbs[1].name}"`
+    );
+  }
+});
+
 test("portal pages remain excluded from search engines", async () => {
   for (const page of privatePages) {
     const html = await source(page);

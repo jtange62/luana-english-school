@@ -343,6 +343,19 @@
     .banner { font-size: 0.8rem; padding: 8px 12px; }
   }
 
+
+  /* BREADCRUMB */
+  .breadcrumb { margin: 0 0 24px; }
+  .breadcrumb ol {
+    list-style: none; display: flex; flex-wrap: wrap;
+    align-items: center; gap: 8px; margin: 0; padding: 0;
+    font-size: 0.85rem;
+  }
+  .breadcrumb li { display: flex; align-items: center; gap: 8px; color: #6B5540; }
+  .breadcrumb li + li::before { content: "A"; color: #7A6650; }
+  .breadcrumb a { color: #1F6F80; font-weight: 700; text-decoration: none; }
+  .breadcrumb a:hover, .breadcrumb a:focus { text-decoration: underline; }
+  .breadcrumb [aria-current="page"] { font-weight: 700; color: #8B5E2A; }
 </style>
 <!-- Google Analytics -->
 <script>
@@ -403,6 +416,13 @@ window.addEventListener('resize',_fixSeasonalNav);
 </div>
 
 <div class="content">
+  <div class="breadcrumb" role="navigation" aria-label="パンくずリスト">
+    <ol>
+      <li><a href="/">ホーム</a></li>
+      <li aria-current="page">アフタースクール</li>
+    </ol>
+  </div>
+
 
   <div class="age-badge">🗓 月曜日〜金曜日｜14:00 – 18:00</div>
 
