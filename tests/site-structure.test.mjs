@@ -82,6 +82,7 @@ test("program pages show a breadcrumb whose labels match their BreadcrumbList", 
     assert.match(trail, /role="navigation" aria-label="パンくずリスト"/);
     assert.match(trail, /<li><a href="\/">ホーム<\/a><\/li>/);
     assert.match(trail, /aria-current="page"/);
+    assert.match(html, /\.breadcrumb li \+ li::before \{ content: "\\203A";/);
 
     const graph = JSON.parse(
       html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]
