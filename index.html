@@ -275,13 +275,13 @@
     margin-top: 14px;
   }
   .hero-photo-caption {
-    position: absolute; left: -18px; top: 0;
+    position: absolute; left: 0; right: 0; top: 0;
+    width: max-content; margin: 0 auto;
     max-width: calc(100% - 20px); padding: 10px 17px;
     border-radius: 18px; background: rgba(255,255,255,0.96);
     color: #704814; font-family: 'Baloo 2', cursive;
     font-size: 0.95rem; font-weight: 800; line-height: 1.25;
     box-shadow: 0 8px 22px rgba(0,0,0,0.14);
-    transform: rotate(-2deg);
     text-decoration: none; opacity: 0; visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
   }
@@ -314,11 +314,7 @@
     .hero-sub { margin-left: auto; margin-right: auto; }
     .hero-trust { justify-content: center; }
     .hero-photo { justify-self: center; max-width: 520px; }
-    .hero-photo-caption {
-      left: 50%;
-      transform: translateX(-50%) rotate(-2deg);
-      white-space: nowrap;
-    }
+    .hero-photo-caption { white-space: nowrap; }
   }
 
   .mobile-signup-bar { display: none; }
@@ -1026,9 +1022,57 @@ document.querySelectorAll(".nav-links a").forEach(link => {
             alt="アフタースクールで仲間と英語を学ぶ子どもたち"
             width="960" height="720" loading="lazy" decoding="async">
         </figure>
+        <figure class="hero-slide" data-hero-slide aria-hidden="true">
+          <img src="photos/programs/optimized/480/preschool/1788745924528.webp"
+            srcset="photos/programs/optimized/480/preschool/1788745924528.webp 480w, photos/programs/optimized/960/preschool/1788745924528.webp 960w"
+            sizes="(max-width:600px) calc(100vw - 40px), 45vw"
+            alt="プリスクールで色と感触を楽しむ子ども"
+            width="960" height="720" loading="lazy" decoding="async">
+        </figure>
+        <figure class="hero-slide" data-hero-slide aria-hidden="true">
+          <img src="photos/programs/optimized/480/kinder/1788747367449.webp"
+            srcset="photos/programs/optimized/480/kinder/1788747367449.webp 480w, photos/programs/optimized/960/kinder/1788747367449.webp 960w"
+            sizes="(max-width:600px) calc(100vw - 40px), 45vw"
+            alt="キンダースクールで先生と活動する子ども"
+            width="960" height="720" loading="lazy" decoding="async">
+        </figure>
+        <figure class="hero-slide" data-hero-slide aria-hidden="true">
+          <img src="photos/programs/optimized/480/afterschool/1788747673265.webp"
+            srcset="photos/programs/optimized/480/afterschool/1788747673265.webp 480w, photos/programs/optimized/960/afterschool/1788747673265.webp 960w"
+            sizes="(max-width:600px) calc(100vw - 40px), 45vw"
+            alt="アフタースクールで一緒に英語を楽しむ子どもたち"
+            width="960" height="720" loading="lazy" decoding="async">
+        </figure>
+        <figure class="hero-slide" data-hero-slide aria-hidden="true">
+          <img src="photos/programs/optimized/480/preschool/1788745924544.webp"
+            srcset="photos/programs/optimized/480/preschool/1788745924544.webp 480w, photos/programs/optimized/960/preschool/1788745924544.webp 960w"
+            sizes="(max-width:600px) calc(100vw - 40px), 45vw"
+            alt="プリスクールで先生と笑顔で遊ぶ子ども"
+            width="960" height="720" loading="lazy" decoding="async">
+        </figure>
+        <figure class="hero-slide" data-hero-slide aria-hidden="true">
+          <img src="photos/programs/optimized/480/kinder/1788747367452(1).webp"
+            srcset="photos/programs/optimized/480/kinder/1788747367452(1).webp 480w, photos/programs/optimized/960/kinder/1788747367452(1).webp 960w"
+            sizes="(max-width:600px) calc(100vw - 40px), 45vw"
+            alt="キンダースクールで英語のアクティビティを楽しむ子ども"
+            width="960" height="720" loading="lazy" decoding="async">
+        </figure>
+        <figure class="hero-slide" data-hero-slide aria-hidden="true">
+          <img src="photos/programs/optimized/480/afterschool/1780892439892.webp"
+            srcset="photos/programs/optimized/480/afterschool/1780892439892.webp 480w, photos/programs/optimized/960/afterschool/1780892439892.webp 960w"
+            sizes="(max-width:600px) calc(100vw - 40px), 45vw"
+            alt="アフタースクールで英語のカードゲームを楽しむ子どもたち"
+            width="960" height="818" loading="lazy" decoding="async">
+        </figure>
       </div>
       <div class="hero-captions">
         <a class="hero-photo-caption is-active" data-hero-caption href="/preschool">🐣 Preschool｜1〜2歳 →</a>
+        <a class="hero-photo-caption" data-hero-caption href="/kinder">🌻 Kinder School｜3〜6歳 →</a>
+        <a class="hero-photo-caption" data-hero-caption href="/afterschool">🎒 After School｜小学生 →</a>
+        <a class="hero-photo-caption" data-hero-caption href="/preschool">🐣 Preschool｜1〜2歳 →</a>
+        <a class="hero-photo-caption" data-hero-caption href="/kinder">🌻 Kinder School｜3〜6歳 →</a>
+        <a class="hero-photo-caption" data-hero-caption href="/afterschool">🎒 After School｜小学生 →</a>
+        <a class="hero-photo-caption" data-hero-caption href="/preschool">🐣 Preschool｜1〜2歳 →</a>
         <a class="hero-photo-caption" data-hero-caption href="/kinder">🌻 Kinder School｜3〜6歳 →</a>
         <a class="hero-photo-caption" data-hero-caption href="/afterschool">🎒 After School｜小学生 →</a>
       </div>
@@ -1038,6 +1082,12 @@ document.querySelectorAll(".nav-links a").forEach(link => {
           <button class="hero-carousel-dot" type="button" data-hero-dot aria-label="プリスクールの写真" aria-current="true"></button>
           <button class="hero-carousel-dot" type="button" data-hero-dot aria-label="キンダースクールの写真" aria-current="false"></button>
           <button class="hero-carousel-dot" type="button" data-hero-dot aria-label="アフタースクールの写真" aria-current="false"></button>
+          <button class="hero-carousel-dot" type="button" data-hero-dot aria-label="プリスクールの写真 2" aria-current="false"></button>
+          <button class="hero-carousel-dot" type="button" data-hero-dot aria-label="キンダースクールの写真 2" aria-current="false"></button>
+          <button class="hero-carousel-dot" type="button" data-hero-dot aria-label="アフタースクールの写真 2" aria-current="false"></button>
+          <button class="hero-carousel-dot" type="button" data-hero-dot aria-label="プリスクールの写真 3" aria-current="false"></button>
+          <button class="hero-carousel-dot" type="button" data-hero-dot aria-label="キンダースクールの写真 3" aria-current="false"></button>
+          <button class="hero-carousel-dot" type="button" data-hero-dot aria-label="アフタースクールの写真 3" aria-current="false"></button>
         </div>
         <button class="hero-carousel-arrow" type="button" data-hero-next aria-label="次のクラス写真">›</button>
       </div>
@@ -1527,6 +1577,6 @@ document.querySelectorAll(".nav-links a").forEach(link => {
 }
 </script>
 
-<script src="/site.js"></script>
+<script src="/site.js?v=20260907-carousel9"></script>
 </body>
 </html>
