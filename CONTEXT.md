@@ -43,6 +43,12 @@ Japanese-language marketing site for Luana English School, a children's English 
 4. `/api/*` → `handleApi()`.
 5. Everything else → `env.ASSETS.fetch(request)`.
 
+**The Worker does not run for asset paths.** `run_worker_first` is not set, so Cloudflare's asset layer answers any request matching a file in the bundle *before* `fetch` executes. Only non-asset paths (`/api/*`, `/parents`, `/staff`, and the hard-404 list, all of which are absent from the bundle or listed in `.assetsignore`) reach the Worker. Consequences, verified in production on 2026-09-07:
+
+- **Step 1 never fires for real pages.** `https://www.luanaenglishschool.jp/preschool` returns `200`, not a 301 — the whole site is served on both hostnames. The canonical tag points at the apex, so Google consolidates, but it doubles the crawl surface. The apex redirect is enforced by a **Cloudflare Redirect Rule**, not by this code; the Worker branch remains as a fallback for non-asset paths.
+- `tests/site-structure.test.mjs` asserts only that the redirect *source* exists in `worker.js`. It does not exercise behaviour, and passed throughout. Do not read that test as proof the redirect works.
+- Legacy `/*.html` URLs are 307-redirected to their extensionless form by the asset layer, not by this code.
+
 **Assets:** `assets.directory` is `"."` — the repository root *is* the deploy bundle. Any file not listed in `.assetsignore` is publicly fetchable.
 
 **Auth:** Two entry paths, both ending in the same session.
