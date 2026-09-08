@@ -150,6 +150,37 @@ test("the 2027 new-first-grader trial reaches parents of current 年長 children
   assert.equal((hub.match(/class="trial-action"/g) || []).length, 4);
 });
 
+test("every public page ends in a footer that reaches the flyers", async () => {
+  for (const page of publicPages) {
+    const html = await source(page);
+    const footer = html.match(/<footer[\s\S]*?<\/footer>/)?.[0];
+    assert.ok(footer, `${page} has no footer, so it is a dead end`);
+    assert.match(footer, /href="\/newsletter"/, `${page} footer must reach the flyers`);
+    assert.match(footer, /href="\/preschool"/, `${page} footer must link the program pages`);
+    assert.match(footer, /href="\/kinder"/);
+    assert.match(footer, /href="\/afterschool"/);
+    assert.match(footer, /role="navigation" aria-label="フッターナビゲーション"/);
+  }
+
+  // The portal keeps its own footer; the shared styles must not reach it.
+  const styles = await source("site.css");
+  assert.match(styles, /\.site-footer \{/);
+  assert.doesNotMatch(styles, /^footer \{/m, "footer styles must stay scoped to .site-footer");
+});
+
+test("flyers sit above the newsletter archive and are linked from the callouts", async () => {
+  const html = await source("newsletter.html");
+  assert.ok(
+    html.indexOf('id="flyer-heading"') < html.indexOf('id="newsletter-heading"'),
+    "flyers serve prospective parents and must come before the back-issue archive"
+  );
+
+  for (const page of ["kinder.html", "afterschool.html"]) {
+    const callout = (await source(page)).match(/<section class="grade-bridge"[\s\S]*?<\/section>/)[0];
+    assert.match(callout, /href="\/pdfs\/flyers\/shinichinensei-2027\.pdf"/, `${page} callout must offer the flyer`);
+  }
+});
+
 test("portal pages remain excluded from search engines", async () => {
   for (const page of privatePages) {
     const html = await source(page);
