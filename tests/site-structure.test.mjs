@@ -162,10 +162,17 @@ test("every public page ends in a footer that reaches the flyers", async () => {
     assert.match(footer, /role="navigation" aria-label="フッターナビゲーション"/);
   }
 
-  // The portal keeps its own footer; the shared styles must not reach it.
+  // Footer CSS is inline, not in site.css: that stylesheet is served with a
+  // one-hour cache, so a returning visitor would render an unstyled footer
+  // until their cached copy expired.
   const styles = await source("site.css");
-  assert.match(styles, /\.site-footer \{/);
-  assert.doesNotMatch(styles, /^footer \{/m, "footer styles must stay scoped to .site-footer");
+  assert.doesNotMatch(styles, /\.site-footer/, "footer CSS must not live in the cached stylesheet");
+
+  for (const page of publicPages.filter(p => p !== "index.html")) {
+    const html = await source(page);
+    assert.match(html, /\.site-footer \{/, `${page} must style its own footer inline`);
+    assert.match(html, /\.site-footer a \{ color: #5BC8F5/);
+  }
 });
 
 test("flyers sit above the newsletter archive and are linked from the callouts", async () => {

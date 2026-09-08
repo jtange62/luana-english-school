@@ -204,6 +204,29 @@
   .lb-overlay button:focus-visible { outline:3px solid var(--sun); outline-offset:3px; }
   .lb-prev { left:12px; }
   .lb-next { right:12px; }
+
+  /* SITE FOOTER */
+  .site-footer {
+    background: #2D2D2D;
+    color: rgba(255,255,255,0.7);
+    text-align: center;
+    padding: 40px 20px;
+    font-size: 0.9rem;
+  }
+  .site-footer .footer-logo {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.5rem; font-weight: 800;
+    color: #fff;
+    margin-bottom: 10px;
+  }
+  .site-footer a { color: #5BC8F5; text-decoration: none; }
+  .site-footer a:hover { text-decoration: underline; }
+  .site-footer .footer-links {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 22px;
+    margin: 18px 0 8px;
+  }
+  .site-footer .footer-links a { font-weight: 800; }
+  @media(max-width: 600px) { .site-footer { padding: 30px 16px; } }
 </style>
 <!-- Google Analytics -->
 <script>
