@@ -148,7 +148,7 @@ test("the 2027 new-first-grader trial reaches parents of current 年長 children
   const hub = index.match(/<div class="trial-actions">[\s\S]*?<\/div>/)[0];
   assert.ok(hub.includes(form), "the #trial hub must offer the 新1年生 form");
   assert.match(hub, /gtag\('event','trial_lesson_shinichinensei'\)/);
-  assert.equal((hub.match(/class="trial-action"/g) || []).length, 4);
+  assert.equal((hub.match(/class="trial-action"/g) || []).length, 5);
 });
 
 test("every public page ends in a footer that reaches the flyers", async () => {
@@ -208,6 +208,29 @@ test("the sitemap lists every public page and no private one", async () => {
     assert.match(date, /^\d{4}-\d{2}-\d{2}$/, `malformed lastmod: ${date}`);
     assert.ok(new Date(date) <= new Date(), `lastmod ${date} is in the future`);
   }
+});
+
+test("Peekaboo offers its own trial form everywhere its siblings do", async () => {
+  const form = "1FAIpQLSc5qZmrrRXGVBSfMolVnXwwHd0w2XI0v7UeuQpOlFSLprYEBg";
+  const page = await source("peekaboo.html");
+
+  // Hero, closing CTA and the mobile sticky bar, matching the other program pages.
+  for (const event of [
+    "trial_lesson_peekaboo_hero",
+    "trial_lesson_peekaboo",
+    "trial_lesson_peekaboo_sticky"
+  ]) {
+    assert.match(page, new RegExp(`gtag\\('event','${event}'\\)`), `peekaboo.html is missing ${event}`);
+  }
+  assert.equal((page.match(new RegExp(form, "g")) || []).length, 3);
+
+  // LINE stays a parallel route rather than being replaced by the form.
+  assert.match(page, /https:\/\/lin\.ee\/SOqP6Vz/);
+
+  const index = await source("index.html");
+  assert.ok(index.includes(form), "the homepage must offer the Peekaboo form");
+  const hub = index.match(/<div class="trial-actions">[\s\S]*?<\/div>/)[0];
+  assert.ok(hub.includes(form), "the #trial hub must list Peekaboo");
 });
 
 test("portal pages remain excluded from search engines", async () => {

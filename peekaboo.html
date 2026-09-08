@@ -280,6 +280,16 @@
   }
   .cta-box p { color: #666; margin-bottom: 24px; font-size: 0.95rem; }
   .cta-options { display:flex; justify-content:center; flex-wrap:wrap; gap:14px; }
+  .cta-btn {
+    display: inline-block;
+    background: #CC4632; color: white;
+    font-weight: 800; font-size: 1rem;
+    padding: 16px 36px; border-radius: 40px;
+    text-decoration: none;
+    box-shadow: 0 6px 0 #9E3524;
+    transition: all 0.15s;
+  }
+  .cta-btn:hover { transform: translateY(-3px); box-shadow: 0 9px 0 #9E3524; }
   .line-cta {
     display:inline-flex; align-items:center; justify-content:center;
     padding:16px 30px; border-radius:40px; background:#067A34; color:white;
@@ -415,7 +425,7 @@ window.addEventListener('resize',_fixSeasonalNav);
     <h1>親子英語クラス</h1>
     <p>府中市中河原で、保護者の方とお子さまが一緒に参加する1時間の英語クラス。プレスクールの時間に加わりながら、はじめての英語を親子で楽しみます。</p>
     <div class="hero-actions">
-      <a href="https://lin.ee/SOqP6Vz" target="_blank" rel="noopener noreferrer" onclick="gtag('event','contact_line_peekaboo_hero')" class="line-cta">LINEで空き状況を聞く</a>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSc5qZmrrRXGVBSfMolVnXwwHd0w2XI0v7UeuQpOlFSLprYEBg/viewform" target="_blank" rel="noopener noreferrer" onclick="gtag('event','trial_lesson_peekaboo_hero')" class="cta-btn">親子クラスを体験する</a>
       <a href="/fees" class="hero-fees-link">料金を見る</a>
     </div>
   </div>
@@ -538,8 +548,9 @@ window.addEventListener('resize',_fixSeasonalNav);
 
   <div class="cta-box">
     <h3>✨ Peekaboo 参加受付中</h3>
-    <p>日程や空き状況、持ち物などはLINEでお気軽にご相談ください。</p>
+    <p>体験を予約するか、日程・空き状況・持ち物などをLINEでお気軽にご相談ください。</p>
     <div class="cta-options">
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSc5qZmrrRXGVBSfMolVnXwwHd0w2XI0v7UeuQpOlFSLprYEBg/viewform" target="_blank" onclick="gtag('event','trial_lesson_peekaboo')" class="cta-btn" rel="noopener noreferrer">体験レッスンを予約する</a>
       <a href="https://lin.ee/SOqP6Vz" target="_blank" onclick="gtag('event','contact_line_peekaboo')" class="line-cta" rel="noopener noreferrer">LINEで相談する</a>
     </div>
   </div>
@@ -573,7 +584,7 @@ window.addEventListener('resize',_fixSeasonalNav);
 </footer>
 
 <div class="mobile-signup-bar" aria-label="お問い合わせ">
-  <a class="mobile-trial" href="/#trial" onclick="gtag('event','trial_peekaboo_sticky')">無料体験</a>
+  <a class="mobile-trial" href="https://docs.google.com/forms/d/e/1FAIpQLSc5qZmrrRXGVBSfMolVnXwwHd0w2XI0v7UeuQpOlFSLprYEBg/viewform" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_peekaboo_sticky')">無料体験</a>
   <a class="mobile-line" href="https://lin.ee/SOqP6Vz" target="_blank" rel="noopener" onclick="gtag('event','contact_line_sticky')">LINEで相談</a>
 </div>
 <script src="/site.js"></script>
