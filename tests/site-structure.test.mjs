@@ -100,6 +100,30 @@ test("program pages show a breadcrumb whose labels match their BreadcrumbList", 
   }
 });
 
+test("the 2027 new-first-grader flyer is the newest listed material", async () => {
+  const html = await source("newsletter.html");
+  const flyer = await readFile(new URL("../pdfs/flyers/shinichinensei-2027.pdf", import.meta.url));
+
+  assert.equal(flyer.subarray(0, 4).toString(), "%PDF");
+  assert.match(html, /href="pdfs\/flyers\/shinichinensei-2027\.pdf"/);
+  assert.match(html, /<canvas data-pdf="pdfs\/flyers\/shinichinensei-2027\.pdf"><\/canvas>/);
+  assert.match(html, /2027年度 新1年生 無料体験レッスン/);
+
+  // Scope to the flyer section: the newsletter section above it also uses .pdf-grid.
+  const flyerSection = html.match(
+    /<section class="archive-section" aria-labelledby="flyer-heading">[\s\S]*?<\/section>/
+  )[0];
+  assert.ok(
+    flyerSection.indexOf("shinichinensei-2027") < flyerSection.indexOf("preschool-afterschool-2026"),
+    "the 2027 flyer must be listed first"
+  );
+  assert.doesNotMatch(
+    flyerSection.slice(flyerSection.indexOf("preschool-afterschool-2026")),
+    /new-badge/,
+    "the badge moved to the 2027 flyer, so no later flyer may still carry it"
+  );
+});
+
 test("portal pages remain excluded from search engines", async () => {
   for (const page of privatePages) {
     const html = await source(page);
