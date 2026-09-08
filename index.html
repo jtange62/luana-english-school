@@ -481,7 +481,7 @@
 
   .classes-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
     gap: 28px;
     margin-top: 50px;
     align-items: stretch;
@@ -511,6 +511,10 @@
   .class-card.after {
     background: Linear-gradient(160deg, #F0E8FF, #E8D6FF);
     border-color: var(--lavender);
+  }
+  .class-card.peekaboo {
+    background: Linear-gradient(160deg, #FFF0EE, #FFE0DB);
+    border-color: var(--coral);
   }
 
   .class-emoji { font-size: 3.5rem; margin-bottom: 14px; display: block; }
@@ -1234,9 +1238,34 @@ document.querySelectorAll(".nav-links a").forEach(link => {
   <div class="container">
     <div class="section-tag">📚 Classes</div>
     <h2 class="section-title">クラス一覧</h2>
-    <p class="section-sub">年齢に合わせた3つのクラスをご用意しています。</p>
+    <p class="section-sub">年齢に合わせた4つのクラスをご用意しています。</p>
 
     <div class="classes-grid">
+      <div style="display:flex; flex-direction:column; align-items:center; gap:16px; align-self:stretch;">
+        <a href="/peekaboo" style="text-decoration:none;color:inherit; display:block; width:100%; flex:1;">
+        <div class="class-card peekaboo" style="cursor:pointer;">
+          <div class="class-badge">🤝</div>
+          <span class="class-emoji">👶</span>
+          <div class="class-label">Peekaboo</div>
+          <div class="class-title">親子英語クラス</div>
+          <div class="class-age">0歳 〜 3歳＋保護者</div>
+          <div class="class-times">
+            <strong>月曜日〜金曜日</strong>
+            10:00 – 11:00（1時間）<br>
+            プレスクールに親子で参加
+          </div>
+        </div>
+        </a>
+        <a href="https://lin.ee/SOqP6Vz"
+          target="_blank" onclick="gtag('event','contact_line_peekaboo_card')"
+          style="display:inline-block; background:linear-gradient(135deg,#FFF0EE,#FF7F6E); color:#5C2418;
+            font-family:'Baloo 2',cursive; font-weight:800; font-size:0.95rem;
+            padding:14px 24px; border-radius:30px; text-decoration:none;
+            border:2px solid #FF7F6E; transition:all 0.2s; text-align:center;" rel="noopener noreferrer">
+          👶 Peekaboo をLINEで相談
+        </a>
+      </div>
+
       <div style="display:flex; flex-direction:column; align-items:center; gap:16px; align-self:stretch;">
         <a href="/preschool" style="text-decoration:none;color:inherit; display:block; width:100%; flex:1;">
         <div class="class-card preschool" style="cursor:pointer;">
@@ -1465,6 +1494,7 @@ document.querySelectorAll(".nav-links a").forEach(link => {
   <p style="font-size:0.9rem; opacity:0.7; margin-top:4px;">ルアナイングリッシュスクール</p>
   <p>「Learn, Play and Shine in English」</p>
   <div class="footer-links" role="navigation" aria-label="フッターナビゲーション">
+    <a href="/peekaboo">Peekaboo</a>
     <a href="/preschool">プレスクール</a>
     <a href="/kinder">幼稚園児クラス</a>
     <a href="/afterschool">小学生クラス</a>

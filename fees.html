@@ -61,6 +61,24 @@
     },
     {
       "@type": "Course",
+      "name": "Peekaboo（親子英語クラス）",
+      "description": "0〜3歳のお子さまと保護者の方が一緒に参加する1時間の英語クラスです。プレスクールの時間に加わり、歌・遊び・工作を通してはじめての英語に親しみます。",
+      "provider": {
+        "@type": "EducationalOrganization",
+        "@id": "https://luanaenglishschool.jp/#organization",
+        "name": "Luana English School",
+        "url": "https://luanaenglishschool.jp/"
+      },
+      "offers": {
+        "@type": "AggregateOffer",
+        "priceCurrency": "JPY",
+        "lowPrice": 9000,
+        "highPrice": 41500,
+        "url": "https://luanaenglishschool.jp/fees"
+      }
+    },
+    {
+      "@type": "Course",
       "@id": "https://luanaenglishschool.jp/fees#preschool",
       "name": "プリスクール（1〜2歳児クラス）",
       "description": "オールイングリッシュ プリスクール（２時間レッスン）",
@@ -227,6 +245,7 @@
     padding:24px 28px 20px;
     display:flex; flex-direction:column; gap:4px;
   }
+  .fee-card.peekaboo .fee-card-header { background:linear-gradient(135deg,#FFF0EE,#FFE0DB); border-bottom:3px solid var(--coral); }
   .fee-card.preschool .fee-card-header { background:linear-gradient(135deg,#E8F8FF,#D6F2FF); border-bottom:3px solid var(--sky); }
   .fee-card.k1k2 .fee-card-header { background:linear-gradient(135deg,#FFF8DC,#FFE8B8); border-bottom:3px solid var(--sun); }
   .fee-card.k2k3 .fee-card-header { background:linear-gradient(135deg,#FFF0DC,#FFE0A8); border-bottom:3px solid #FFAA44; }
@@ -374,6 +393,26 @@ window.addEventListener('resize',_fixSeasonalNav);
   <div class="fee-grid">
 
     <!-- Preschool -->
+    <div class="fee-card peekaboo">
+      <div class="fee-card-header">
+        <span class="fee-card-emoji">👶</span>
+        <span class="fee-card-label">Peekaboo</span>
+        <span class="fee-card-title">親子英語クラス</span>
+        <span class="fee-card-sub">0〜3歳のお子さまと保護者の方（１時間レッスン）</span>
+      </div>
+      <div class="fee-card-body">
+        <div class="fee-row enrollment">
+          <span class="label">🎫 入会金</span>
+          <span class="amount">¥20,000</span>
+        </div>
+        <span class="fee-divider">月額</span>
+        <div class="fee-row highlight"><span class="label">週５日</span><span class="amount">¥41,500</span></div>
+        <div class="fee-row"><span class="label">週４日</span><span class="amount">¥33,000</span></div>
+        <div class="fee-row"><span class="label">週３日</span><span class="amount">¥24,500</span></div>
+        <div class="fee-row"><span class="label">週２日</span><span class="amount">¥16,000</span></div>
+        <div class="fee-row"><span class="label">週１日</span><span class="amount">¥9,000</span></div>
+      </div>
+    </div>
     <div class="fee-card preschool">
       <div class="fee-card-header">
         <span class="fee-card-emoji">🐣</span>
@@ -512,6 +551,7 @@ window.addEventListener('resize',_fixSeasonalNav);
   <p style="font-size:0.9rem; opacity:0.7; margin-top:4px;">ルアナイングリッシュスクール</p>
   <p>「Learn, Play and Shine in English」</p>
   <div class="footer-links" role="navigation" aria-label="フッターナビゲーション">
+    <a href="/peekaboo">Peekaboo</a>
     <a href="/preschool">プレスクール</a>
     <a href="/kinder">幼稚園児クラス</a>
     <a href="/afterschool">小学生クラス</a>

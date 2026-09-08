@@ -9,6 +9,7 @@ const publicPages = [
   "gallery.html",
   "kinder.html",
   "newsletter.html",
+  "peekaboo.html",
   "preschool.html",
   "summer.html"
 ];
@@ -32,7 +33,7 @@ test("every public header links to the Japanese Summer School page", async () =>
 });
 
 test("program pages have only one fixed-header navigation element", async () => {
-  for (const page of ["preschool.html", "kinder.html", "afterschool.html"]) {
+  for (const page of ["preschool.html", "kinder.html", "afterschool.html", "peekaboo.html"]) {
     const html = await source(page);
     assert.equal((html.match(/<nav(?:\s|>)/g) || []).length, 1, `${page} has a competing nav element`);
     assert.match(html, /role="navigation" aria-label="その他のクラス"/);
@@ -40,7 +41,7 @@ test("program pages have only one fixed-header navigation element", async () => 
 });
 
 test("program Back buttons restore the visitor's prior page and scroll position", async () => {
-  for (const page of ["preschool.html", "kinder.html", "afterschool.html"]) {
+  for (const page of ["preschool.html", "kinder.html", "afterschool.html", "peekaboo.html"]) {
     const html = await source(page);
     assert.match(html, /<a href="\/#classes" class="back-btn" data-history-back>← Back<\/a>/);
   }
@@ -72,7 +73,7 @@ test("the Summer School page remains canonical and indexed", async () => {
 });
 
 test("program pages show a breadcrumb whose labels match their BreadcrumbList", async () => {
-  for (const page of ["preschool.html", "kinder.html", "afterschool.html"]) {
+  for (const page of ["preschool.html", "kinder.html", "afterschool.html", "peekaboo.html"]) {
     const html = await source(page);
 
     // A second <nav> would trip the single-fixed-header rule, so the breadcrumb
