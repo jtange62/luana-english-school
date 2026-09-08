@@ -188,6 +188,27 @@ test("flyers sit above the newsletter archive and are linked from the callouts",
   }
 });
 
+test("the sitemap lists every public page and no private one", async () => {
+  const sitemap = await source("sitemap.xml");
+  const listed = [...sitemap.matchAll(/<loc>https:\/\/luanaenglishschool\.jp\/([^<]*)<\/loc>/g)]
+    .map(match => match[1] || "index");
+
+  for (const page of publicPages) {
+    const slug = page.replace(".html", "");
+    assert.ok(listed.includes(slug), `${page} is missing from the sitemap`);
+  }
+  for (const page of privatePages) {
+    const slug = page.replace(".html", "");
+    assert.ok(!listed.includes(slug), `${slug} must never be listed in the sitemap`);
+  }
+
+  // A lastmod that predates the page invites Google to skip the recrawl.
+  for (const [, date] of sitemap.matchAll(/<lastmod>([^<]*)<\/lastmod>/g)) {
+    assert.match(date, /^\d{4}-\d{2}-\d{2}$/, `malformed lastmod: ${date}`);
+    assert.ok(new Date(date) <= new Date(), `lastmod ${date} is in the future`);
+  }
+});
+
 test("portal pages remain excluded from search engines", async () => {
   for (const page of privatePages) {
     const html = await source(page);
