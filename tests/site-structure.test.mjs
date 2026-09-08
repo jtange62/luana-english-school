@@ -124,6 +124,32 @@ test("the 2027 new-first-grader flyer is the newest listed material", async () =
   );
 });
 
+test("the 2027 new-first-grader trial reaches parents of current 年長 children", async () => {
+  const form = "1FAIpQLScbYpdpnxH9C1RSn5QA94qcV8lMzo5htOqTmN7sIeFo_J1f8A";
+
+  // The kinder page is where that audience already is; afterschool corrects the
+  // impression that the class is only for children already in elementary school.
+  for (const [page, event] of [
+    ["kinder.html", "trial_lesson_shinichinensei_kinder"],
+    ["afterschool.html", "trial_lesson_shinichinensei_afterschool"]
+  ]) {
+    const html = await source(page);
+    const callout = html.match(/<section class="grade-bridge"[\s\S]*?<\/section>/)?.[0];
+    assert.ok(callout, `${page} is missing the new-first-grader callout`);
+    assert.ok(callout.includes(form), `${page} callout must link the 新1年生 form`);
+    assert.match(callout, new RegExp(`gtag\\('event','${event}'\\)`));
+    assert.match(callout, /target="_blank" rel="noopener noreferrer"/);
+  }
+
+  // Without a hub entry, a parent of a 年長 child picks 幼稚園児クラス and never
+  // finds this form.
+  const index = await source("index.html");
+  const hub = index.match(/<div class="trial-actions">[\s\S]*?<\/div>/)[0];
+  assert.ok(hub.includes(form), "the #trial hub must offer the 新1年生 form");
+  assert.match(hub, /gtag\('event','trial_lesson_shinichinensei'\)/);
+  assert.equal((hub.match(/class="trial-action"/g) || []).length, 4);
+});
+
 test("portal pages remain excluded from search engines", async () => {
   for (const page of privatePages) {
     const html = await source(page);

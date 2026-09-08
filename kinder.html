@@ -346,6 +346,26 @@
   .breadcrumb a { color: #1F6F80; font-weight: 700; text-decoration: none; }
   .breadcrumb a:hover, .breadcrumb a:focus { text-decoration: underline; }
   .breadcrumb [aria-current="page"] { font-weight: 700; color: #8B5E2A; }
+
+  /* NEW FIRST GRADER BRIDGE */
+  .grade-bridge {
+    background: linear-gradient(135deg, #FFF6E5, #FFE9C7);
+    border: 2px solid #F0B800; border-radius: 20px;
+    padding: 24px 28px; margin: 0 0 40px;
+  }
+  .grade-bridge h2 {
+    font-family: 'Baloo 2', cursive; font-size: 1.2rem; font-weight: 800;
+    color: #8B5E2A; margin-bottom: 8px;
+  }
+  .grade-bridge p { color: #5A4632; font-size: 0.95rem; line-height: 1.75; margin-bottom: 16px; }
+  .grade-bridge a {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: #CC4632; color: #fff; font-weight: 800; font-size: 0.95rem;
+    padding: 13px 26px; border-radius: 30px; text-decoration: none;
+    box-shadow: 0 4px 0 #9E3524; transition: all 0.15s;
+  }
+  .grade-bridge a:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #9E3524; }
+  @media(max-width:600px){ .grade-bridge { padding:20px 18px; } .grade-bridge a { width:100%; } }
 </style>
 <!-- Google Analytics -->
 <script>
@@ -554,6 +574,12 @@ window.addEventListener('resize',_fixSeasonalNav);
     </div>
   </div>
 
+
+  <section class="grade-bridge" aria-labelledby="grade-bridge-title">
+    <h2 id="grade-bridge-title">🎒 年長さんの保護者の方へ</h2>
+    <p>小学校入学後も、英語を続けませんか？2027年度に新1年生になるお子さま（現年長さん）向けに、9月1日より小学生クラスの無料体験レッスンを受付中です。入学前から少しずつ慣れていただけます。</p>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLScbYpdpnxH9C1RSn5QA94qcV8lMzo5htOqTmN7sIeFo_J1f8A/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" onclick="gtag('event','trial_lesson_shinichinensei_kinder')">2027年度 新1年生の無料体験を申し込む</a>
+  </section>
   <div class="cta-box">
     <h3>✨ 体験レッスン受付中！</h3>
     <p>はじめての英語でも安心。まずはお気軽にご体験ください。</p>
