@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     const start = () => {
       stop();
-      if (!reduceMotion && !document.hidden) timer = window.setInterval(() => show(current + 1), 6000);
+      if (!reduceMotion && !document.hidden) timer = window.setInterval(() => show(current + 1), 4000);
     };
 
     previous?.addEventListener('click', () => { show(current - 1); start(); });
