@@ -222,7 +222,7 @@
   /* Activity CARDS */
   .activities { display: flex; flex-direction: column; gap: 20px; }
 
-  .Activity-card {
+  .activity-card {
     background: white;
     border-radius: 24px;
     padding: 28px 32px;
@@ -231,34 +231,34 @@
     transition: all 0.2s;
     box-shadow: 0 2px 12px rgba(0,0,0,0.04);
   }
-  .Activity-card:hover { transform: translateX(6px); }
-  .Activity-card:nth-child(1) { border-color: #FFD95A; }
-  .Activity-card:nth-child(2) { border-color: #5BC8F5; }
-  .Activity-card:nth-child(3) { border-color: #FF7F6E; }
-  .Activity-card:nth-child(4) { border-color: #7EDDB2; }
-  .Activity-card:nth-child(5) { border-color: #C9A7F0; }
-  .Activity-card:nth-child(6) { border-color: #FFD95A; }
+  .activity-card:hover { transform: translateX(6px); }
+  .activity-card:nth-child(1) { border-color: #FFD95A; }
+  .activity-card:nth-child(2) { border-color: #5BC8F5; }
+  .activity-card:nth-child(3) { border-color: #FF7F6E; }
+  .activity-card:nth-child(4) { border-color: #7EDDB2; }
+  .activity-card:nth-child(5) { border-color: #C9A7F0; }
+  .activity-card:nth-child(6) { border-color: #FFD95A; }
 
-  .Activity-icon {
+  .activity-icon {
     font-size: 2.2rem; flex-shrink: 0;
     width: 60px; height: 60px;
     display: flex; align-items: center; justify-content: center;
     border-radius: 18px;
     background: var(--cream);
   }
-  .Activity-card:nth-child(1) .Activity-icon { background: #FFF8DC; }
-  .Activity-card:nth-child(2) .Activity-icon { background: #E8F8FF; }
-  .Activity-card:nth-child(3) .Activity-icon { background: #FFE8E6; }
-  .Activity-card:nth-child(4) .Activity-icon { background: #E8FFF4; }
-  .Activity-card:nth-child(5) .Activity-icon { background: #F5F0FF; }
-  .Activity-card:nth-child(6) .Activity-icon { background: #FFF8DC; }
+  .activity-card:nth-child(1) .activity-icon { background: #FFF8DC; }
+  .activity-card:nth-child(2) .activity-icon { background: #E8F8FF; }
+  .activity-card:nth-child(3) .activity-icon { background: #FFE8E6; }
+  .activity-card:nth-child(4) .activity-icon { background: #E8FFF4; }
+  .activity-card:nth-child(5) .activity-icon { background: #F5F0FF; }
+  .activity-card:nth-child(6) .activity-icon { background: #FFF8DC; }
 
-  .Activity-text h3 {
+  .activity-text h3 {
     font-family: 'Baloo 2', cursive;
     font-size: 1.3rem; font-weight: 800;
     color: var(--brown); margin-bottom: 6px;
   }
-  .Activity-text p {
+  .activity-text p {
     font-size: 0.95rem; Line-height: 1.7; color: #555;
   }
 
@@ -317,7 +317,7 @@
   .mobile-signup-bar { display:none; }
 
   @media(max-width: 600px) {
-    .Activity-card { flex-direction: column; padding: 20px; }
+    .activity-card { flex-direction: column; padding: 20px; }
     .schedule-info { flex-direction: column; gap: 12px; }
     .nav-links { display:flex; flex-direction:row; gap:4px; list-style:none; padding:0; margin:0 0 0 16px; }
   .nav-links a {
@@ -393,8 +393,8 @@
     .summer-weeks { grid-template-columns: 1fr; gap: 16px; }
 
     /* Activity cards */
-    .Activity-card { flex-direction: column; padding: 20px; gap: 12px; }
-    .Activity-icon { width: 48px; height: 48px; font-size: 1.6rem; }
+    .activity-card { flex-direction: column; padding: 20px; gap: 12px; }
+    .activity-icon { width: 48px; height: 48px; font-size: 1.6rem; }
 
     /* Tabs */
     .tabs { flex-direction: column; gap: 8px; }
