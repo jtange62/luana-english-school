@@ -347,9 +347,18 @@
     box-shadow: 0 5px 0 rgba(91,200,245,0.28);
     transition: transform 0.15s, box-shadow 0.15s;
   }
-  .trial-action:nth-child(2) { background: #FFF8DC; border-color: var(--sun); box-shadow: 0 5px 0 rgba(255,217,90,0.35); }
-  .trial-action:nth-child(3) { background: #F5F0FF; border-color: var(--lavender); box-shadow: 0 5px 0 rgba(201,167,240,0.35); }
+  /* Each button carries its own class colour, matching the cards in #classes. */
+  .trial-action.peekaboo { background: #FFF0EE; border-color: var(--coral); box-shadow: 0 5px 0 rgba(255,127,110,0.35); }
+  .trial-action.preschool { background: #EAF8FE; border-color: var(--sky); box-shadow: 0 5px 0 rgba(91,200,245,0.28); }
+  .trial-action.kinder { background: #FFF8DC; border-color: var(--sun); box-shadow: 0 5px 0 rgba(255,217,90,0.35); }
+  .trial-action.after { background: #F5F0FF; border-color: var(--lavender); box-shadow: 0 5px 0 rgba(201,167,240,0.35); }
+  /* Not a class -- the 2027 campaign, styled like the grade-bridge CTA. */
+  .trial-action.shinichinensei { background: #CC4632; border-color: #CC4632; color: #fff; box-shadow: 0 5px 0 #9E3524; }
   .trial-action:hover { transform: translateY(-2px); box-shadow: 0 7px 0 rgba(91,200,245,0.28); }
+  .trial-action.peekaboo:hover { box-shadow: 0 7px 0 rgba(255,127,110,0.35); }
+  .trial-action.kinder:hover { box-shadow: 0 7px 0 rgba(255,217,90,0.35); }
+  .trial-action.after:hover { box-shadow: 0 7px 0 rgba(201,167,240,0.35); }
+  .trial-action.shinichinensei:hover { box-shadow: 0 7px 0 #9E3524; }
   .trial-note { margin-top: 18px; color: #666; font-size: 0.92rem; }
 
   .trial-or {
@@ -1106,11 +1115,11 @@ document.querySelectorAll(".nav-links a").forEach(link => {
     <h2 class="section-title">年齢からクラスを選ぶ</h2>
     <p class="section-sub">体験レッスンは<strong>無料</strong>です。お子さまの年齢に合うクラスを選んで、専用フォームからご予約ください。</p>
     <div class="trial-actions">
-      <a class="trial-action" href="https://docs.google.com/forms/d/e/1FAIpQLSc5qZmrrRXGVBSfMolVnXwwHd0w2XI0v7UeuQpOlFSLprYEBg/viewform" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_peekaboo')">👶 Peekaboo 親子クラス（0〜3歳）無料体験</a>
-      <a class="trial-action" href="https://docs.google.com/forms/d/e/1FAIpQLScj5WNaLAc5Z9DxK1OZVFvbwyybkOBnePVofcUGATNvIcAJnQ/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_preschool')">🐣 1〜2歳児プレスクール 無料体験</a>
-      <a class="trial-action" href="https://docs.google.com/forms/d/e/1FAIpQLSe1fLxRno8bzY1DzSxAqpGnieWfcCrWDZJTVNnzL8yoUu-zdQ/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_kinder')">🌻 幼稚園児クラス 無料体験</a>
-      <a class="trial-action" href="https://docs.google.com/forms/d/e/1FAIpQLSc-GqYR10IOEfLaSN1hieuvVi3gziH-jySSuas-caJ3-MEclw/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_afterschool')">🎒 小学生クラス 無料体験</a>
-      <a class="trial-action" href="https://docs.google.com/forms/d/e/1FAIpQLScbYpdpnxH9C1RSn5QA94qcV8lMzo5htOqTmN7sIeFo_J1f8A/viewform?usp=dialog" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_shinichinensei')">🌸 2027年度 新1年生（現年長さん）無料体験</a>
+      <a class="trial-action peekaboo" href="https://docs.google.com/forms/d/e/1FAIpQLSc5qZmrrRXGVBSfMolVnXwwHd0w2XI0v7UeuQpOlFSLprYEBg/viewform" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_peekaboo')">👶 Peekaboo 親子クラス（0〜3歳）無料体験</a>
+      <a class="trial-action preschool" href="https://docs.google.com/forms/d/e/1FAIpQLScj5WNaLAc5Z9DxK1OZVFvbwyybkOBnePVofcUGATNvIcAJnQ/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_preschool')">🐣 1〜2歳児プレスクール 無料体験</a>
+      <a class="trial-action kinder" href="https://docs.google.com/forms/d/e/1FAIpQLSe1fLxRno8bzY1DzSxAqpGnieWfcCrWDZJTVNnzL8yoUu-zdQ/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_kinder')">🌻 幼稚園児クラス 無料体験</a>
+      <a class="trial-action after" href="https://docs.google.com/forms/d/e/1FAIpQLSc-GqYR10IOEfLaSN1hieuvVi3gziH-jySSuas-caJ3-MEclw/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_afterschool')">🎒 小学生クラス 無料体験</a>
+      <a class="trial-action shinichinensei" href="https://docs.google.com/forms/d/e/1FAIpQLScbYpdpnxH9C1RSn5QA94qcV8lMzo5htOqTmN7sIeFo_J1f8A/viewform?usp=dialog" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_shinichinensei')">🌸 2027年度 新1年生（現年長さん）無料体験</a>
     </div>
     <p class="trial-note">フォーム送信後、スクールから日程をご案内します。</p>
 

@@ -148,7 +148,7 @@ test("the 2027 new-first-grader trial reaches parents of current 年長 children
   const hub = index.match(/<div class="trial-actions">[\s\S]*?<\/div>/)[0];
   assert.ok(hub.includes(form), "the #trial hub must offer the 新1年生 form");
   assert.match(hub, /gtag\('event','trial_lesson_shinichinensei'\)/);
-  assert.equal((hub.match(/class="trial-action"/g) || []).length, 5);
+  assert.equal((hub.match(/class="trial-action(?: [^"]*)?"/g) || []).length, 5);
 });
 
 test("every public page ends in a footer that reaches the flyers", async () => {
