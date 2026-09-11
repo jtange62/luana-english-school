@@ -28,6 +28,7 @@
    [data-hero-slide] figures; tests/site-structure.test.mjs asserts that. */
 (function () {
   var slides = [
+    "peekaboo/peekaboo-classroom.webp",
     "preschool/1788745924511.webp",
     "kinder/1788747367455.webp",
     "afterschool/aftercaro.webp",
@@ -51,7 +52,7 @@
   document.head.appendChild(link);
 })();
 </script>
-<noscript><link rel="preload" as="image" href="photos/programs/optimized/480/preschool/1788745924511.webp" imagesrcset="photos/programs/optimized/480/preschool/1788745924511.webp 480w, photos/programs/optimized/960/preschool/1788745924511.webp 960w" imagesizes="(max-width:600px) calc(100vw - 40px), 45vw" fetchpriority="high"></noscript>
+<noscript><link rel="preload" as="image" href="photos/programs/optimized/480/peekaboo/peekaboo-classroom.webp" imagesrcset="photos/programs/optimized/480/peekaboo/peekaboo-classroom.webp 480w, photos/programs/optimized/960/peekaboo/peekaboo-classroom.webp 960w" imagesizes="(max-width:600px) calc(100vw - 40px), 45vw" fetchpriority="high"></noscript>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap"></noscript>
 <style>
@@ -1045,6 +1046,13 @@ document.querySelectorAll(".nav-links a").forEach(link => {
     <div class="hero-photo" data-hero-carousel aria-roledescription="carousel" aria-label="Luanaのクラス紹介">
       <div class="hero-photo-frame">
         <figure class="hero-slide is-active" data-hero-slide aria-hidden="false">
+          <img src="photos/programs/optimized/480/peekaboo/peekaboo-classroom.webp"
+            srcset="photos/programs/optimized/480/peekaboo/peekaboo-classroom.webp 480w, photos/programs/optimized/960/peekaboo/peekaboo-classroom.webp 960w"
+            sizes="(max-width:600px) calc(100vw - 40px), 45vw"
+            alt="Peekaboo親子クラスで保護者と一緒にボール遊びを楽しむ子ども"
+            width="960" height="641" loading="lazy" decoding="async">
+        </figure>
+        <figure class="hero-slide" data-hero-slide aria-hidden="true">
           <img src="photos/programs/optimized/480/preschool/1788745924511.webp"
             srcset="photos/programs/optimized/480/preschool/1788745924511.webp 480w, photos/programs/optimized/960/preschool/1788745924511.webp 960w"
             sizes="(max-width:600px) calc(100vw - 40px), 45vw"
@@ -1109,7 +1117,8 @@ document.querySelectorAll(".nav-links a").forEach(link => {
         </figure>
       </div>
       <div class="hero-captions">
-        <a class="hero-photo-caption is-active" data-hero-caption href="/preschool">🐣 Preschool｜1〜2歳 →</a>
+        <a class="hero-photo-caption is-active" data-hero-caption href="/peekaboo">👶 Peekaboo｜0〜3歳 →</a>
+        <a class="hero-photo-caption" data-hero-caption href="/preschool">🐣 Preschool｜1〜2歳 →</a>
         <a class="hero-photo-caption" data-hero-caption href="/kinder">🌻 Kinder School｜3〜6歳 →</a>
         <a class="hero-photo-caption" data-hero-caption href="/afterschool">🎒 After School｜小学生 →</a>
         <a class="hero-photo-caption" data-hero-caption href="/preschool">🐣 Preschool｜1〜2歳 →</a>
@@ -1122,7 +1131,8 @@ document.querySelectorAll(".nav-links a").forEach(link => {
       <div class="hero-carousel-controls">
         <button class="hero-carousel-arrow" type="button" data-hero-prev aria-label="前のクラス写真">‹</button>
         <div class="hero-carousel-dots" role="group" aria-label="表示するクラス写真">
-          <button class="hero-carousel-dot" type="button" data-hero-dot aria-label="プリスクールの写真" aria-current="true"></button>
+          <button class="hero-carousel-dot" type="button" data-hero-dot aria-label="Peekaboo親子クラスの写真" aria-current="true"></button>
+          <button class="hero-carousel-dot" type="button" data-hero-dot aria-label="プリスクールの写真" aria-current="false"></button>
           <button class="hero-carousel-dot" type="button" data-hero-dot aria-label="キンダースクールの写真" aria-current="false"></button>
           <button class="hero-carousel-dot" type="button" data-hero-dot aria-label="アフタースクールの写真" aria-current="false"></button>
           <button class="hero-carousel-dot" type="button" data-hero-dot aria-label="プリスクールの写真 2" aria-current="false"></button>

@@ -590,7 +590,7 @@ test("the hero carousel opens on a random slide without losing its preload", asy
   const rendered = [...carousel.matchAll(/src="photos\/programs\/optimized\/480\/([^"]+)"/g)].map(m => m[1]);
   const declared = [...index.match(/var slides = \[([\s\S]*?)\];/)[1].matchAll(/"([^"]+)"/g)].map(m => m[1]);
   assert.deepEqual(declared, rendered, "the head script list must match the rendered slides");
-  assert.equal(rendered.length, 9);
+  assert.equal(rendered.length, 10);
 
   // Pick a slide, publish the pick, and preload it at high priority.
   assert.match(index, /Math\.floor\(Math\.random\(\) \* slides\.length\)/);
@@ -598,7 +598,7 @@ test("the hero carousel opens on a random slide without losing its preload", asy
   assert.match(index, /link\.setAttribute\("fetchpriority", "high"\)/);
 
   // Visitors without JavaScript still get the first slide preloaded.
-  assert.match(index, /<noscript><link rel="preload" as="image" href="photos\/programs\/optimized\/480\/preschool\/1788745924511\.webp"/);
+  assert.match(index, /<noscript><link rel="preload" as="image" href="photos\/programs\/optimized\/480\/peekaboo\/peekaboo-classroom\.webp"/);
 
   // site.js must honour the pick, and bounds-check it rather than trust it.
   assert.match(site, /document\.documentElement\.dataset\.heroStart/);
