@@ -21,7 +21,37 @@
 <meta name="twitter:description" content="1〜2歳、幼稚園児、小学生が、ネイティブ講師と保育士によるAll Englishの年齢別レッスンで楽しく学べる子ども英語教室です。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="image" href="photos/programs/optimized/480/preschool/1788745924511.webp" imagesrcset="photos/programs/optimized/480/preschool/1788745924511.webp 480w, photos/programs/optimized/960/preschool/1788745924511.webp 960w" imagesizes="(max-width:600px) calc(100vw - 40px), 45vw" fetchpriority="high">
+<script>
+/* Pick which hero slide opens the page, then preload that one at high priority.
+   Without this the browser would spend its high-priority fetch on slide 1 and
+   we would hide it a moment later. The list must stay in the same order as the
+   [data-hero-slide] figures; tests/site-structure.test.mjs asserts that. */
+(function () {
+  var slides = [
+    "preschool/1788745924511.webp",
+    "kinder/1788747367455.webp",
+    "afterschool/aftercaro.webp",
+    "preschool/1788745924528.webp",
+    "kinder/1788747367449.webp",
+    "afterschool/1788747673265.webp",
+    "preschool/1788745924544.webp",
+    "kinder/1788747367452(1).webp",
+    "afterschool/1780892439892.webp"
+  ];
+  var base = "photos/programs/optimized/";
+  var start = Math.floor(Math.random() * slides.length);
+  document.documentElement.setAttribute("data-hero-start", start);
+  var link = document.createElement("link");
+  link.rel = "preload";
+  link.as = "image";
+  link.href = base + "480/" + slides[start];
+  link.setAttribute("imagesrcset", base + "480/" + slides[start] + " 480w, " + base + "960/" + slides[start] + " 960w");
+  link.setAttribute("imagesizes", "(max-width:600px) calc(100vw - 40px), 45vw");
+  link.setAttribute("fetchpriority", "high");
+  document.head.appendChild(link);
+})();
+</script>
+<noscript><link rel="preload" as="image" href="photos/programs/optimized/480/preschool/1788745924511.webp" imagesrcset="photos/programs/optimized/480/preschool/1788745924511.webp 480w, photos/programs/optimized/960/preschool/1788745924511.webp 960w" imagesizes="(max-width:600px) calc(100vw - 40px), 45vw" fetchpriority="high"></noscript>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap"></noscript>
 <style>
@@ -1019,7 +1049,7 @@ document.querySelectorAll(".nav-links a").forEach(link => {
             srcset="photos/programs/optimized/480/preschool/1788745924511.webp 480w, photos/programs/optimized/960/preschool/1788745924511.webp 960w"
             sizes="(max-width:600px) calc(100vw - 40px), 45vw"
             alt="プリスクールで先生と英語を楽しむ子ども"
-            width="960" height="540" loading="eager" fetchpriority="high" decoding="async">
+            width="960" height="540" loading="lazy" decoding="async">
         </figure>
         <figure class="hero-slide" data-hero-slide aria-hidden="true">
           <img src="photos/programs/optimized/480/kinder/1788747367455.webp"
@@ -1625,6 +1655,6 @@ document.querySelectorAll(".nav-links a").forEach(link => {
 }
 </script>
 
-<script src="/site.js?v=20260907-carousel9"></script>
+<script src="/site.js?v=20260911-carousel-random"></script>
 </body>
 </html>

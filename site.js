@@ -62,6 +62,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!carousel.contains(event.relatedTarget)) start();
     });
     document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
+
+    // The head script picks the opening slide so it can preload that image;
+    // honour it here. Absent or malformed, the markup's own is-active stands.
+    const startIndex = Number(document.documentElement.dataset.heroStart);
+    if (Number.isInteger(startIndex) && startIndex >= 0 && startIndex < slides.length) show(startIndex);
+
     start();
   });
 
