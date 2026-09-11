@@ -607,3 +607,32 @@ test("the hero carousel opens on a random slide without losing its preload", asy
   // Cached JS against fresh HTML would strand the pick, so the buster must move.
   assert.notEqual(index.match(/site\.js\?v=([\w-]+)/)[1], "20260907-carousel9");
 });
+
+test("the Peekaboo and Preschool flyers are reachable from more than one place", async () => {
+  const newsletter = await source("newsletter.html");
+
+  // Scope to the flyer section: the newsletter section below also uses .pdf-grid.
+  const flyerSection = newsletter.match(
+    /<section class="archive-section" aria-labelledby="flyer-heading">[\s\S]*?<\/section>/
+  )[0];
+
+  for (const [page, slug, title] of [
+    ["peekaboo.html", "peekaboo-class", "Peekaboo 親子クラス"],
+    ["preschool.html", "preschool-class", "1〜2歳児 プレスクール"]
+  ]) {
+    const pdf = await readFile(new URL(`../pdfs/flyers/${slug}.pdf`, import.meta.url));
+    assert.equal(pdf.subarray(0, 4).toString(), "%PDF", `${slug}.pdf must be a real PDF`);
+
+    // Listed in the archive, so the flyer has a home of its own.
+    assert.match(flyerSection, new RegExp(`href="pdfs/flyers/${slug}\.pdf"`));
+    assert.match(flyerSection, new RegExp(`<canvas data-pdf="pdfs/flyers/${slug}\.pdf"></canvas>`));
+    assert.ok(flyerSection.includes(title), `${slug} needs its card title`);
+
+    // And offered on its own class page, where the interested parent already is.
+    const cta = (await source(page)).match(/<div class="cta-box">[\s\S]*?<\/div>\s*<\/div>/)[0];
+    const link = cta.match(new RegExp(`<a href="/pdfs/flyers/${slug}\.pdf"[^>]*>`));
+    assert.ok(link, `${page} must offer its own flyer`);
+    assert.match(link[0], /target="_blank"/);
+    assert.match(link[0], /rel="noopener noreferrer"/);
+  }
+});

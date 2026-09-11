@@ -296,6 +296,11 @@
   }
   .cta-box p { color: #666; margin-bottom: 24px; font-size: 0.95rem; }
   .cta-options { display:flex; justify-content:center; flex-wrap:wrap; gap:14px; }
+  .cta-flyer {
+    display:inline-flex; align-items:center; justify-content:center;
+    color:#B5372A; font-weight:700; font-size:0.95rem;
+    padding:13px 8px; text-decoration:underline;
+  }
   .cta-btn {
     display: inline-block;
     background: #CC4632; color: white;
@@ -575,6 +580,7 @@ window.addEventListener('resize',_fixSeasonalNav);
     <div class="cta-options">
       <a href="https://docs.google.com/forms/d/e/1FAIpQLSc5qZmrrRXGVBSfMolVnXwwHd0w2XI0v7UeuQpOlFSLprYEBg/viewform" target="_blank" onclick="gtag('event','trial_lesson_peekaboo')" class="cta-btn" rel="noopener noreferrer">体験レッスンを予約する</a>
       <a href="https://lin.ee/SOqP6Vz" target="_blank" onclick="gtag('event','contact_line_peekaboo')" class="line-cta" rel="noopener noreferrer">LINEで相談する</a>
+      <a href="/pdfs/flyers/peekaboo-class.pdf" target="_blank" onclick="gtag('event','flyer_peekaboo')" class="cta-flyer" rel="noopener noreferrer">チラシを見る（PDF）</a>
     </div>
   </div>
 
