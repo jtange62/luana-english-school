@@ -305,8 +305,9 @@
   .cta-flyer {
     display:inline-flex; align-items:center; justify-content:center;
     color:#1F7887; font-weight:700; font-size:0.95rem;
-    padding:13px 8px; text-decoration:underline;
+    padding:13px 8px; text-decoration:none;
   }
+  .cta-flyer span { text-decoration: underline; }
   .line-cta {
     display:inline-flex; align-items:center; justify-content:center;
     padding:16px 30px; border-radius:40px; background:#067A34; color:white;
@@ -667,7 +668,7 @@ window.addEventListener('resize',_fixSeasonalNav);
     <div class="cta-options">
       <a href="https://docs.google.com/forms/d/e/1FAIpQLScj5WNaLAc5Z9DxK1OZVFvbwyybkOBnePVofcUGATNvIcAJnQ/viewform?usp=header" target="_blank" onclick="gtag('event','trial_lesson_preschool')" class="cta-btn" rel="noopener noreferrer">体験レッスンを予約する</a>
       <a href="https://lin.ee/SOqP6Vz" target="_blank" onclick="gtag('event','contact_line_preschool')" class="line-cta" rel="noopener noreferrer">LINEで相談する</a>
-      <a href="/pdfs/flyers/preschool-class.pdf" target="_blank" onclick="gtag('event','flyer_preschool')" class="cta-flyer" rel="noopener noreferrer">チラシを見る（PDF）</a>
+      <a href="/pdfs/flyers/preschool-class.pdf" target="_blank" onclick="gtag('event','flyer_preschool')" class="cta-flyer" rel="noopener noreferrer"><span>チラシを見る</span>（PDF）</a>
     </div>
   </div>
 

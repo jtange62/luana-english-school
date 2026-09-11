@@ -389,8 +389,9 @@
   .grade-bridge a.grade-bridge-flyer {
     background: none; color: #1F6F80; box-shadow: none;
     padding: 13px 8px; margin-left: 6px;
-    text-decoration: underline; font-weight: 700;
+    text-decoration: none; font-weight: 700;
   }
+  .grade-bridge a.grade-bridge-flyer span { text-decoration: underline; }
   .grade-bridge a.grade-bridge-flyer:hover { transform: none; box-shadow: none; }
 
   /* SITE FOOTER */
@@ -643,7 +644,7 @@ window.addEventListener('resize',_fixSeasonalNav);
     <h2 id="grade-bridge-title">🎒 年長さんの保護者の方へ</h2>
     <p>小学校入学後も、英語を続けませんか？2027年度に新1年生になるお子さま（現年長さん）向けに、9月1日より小学生クラスの無料体験レッスンを受付中です。入学前から少しずつ慣れていただけます。</p>
     <a href="https://docs.google.com/forms/d/e/1FAIpQLScbYpdpnxH9C1RSn5QA94qcV8lMzo5htOqTmN7sIeFo_J1f8A/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" onclick="gtag('event','trial_lesson_shinichinensei_kinder')">2027年度 新1年生の無料体験を申し込む</a>
-    <a class="grade-bridge-flyer" href="/pdfs/flyers/shinichinensei-2027.pdf" target="_blank" rel="noopener noreferrer" onclick="gtag('event','flyer_shinichinensei_kinder')">チラシを見る（PDF）</a>
+    <a class="grade-bridge-flyer" href="/pdfs/flyers/shinichinensei-2027.pdf" target="_blank" rel="noopener noreferrer" onclick="gtag('event','flyer_shinichinensei_kinder')"><span>チラシを見る</span>（PDF）</a>
   </section>
   <div class="cta-box">
     <h3>✨ 体験レッスン受付中！</h3>

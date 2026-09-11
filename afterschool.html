@@ -398,8 +398,9 @@
   .grade-bridge a.grade-bridge-flyer {
     background: none; color: #1F6F80; box-shadow: none;
     padding: 13px 8px; margin-left: 6px;
-    text-decoration: underline; font-weight: 700;
+    text-decoration: none; font-weight: 700;
   }
+  .grade-bridge a.grade-bridge-flyer span { text-decoration: underline; }
   .grade-bridge a.grade-bridge-flyer:hover { transform: none; box-shadow: none; }
 
   /* SITE FOOTER */
@@ -506,7 +507,7 @@ window.addEventListener('resize',_fixSeasonalNav);
     <h2 id="grade-bridge-title">🌸 2027年度 新1年生さん（現年長さん）へ</h2>
     <p>小学生クラスは、ご入学前から始めていただけます。9月1日より、2027年度に新1年生になるお子さま向けの無料体験レッスンを受付中です。</p>
     <a href="https://docs.google.com/forms/d/e/1FAIpQLScbYpdpnxH9C1RSn5QA94qcV8lMzo5htOqTmN7sIeFo_J1f8A/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" onclick="gtag('event','trial_lesson_shinichinensei_afterschool')">2027年度 新1年生の無料体験を申し込む</a>
-    <a class="grade-bridge-flyer" href="/pdfs/flyers/shinichinensei-2027.pdf" target="_blank" rel="noopener noreferrer" onclick="gtag('event','flyer_shinichinensei_afterschool')">チラシを見る（PDF）</a>
+    <a class="grade-bridge-flyer" href="/pdfs/flyers/shinichinensei-2027.pdf" target="_blank" rel="noopener noreferrer" onclick="gtag('event','flyer_shinichinensei_afterschool')"><span>チラシを見る</span>（PDF）</a>
   </section>
   <section class="pickup-area" aria-labelledby="pickup-area-title">
     <h2 id="pickup-area-title">🚸 お迎えサービス・対応エリア</h2>
