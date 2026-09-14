@@ -590,7 +590,7 @@ test("the hero carousel opens on a random slide without losing its preload", asy
   const rendered = [...carousel.matchAll(/src="photos\/programs\/optimized\/480\/([^"]+)"/g)].map(m => m[1]);
   const declared = [...index.match(/var slides = \[([\s\S]*?)\];/)[1].matchAll(/"([^"]+)"/g)].map(m => m[1]);
   assert.deepEqual(declared, rendered, "the head script list must match the rendered slides");
-  assert.equal(rendered.length, 10);
+  assert.equal(rendered.length, 4);
 
   // Pick a slide, publish the pick, and preload it at high priority.
   assert.match(index, /Math\.floor\(Math\.random\(\) \* slides\.length\)/);
@@ -598,14 +598,14 @@ test("the hero carousel opens on a random slide without losing its preload", asy
   assert.match(index, /link\.setAttribute\("fetchpriority", "high"\)/);
 
   // Visitors without JavaScript still get the first slide preloaded.
-  assert.match(index, /<noscript><link rel="preload" as="image" href="photos\/programs\/optimized\/480\/peekaboo\/peekaboo-classroom\.webp"/);
+  assert.match(index, /<noscript><link rel="preload" as="image" href="photos\/programs\/optimized\/480\/peekaboo\/peekaboo-class\.webp"/);
 
   // site.js must honour the pick, and bounds-check it rather than trust it.
   assert.match(site, /document\.documentElement\.dataset\.heroStart/);
   assert.match(site, /startIndex >= 0 && startIndex < slides\.length/);
 
   // Cached JS against fresh HTML would strand the pick, so the buster must move.
-  assert.notEqual(index.match(/site\.js\?v=([\w-]+)/)[1], "20260907-carousel9");
+  assert.notEqual(index.match(/site\.js\?v=([\w-]+)/)[1], "20260911-carousel-random");
 });
 
 test("the Peekaboo and Preschool flyers are reachable from more than one place", async () => {
