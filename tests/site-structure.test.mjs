@@ -107,7 +107,7 @@ test("the 2027 new-first-grader flyer is the newest listed material", async () =
 
   assert.equal(flyer.subarray(0, 4).toString(), "%PDF");
   assert.match(html, /href="pdfs\/flyers\/shinichinensei-2027\.pdf"/);
-  assert.match(html, /<canvas data-pdf="pdfs\/flyers\/shinichinensei-2027\.pdf"><\/canvas>/);
+  assert.match(html, /<img src="pdfs\/flyers\/shinichinensei-2027\.webp"/);
   assert.match(html, /2027年度 新1年生 無料体験レッスン/);
 
   // Scope to the flyer section: the newsletter section above it also uses .pdf-grid.
@@ -625,7 +625,7 @@ test("the Peekaboo and Preschool flyers are reachable from more than one place",
 
     // Listed in the archive, so the flyer has a home of its own.
     assert.match(flyerSection, new RegExp(`href="pdfs/flyers/${slug}\.pdf"`));
-    assert.match(flyerSection, new RegExp(`<canvas data-pdf="pdfs/flyers/${slug}\.pdf"></canvas>`));
+    assert.match(flyerSection, new RegExp(`<img src="pdfs/flyers/${slug}\.webp"`));
     assert.ok(flyerSection.includes(title), `${slug} needs its card title`);
 
     // And offered on its own class page, where the interested parent already is.
@@ -634,5 +634,35 @@ test("the Peekaboo and Preschool flyers are reachable from more than one place",
     assert.ok(link, `${page} must offer its own flyer`);
     assert.match(link[0], /target="_blank"/);
     assert.match(link[0], /rel="noopener noreferrer"/);
+  }
+});
+
+test("every archive card uses a pre-rendered thumbnail, not a PDF drawn in the browser", async () => {
+  const html = await source("newsletter.html");
+
+  // pdf.js cost 372KB and downloaded whole PDFs to draw small pictures.
+  for (const remnant of ["pdfjsLib", "renderPDFPage", "setupLazyPDFLoading", "data-pdf", "<canvas"]) {
+    assert.ok(!html.includes(remnant), `${remnant} should be gone with the canvas thumbnails`);
+  }
+
+  const cards = html.match(/<a href="pdfs\/[^"]+\.pdf"[\s\S]*?<\/a>/g) || [];
+  assert.equal(cards.length, 12, "six flyers and six newsletters");
+
+  for (const card of cards) {
+    const pdf = card.match(/href="(pdfs\/[^"]+\.pdf)"/)[1];
+    const img = card.match(/<img src="(pdfs\/[^"]+\.webp)"[^>]*>/);
+    assert.ok(img, `${pdf} needs a thumbnail image`);
+
+    // The thumbnail must belong to its own PDF, or a card shows the wrong sheet.
+    assert.equal(img[1], pdf.replace(/\.pdf$/, ".webp"), `${pdf} thumbnail is mismatched`);
+
+    const file = await readFile(new URL(`../${img[1]}`, import.meta.url));
+    assert.equal(file.subarray(0, 4).toString(), "RIFF", `${img[1]} must be a real WebP`);
+
+    // One declared shape for every card is the whole point: landscape sheets
+    // are letterboxed into it rather than stretched.
+    assert.match(img[0], /width="600" height="800"/, `${img[1]} must declare the shared 600x800 box`);
+    assert.match(img[0], /alt="[^"]+"/, `${img[1]} needs alt text`);
+    assert.match(img[0], /loading="(lazy|eager)"/);
   }
 });

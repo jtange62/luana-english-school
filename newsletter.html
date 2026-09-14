@@ -264,11 +264,6 @@
     font-size:0.82rem; color:#444;
   }
 
-  .card-thumb canvas {
-    width:100%; height:100%; display:block;
-    object-fit:contain; background:#fff;
-  }
-
   @media(max-width:600px) {
     .pdf-grid { grid-template-columns:repeat(2,1fr); gap:14px; }
     .card-body { padding:14px; }
@@ -298,8 +293,6 @@
   @media(max-width: 600px) { .site-footer { padding: 30px 16px; } }
 </style>
 <!-- PDF.js Library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
 <!-- Google Analytics -->
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -358,17 +351,23 @@ window.addEventListener('resize',_fixSeasonalNav);
 <div class="content">
 
   <!-- ================================================
+    Thumbnails are pre-rendered images, not live PDFs. Each .pdf has a
+    .webp beside it: 600x800, the sheet centred on a #2D2D2D letterbox so
+    landscape and portrait sheets share one card shape.
+
     HOW TO ADD A NEW NEWSLETTER EACH MONTH:
     1. Export your Canva newsletter as a PDF
     2. Save it to the pdfs/newsletters/ folder as: YYYY-MM.pdf  (e.g. 2026-08.pdf)
-    3. Copy one of the .pdf-card blocks below
-    4. Update: href, card-date, card-title, card-desc
-    5. Move the NEW badge to the latest card
+    3. Generate its thumbnail: python scripts/make-pdf-thumbs.py pdfs/newsletters/YYYY-MM.pdf
+    4. Copy one of the .pdf-card blocks below
+    5. Update: href, img src, img alt, card-date, card-title, card-desc
+    6. Move the NEW badge to the latest card
 
     HOW TO ADD A NEW FLYER:
     1. Save the PDF to pdfs/flyers/ with a clear lowercase filename
-    2. Copy one of the .pdf-card blocks into the flyer grid
-    3. Update the title, description, href, and data-pdf
+    2. Generate its thumbnail: python scripts/make-pdf-thumbs.py pdfs/flyers/NAME.pdf
+    3. Copy one of the .pdf-card blocks into the flyer grid
+    4. Update the title, description, href, img src and img alt
   ================================================ -->
 
   <section class="archive-section" aria-labelledby="flyer-heading">
@@ -379,7 +378,7 @@ window.addEventListener('resize',_fixSeasonalNav);
       <!-- ====== PEEKABOO ====== -->
       <a href="pdfs/flyers/peekaboo-class.pdf" target="_blank" class="pdf-card" rel="noopener noreferrer">
         <div class="card-thumb">
-          <canvas data-pdf="pdfs/flyers/peekaboo-class.pdf"></canvas>
+          <img src="pdfs/flyers/peekaboo-class.webp" alt="Peekaboo 親子クラスのチラシ" width="600" height="800" loading="lazy" decoding="async">
         </div>
         <div class="card-body">
           <span class="card-date">Flyer</span>
@@ -392,7 +391,7 @@ window.addEventListener('resize',_fixSeasonalNav);
       <!-- ====== PRESCHOOL 1-2歳児 ====== -->
       <a href="pdfs/flyers/preschool-class.pdf" target="_blank" class="pdf-card" rel="noopener noreferrer">
         <div class="card-thumb">
-          <canvas data-pdf="pdfs/flyers/preschool-class.pdf"></canvas>
+          <img src="pdfs/flyers/preschool-class.webp" alt="1〜2歳児プレスクールのチラシ" width="600" height="800" loading="lazy" decoding="async">
         </div>
         <div class="card-body">
           <span class="card-date">Flyer</span>
@@ -405,7 +404,7 @@ window.addEventListener('resize',_fixSeasonalNav);
       <!-- ====== 2027 NEW FIRST GRADERS ====== -->
       <a href="pdfs/flyers/shinichinensei-2027.pdf" target="_blank" class="pdf-card" rel="noopener noreferrer">
         <div class="card-thumb">
-          <canvas data-pdf="pdfs/flyers/shinichinensei-2027.pdf"></canvas>
+          <img src="pdfs/flyers/shinichinensei-2027.webp" alt="2027年度 新1年生 無料体験レッスンのチラシ" width="600" height="800" loading="lazy" decoding="async">
           <span class="new-badge">NEW</span>
         </div>
         <div class="card-body">
@@ -419,7 +418,7 @@ window.addEventListener('resize',_fixSeasonalNav);
       <!-- ====== SUMMER SCHOOL 2026 ====== -->
       <a href="pdfs/flyers/summerschool2026.pdf" target="_blank" class="pdf-card" rel="noopener noreferrer">
         <div class="card-thumb">
-          <canvas data-pdf="pdfs/flyers/summerschool2026.pdf"></canvas>
+          <img src="pdfs/flyers/summerschool2026.webp" alt="サマースクール2026のチラシ" width="600" height="800" loading="lazy" decoding="async">
         </div>
         <div class="card-body">
           <span class="card-date">Flyer</span>
@@ -432,7 +431,7 @@ window.addEventListener('resize',_fixSeasonalNav);
       <!-- ====== PRESCHOOL & AFTERSCHOOL ====== -->
       <a href="pdfs/flyers/preschool-afterschool-2026.pdf" target="_blank" class="pdf-card" rel="noopener noreferrer">
         <div class="card-thumb">
-          <canvas data-pdf="pdfs/flyers/preschool-afterschool-2026.pdf"></canvas>
+          <img src="pdfs/flyers/preschool-afterschool-2026.webp" alt="プレスクール・アフタースクールのチラシ" width="600" height="800" loading="lazy" decoding="async">
         </div>
         <div class="card-body">
           <span class="card-date">Flyer</span>
@@ -445,7 +444,7 @@ window.addEventListener('resize',_fixSeasonalNav);
       <!-- ====== MAIN FLYER ====== -->
       <a href="pdfs/flyers/main-flyer.pdf" target="_blank" class="pdf-card" rel="noopener noreferrer">
         <div class="card-thumb">
-          <canvas data-pdf="pdfs/flyers/main-flyer.pdf"></canvas>
+          <img src="pdfs/flyers/main-flyer.webp" alt="Luana English School スクールチラシ" width="600" height="800" loading="lazy" decoding="async">
         </div>
         <div class="card-body">
           <span class="card-date">Flyer</span>
@@ -467,7 +466,7 @@ window.addEventListener('resize',_fixSeasonalNav);
     <!-- ====== SEPTEMBER 2026 PRE-K ====== -->
     <a href="pdfs/newsletters/2026-09-prek.pdf" target="_blank" class="pdf-card" rel="noopener noreferrer">
       <div class="card-thumb">
-        <img src="pdfs/newsletters/2026-09-prek.webp" alt="2026年9月 Pre-K ニュースレターの表紙" width="595" height="842" loading="eager">
+        <img src="pdfs/newsletters/2026-09-prek.webp" alt="2026年9月 Pre-K ニュースレターの表紙" width="600" height="800" loading="eager">
         <span class="new-badge">NEW</span>
       </div>
       <div class="card-body">
@@ -481,7 +480,7 @@ window.addEventListener('resize',_fixSeasonalNav);
     <!-- ====== SEPTEMBER 2026 ====== -->
     <a href="pdfs/newsletters/2026-09.pdf" target="_blank" class="pdf-card" rel="noopener noreferrer">
       <div class="card-thumb">
-        <img src="pdfs/newsletters/2026-09.webp" alt="2026年9月号ニュースレターの表紙" width="595" height="842" loading="eager">
+        <img src="pdfs/newsletters/2026-09.webp" alt="2026年9月号ニュースレターの表紙" width="600" height="800" loading="eager">
       </div>
       <div class="card-body">
         <span class="card-date">September 2026</span>
@@ -494,7 +493,7 @@ window.addEventListener('resize',_fixSeasonalNav);
     <!-- ====== AUGUST 2026 ====== -->
     <a href="pdfs/newsletters/2026-08.pdf" target="_blank" class="pdf-card" rel="noopener noreferrer">
       <div class="card-thumb">
-        <canvas data-pdf="pdfs/newsletters/2026-08.pdf"></canvas>
+        <img src="pdfs/newsletters/2026-08.webp" alt="2026年8月号ニュースレターの表紙" width="600" height="800" loading="lazy" decoding="async">
       </div>
       <div class="card-body">
         <span class="card-date">August 2026</span>
@@ -507,7 +506,7 @@ window.addEventListener('resize',_fixSeasonalNav);
     <!-- ====== JULY 2026 ====== -->
     <a href="pdfs/newsletters/2026-07.pdf" target="_blank" class="pdf-card" rel="noopener noreferrer">
       <div class="card-thumb">
-        <canvas data-pdf="pdfs/newsletters/2026-07.pdf"></canvas>
+        <img src="pdfs/newsletters/2026-07.webp" alt="2026年7月号ニュースレターの表紙" width="600" height="800" loading="lazy" decoding="async">
       </div>
       <div class="card-body">
         <span class="card-date">July 2026</span>
@@ -520,7 +519,7 @@ window.addEventListener('resize',_fixSeasonalNav);
     <!-- ====== JUNE 2026 ====== -->
     <a href="pdfs/newsletters/2026-06.pdf" target="_blank" class="pdf-card" rel="noopener noreferrer">
       <div class="card-thumb">
-        <canvas data-pdf="pdfs/newsletters/2026-06.pdf"></canvas>
+        <img src="pdfs/newsletters/2026-06.webp" alt="2026年6月号ニュースレターの表紙" width="600" height="800" loading="lazy" decoding="async">
       </div>
       <div class="card-body">
         <span class="card-date">June 2026</span>
@@ -533,7 +532,7 @@ window.addEventListener('resize',_fixSeasonalNav);
     <!-- ====== MAY 2026 ====== -->
     <a href="pdfs/newsletters/2026-05.pdf" target="_blank" class="pdf-card" rel="noopener noreferrer">
       <div class="card-thumb">
-        <canvas data-pdf="pdfs/newsletters/2026-05.pdf"></canvas>
+        <img src="pdfs/newsletters/2026-05.webp" alt="2026年5月号ニュースレターの表紙" width="600" height="800" loading="lazy" decoding="async">
       </div>
       <div class="card-body">
         <span class="card-date">May 2026</span>
@@ -554,48 +553,6 @@ window.addEventListener('resize',_fixSeasonalNav);
 document.querySelectorAll(".nav-links a").forEach(link => {
   link.addEventListener("click", () => document.querySelector(".nav-links").classList.remove("open"));
 });
-
-async function renderPDFPage(canvas) {
-  const pdfUrl = canvas.getAttribute('data-pdf');
-  if (canvas.dataset.rendered) return;
-  canvas.dataset.rendered = 'true';
-
-  try {
-    const pdf = await pdfjsLib.getDocument(pdfUrl).promise;
-    const page = await pdf.getPage(1);
-    const scale = 1.2;
-    const viewport = page.getViewport({ scale });
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-    const context = canvas.getContext('2d');
-    await page.render({ canvasContext: context, viewport }).promise;
-  } catch (error) {
-    console.warn(`Error rendering PDF ${pdfUrl}:`, error.message);
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#f0f0f0';
-    ctx.fillRect(0, 0, canvas.width || 300, canvas.height || 400);
-    ctx.fillStyle = '#999';
-    ctx.font = '14px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('PDF preview unavailable', (canvas.width || 300) / 2, (canvas.height || 400) / 2);
-  }
-}
-
-function setupLazyPDFLoading() {
-  const canvases = document.querySelectorAll('canvas[data-pdf]');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        renderPDFPage(entry.target);
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { rootMargin: '50px' });
-
-  canvases.forEach(canvas => observer.observe(canvas));
-}
-
-document.addEventListener('DOMContentLoaded', setupLazyPDFLoading);
 </script>
 
 </main>
