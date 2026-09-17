@@ -141,8 +141,7 @@
     }
     .nav-links.open a { font-size: 1.1rem; padding: 12px 16px; text-align: center; }
     section { padding: 20px 16px 60px; scroll-margin-top: var(--header-h, 150px); }
-    .about-grid, .classes-grid, .summer-weeks { grid-template-columns: 1fr; }
-    .summer-pricing { grid-template-columns: 1fr; padding: 24px; }
+    .about-grid, .classes-grid { grid-template-columns: 1fr; }
     .hero h1 { font-size: 2.4rem; }
     .contact-cards { flex-direction: column; align-items: center; }
     .schedule-timeLine { padding: 0 10px; }
@@ -585,69 +584,7 @@
   }
 
   /* ── SUMMER ── */
-  .summer {
-    background: Linear-gradient(135deg, #FFD95A 0%, #FF9F6E 100%);
-    position: relative; overflow: hidden;
-  }
-  .summer::before {
-    content: '☀️';
-    position: absolute; top: -20px; right: 60px;
-    font-size: 8rem; opacity: 0.15;
-    animation: spin 20s Linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .summer .section-tag { background: var(--white); box-shadow: 2px 2px 0 rgba(0,0,0,0.15); }
-  .summer .section-title { color: var(--white); }
-  .summer .section-sub { color: rgba(255,255,255,0.85); }
-
-  .summer-weeks {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    margin-top: 50px;
-  }
-
-  .week-card {
-    background: rgba(255,255,255,0.95);
-    border-radius: 24px;
-    padding: 28px 24px;
-    position: relative;
-  }
-
-  .week-num {
-    font-family: 'Baloo 2', cursive;
-    font-size: 0.75rem; font-weight: 800;
-    letter-spacing: 2px; text-transform: uppercase;
-    color: var(--coral);
-    margin-bottom: 8px;
-  }
-  .week-Theme {
-    font-family: 'Baloo 2', cursive;
-    font-size: 1.35rem; font-weight: 800;
-    margin-bottom: 6px;
-  }
-  .week-dates {
-    font-size: 0.85rem; color: #666; font-weight: 700;
-    margin-bottom: 16px;
-  }
-  .week-trip {
-    display: flex; align-items: center; gap: 8px;
-    background: var(--cream);
-    padding: 10px 14px; border-radius: 12px;
-    font-size: 0.85rem; font-weight: 700;
-  }
-
-  .summer-pricing {
-    background: rgba(255,255,255,0.95);
-    border-radius: 28px;
-    padding: 40px;
-    margin-top: 40px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    align-items: center;
-  }
+  .summer-teaser { background: #FFF3D6; padding: 64px 20px; text-align: center; }
 
   .pricing-table { width: 100%; border-collapse: collapse; }
   .pricing-table th {
@@ -814,8 +751,7 @@
 
   /* ── RESPONSIVE ── */
   @media(max-width: 860px) {
-    .about-grid, .classes-grid, .summer-weeks { grid-template-columns: 1fr; }
-    .summer-pricing { grid-template-columns: 1fr; }
+    .about-grid, .classes-grid { grid-template-columns: 1fr; }
     nav { padding: 6px 16px; }
     .nav-links { display: none; }
   }
@@ -861,7 +797,6 @@
     .nav-links.open a { font-size: 1.1rem; padding: 10px 16px; text-align: left; }
     section { padding: 60px 16px; }
     .about-grid { gap: 30px; }
-    .summer-pricing { padding: 24px; }
     .hero h1 { font-size: 2.4rem; }
     .contact-cards { flex-direction: column; align-items: center; }
     .schedule-timeLine { padding: 0 10px; }
@@ -915,10 +850,6 @@
     /* Contact */
     .contact-cards { flex-direction: column; align-items: stretch; }
     .contact-card { min-width: unset; }
-
-    /* Summer pricing */
-    .summer-pricing { padding: 20px; gap: 24px; }
-    .summer-weeks { grid-template-columns: 1fr; gap: 16px; }
 
     /* Activity cards */
     .Activity-card { flex-direction: column; padding: 20px; gap: 12px; }
@@ -1126,6 +1057,20 @@ document.querySelectorAll(".nav-links a").forEach(link => {
       <a href="/gallery" aria-label="外遊びの写真をもっと見る"><img src="photos/gallery-optimized/320/Everyday%20Moments/June%202026/photo-20.webp" srcset="photos/gallery-optimized/320/Everyday%20Moments/June%202026/photo-20.webp 320w, photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-20.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/June%202026/photo-20.webp 960w" sizes="(max-width:600px) calc(50vw - 24px), 360px" alt="先生と子どもたちが外で活動する様子" loading="lazy" decoding="async" width="1108" height="1477"></a>
     </div>
     <a class="moments-link" href="/gallery">写真をもっと見る →</a>
+  </div>
+</section>
+
+<section class="summer-teaser" aria-labelledby="summer-teaser-title">
+  <div class="container">
+    <div class="section-tag">☀️ Summer School</div>
+    <h2 class="section-title" id="summer-teaser-title">2026年の夏の思い出</h2>
+    <p class="section-sub" style="margin:0 auto;">3つのテーマ週と金曜日のフィールドトリップ。この夏の様子を写真と動画でご紹介しています。</p>
+    <div class="moments-grid">
+      <a href="/summer" aria-label="お祭りの写真をもっと見る"><img src="photos/summer-2026/480/W1-D4-01-Japan-Matsuri.webp" srcset="photos/summer-2026/480/W1-D4-01-Japan-Matsuri.webp 480w, photos/summer-2026/720/W1-D4-01-Japan-Matsuri.webp 720w" sizes="(max-width:600px) calc(100vw - 40px), 360px" alt="夏祭りを楽しむ子どもたちと先生" loading="lazy" decoding="async" width="1200" height="1500"></a>
+      <a href="/summer" aria-label="海の活動の写真をもっと見る"><img src="photos/summer-2026/480/W2-D3-07-Tides-Waves.webp" srcset="photos/summer-2026/480/W2-D3-07-Tides-Waves.webp 480w, photos/summer-2026/720/W2-D3-07-Tides-Waves.webp 720w" sizes="(max-width:600px) calc(50vw - 24px), 360px" alt="水辺の活動で集合する子どもたちと先生" loading="lazy" decoding="async" width="960" height="720"></a>
+      <a href="/summer" aria-label="フィールドトリップの写真をもっと見る"><img src="photos/summer-2026/480/W3-D5-09-Hug-Hug-Bouldering-Field-Trip.webp" srcset="photos/summer-2026/480/W3-D5-09-Hug-Hug-Bouldering-Field-Trip.webp 480w, photos/summer-2026/720/W3-D5-09-Hug-Hug-Bouldering-Field-Trip.webp 720w" sizes="(max-width:600px) calc(50vw - 24px), 360px" alt="フィールドトリップで先生と記念撮影をする子どもたち" loading="lazy" decoding="async" width="1600" height="1200"></a>
+    </div>
+    <a class="moments-link" href="/summer">サマースクールを見る →</a>
   </div>
 </section>
 
