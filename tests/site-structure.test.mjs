@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile, stat } from "node:fs/promises";
 import test from "node:test";
+import { runInNewContext } from "node:vm";
 
 const publicPages = [
   "index.html",
@@ -587,7 +588,7 @@ test("the hero carousel opens on a random slide without losing its preload", asy
 
   // The head script preloads whichever slide it picks, so its list has to be
   // the slide order exactly -- a drift would preload an image we never show.
-  const rendered = [...carousel.matchAll(/src="photos\/programs\/optimized\/480\/([^"]+)"/g)].map(m => m[1]);
+  const rendered = [...carousel.matchAll(/src="home-assets-v20260918\/480\/([^"]+)"/g)].map(m => m[1]);
   const declared = [...index.match(/var slides = \[([\s\S]*?)\];/)[1].matchAll(/"([^"]+)"/g)].map(m => m[1]);
   assert.deepEqual(declared, rendered, "the head script list must match the rendered slides");
   assert.equal(rendered.length, 4);
@@ -598,7 +599,7 @@ test("the hero carousel opens on a random slide without losing its preload", asy
   assert.match(index, /link\.setAttribute\("fetchpriority", "high"\)/);
 
   // Visitors without JavaScript still get the first slide preloaded.
-  assert.match(index, /<noscript><link rel="preload" as="image" href="photos\/programs\/optimized\/480\/peekaboo\/peekaboo-class\.webp"/);
+  assert.match(index, /<noscript><link rel="preload" as="image" href="home-assets-v20260918\/480\/peekaboo\/peekaboo-class\.webp"/);
 
   // site.js must honour the pick, and bounds-check it rather than trust it.
   assert.match(site, /document\.documentElement\.dataset\.heroStart/);
@@ -606,6 +607,47 @@ test("the hero carousel opens on a random slide without losing its preload", asy
 
   // Cached JS against fresh HTML would strand the pick, so the buster must move.
   assert.notEqual(index.match(/site\.js\?v=([\w-]+)/)[1], "20260911-carousel-random");
+});
+
+test("every possible opening photo is promoted before the carousel starts", async () => {
+  const html = await source("index.html");
+  const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(match => match[1]);
+  const head = scripts.find(script => script.includes("var slides = ["));
+  const opening = scripts.find(script => script.includes("var carousel = document.querySelector"));
+  for (let selected = 0; selected < 4; selected++) {
+    const makeElement = () => ({
+      attributes: {},
+      classList: { toggle(name, active) { this[name] = active; } },
+      setAttribute(name, value) { this.attributes[name] = value; }
+    });
+    const images = Array.from({ length: 4 }, () => ({ ...makeElement(), loading: "lazy" }));
+    const slides = images.map(image => ({ ...makeElement(), querySelector: () => image }));
+    const captions = images.map(makeElement);
+    const dots = images.map(makeElement);
+    let preload;
+    const document = {
+      documentElement: { dataset: {}, setAttribute(name, value) { this.dataset.heroStart = String(value); } },
+      createElement: makeElement,
+      head: { appendChild(link) { preload = link; } },
+      querySelector: () => ({ querySelectorAll: selector => ({
+        "[data-hero-slide]": slides,
+        "[data-hero-caption]": captions,
+        "[data-hero-dot]": dots
+      })[selector] })
+    };
+    runInNewContext(head, { document, Math: { floor: Math.floor, random: () => (selected + 0.1) / 4 } });
+    runInNewContext(opening, { document });
+    const sourceImages = [...html.matchAll(/<img src="(home-assets-v20260918\/480\/[^\"]+)"/g)];
+    assert.equal(preload.href, sourceImages[selected][1]);
+    assert.equal(preload.attributes.fetchpriority, "high");
+    images.forEach((image, index) => {
+      assert.equal(image.loading, index === selected ? "eager" : "lazy");
+      assert.equal(image.attributes.fetchpriority, index === selected ? "high" : undefined);
+      assert.equal(slides[index].attributes["aria-hidden"], String(index !== selected));
+      assert.equal(captions[index].classList["is-active"], index === selected);
+      assert.equal(dots[index].attributes["aria-current"], String(index === selected));
+    });
+  }
 });
 
 test("the Peekaboo and Preschool flyers are reachable from more than one place", async () => {

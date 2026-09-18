@@ -33,20 +33,20 @@
     "kinder/1788747367449.webp",
     "afterschool/afterschoolcaro.webp"
   ];
-  var base = "photos/programs/optimized/";
+  var base = "home-assets-v20260918/";
   var start = Math.floor(Math.random() * slides.length);
   document.documentElement.setAttribute("data-hero-start", start);
   var link = document.createElement("link");
   link.rel = "preload";
   link.as = "image";
   link.href = base + "480/" + slides[start];
-  link.setAttribute("imagesrcset", base + "480/" + slides[start] + " 480w, " + base + "960/" + slides[start] + " 960w");
-  link.setAttribute("imagesizes", "(max-width:600px) calc(100vw - 40px), 45vw");
+  link.setAttribute("imagesrcset", base + "480/" + slides[start] + " 480w, " + base + "720/" + slides[start] + " 720w, " + base + "960/" + slides[start] + " 960w");
+  link.setAttribute("imagesizes", "(max-width:600px) calc(100vw - 54px), (max-width:900px) 506px, (max-width:1200px) 43vw, 506px");
   link.setAttribute("fetchpriority", "high");
   document.head.appendChild(link);
 })();
 </script>
-<noscript><link rel="preload" as="image" href="photos/programs/optimized/480/peekaboo/peekaboo-class.webp" imagesrcset="photos/programs/optimized/480/peekaboo/peekaboo-class.webp 480w, photos/programs/optimized/960/peekaboo/peekaboo-class.webp 960w" imagesizes="(max-width:600px) calc(100vw - 40px), 45vw" fetchpriority="high"></noscript>
+<noscript><link rel="preload" as="image" href="home-assets-v20260918/480/peekaboo/peekaboo-class.webp" imagesrcset="home-assets-v20260918/480/peekaboo/peekaboo-class.webp 480w, home-assets-v20260918/720/peekaboo/peekaboo-class.webp 720w, home-assets-v20260918/960/peekaboo/peekaboo-class.webp 960w" imagesizes="(max-width:600px) calc(100vw - 54px), (max-width:900px) 506px, (max-width:1200px) 43vw, 506px" fetchpriority="high"></noscript>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap"></noscript>
 <style>
@@ -274,7 +274,7 @@
 
   .hero-photo {
     position: relative; width: 100%; max-width: 520px;
-    justify-self: end; animation: popIn 0.8s 0.28s ease both;
+    justify-self: end;
   }
   .hero-photo-frame {
     aspect-ratio: 4 / 3; overflow: hidden; border-radius: 36px;
@@ -286,7 +286,7 @@
   .hero-slide {
     position: absolute; inset: 0; margin: 0;
     opacity: 0; visibility: hidden;
-    transition: opacity 0.65s ease, visibility 0.65s ease;
+    transition: opacity 0.65s ease;
   }
   .hero-slide.is-active { opacity: 1; visibility: visible; }
   .hero-slide img {
@@ -307,7 +307,7 @@
     font-size: 0.95rem; font-weight: 800; line-height: 1.25;
     box-shadow: 0 8px 22px rgba(0,0,0,0.14);
     text-decoration: none; opacity: 0; visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+    transition: opacity 0.3s ease;
   }
   .hero-photo-caption.is-active { opacity: 1; visibility: visible; }
   .hero-photo-caption:hover { color: #B34B3D; }
@@ -320,11 +320,12 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   }
   .hero-carousel-arrow {
-    width: 38px; height: 38px; border-radius: 50%; font-size: 1.35rem; line-height: 1;
+    width: 44px; height: 44px; border-radius: 50%; font-size: 1.35rem; line-height: 1;
   }
-  .hero-carousel-dots { display: flex; align-items: center; gap: 8px; }
-  .hero-carousel-dot { width: 11px; height: 11px; padding: 0; border-radius: 50%; }
-  .hero-carousel-dot[aria-current="true"] { width: 28px; border-radius: 8px; background: var(--coral); }
+  .hero-carousel-dots { display: flex; align-items: center; gap: 0; }
+  .hero-carousel-dot { display:grid; place-items:center; width:44px; height:44px; padding:0; background:transparent; box-shadow:none; }
+  .hero-carousel-dot::before { content:""; width:11px; height:11px; border-radius:50%; background:rgba(255,255,255,0.9); box-shadow:0 2px 8px rgba(0,0,0,0.1); }
+  .hero-carousel-dot[aria-current="true"]::before { width:28px; border-radius:8px; background:var(--coral); }
 
   @media(max-width: 900px) {
     .hero-content { grid-template-columns: 1fr; text-align: center; gap: 40px; }
@@ -920,7 +921,7 @@
 @media(max-width:760px){#seasonal-banner{font-size:0.78rem;padding:7px 10px;}}
 </style>
 <script>
-function _fixSeasonalNav(){var b=document.getElementById('seasonal-banner'),n=document.querySelector('nav');if(b&&n){n.style.top=b.offsetHeight+'px';document.documentElement.style.setProperty('--header-h',(b.offsetHeight+n.offsetHeight+12)+'px');}}
+function _fixSeasonalNav(){var b=document.getElementById('seasonal-banner'),n=document.querySelector('nav');if(b&&n){var bannerHeight=b.offsetHeight,navHeight=n.offsetHeight;n.style.top=bannerHeight+'px';document.documentElement.style.setProperty('--header-h',(bannerHeight+navHeight+12)+'px');}}
 document.addEventListener('DOMContentLoaded',_fixSeasonalNav);
 window.addEventListener('resize',_fixSeasonalNav);
 </script>
@@ -979,30 +980,30 @@ document.querySelectorAll(".nav-links a").forEach(link => {
     <div class="hero-photo" data-hero-carousel aria-roledescription="carousel" aria-label="Luanaのクラス紹介">
       <div class="hero-photo-frame">
         <figure class="hero-slide is-active" data-hero-slide aria-hidden="false">
-          <img src="photos/programs/optimized/480/peekaboo/peekaboo-class.webp"
-            srcset="photos/programs/optimized/480/peekaboo/peekaboo-class.webp 480w, photos/programs/optimized/960/peekaboo/peekaboo-class.webp 960w"
-            sizes="(max-width:600px) calc(100vw - 40px), 45vw"
+          <img src="home-assets-v20260918/480/peekaboo/peekaboo-class.webp"
+            srcset="home-assets-v20260918/480/peekaboo/peekaboo-class.webp 480w, home-assets-v20260918/720/peekaboo/peekaboo-class.webp 720w, home-assets-v20260918/960/peekaboo/peekaboo-class.webp 960w"
+            sizes="(max-width:600px) calc(100vw - 54px), (max-width:900px) 506px, (max-width:1200px) 43vw, 506px"
             alt="Peekaboo親子クラスで先生と保護者と一緒に遊ぶ子ども"
             width="960" height="727" loading="lazy" decoding="async">
         </figure>
         <figure class="hero-slide" data-hero-slide aria-hidden="true">
-          <img src="photos/programs/optimized/480/preschool/1788745924544.webp"
-            srcset="photos/programs/optimized/480/preschool/1788745924544.webp 480w, photos/programs/optimized/960/preschool/1788745924544.webp 960w"
-            sizes="(max-width:600px) calc(100vw - 40px), 45vw"
+          <img src="home-assets-v20260918/480/preschool/1788745924544.webp"
+            srcset="home-assets-v20260918/480/preschool/1788745924544.webp 480w, home-assets-v20260918/720/preschool/1788745924544.webp 720w, home-assets-v20260918/960/preschool/1788745924544.webp 960w"
+            sizes="(max-width:600px) calc(100vw - 54px), (max-width:900px) 506px, (max-width:1200px) 43vw, 506px"
             alt="プリスクールで先生と英語を楽しむ子ども"
             width="960" height="720" loading="lazy" decoding="async">
         </figure>
         <figure class="hero-slide" data-hero-slide aria-hidden="true">
-          <img src="photos/programs/optimized/480/kinder/1788747367449.webp"
-            srcset="photos/programs/optimized/480/kinder/1788747367449.webp 480w, photos/programs/optimized/960/kinder/1788747367449.webp 960w"
-            sizes="(max-width:600px) calc(100vw - 40px), 45vw"
+          <img src="home-assets-v20260918/480/kinder/1788747367449.webp"
+            srcset="home-assets-v20260918/480/kinder/1788747367449.webp 480w, home-assets-v20260918/720/kinder/1788747367449.webp 720w, home-assets-v20260918/960/kinder/1788747367449.webp 960w"
+            sizes="(max-width:600px) calc(100vw - 54px), (max-width:900px) 506px, (max-width:1200px) 43vw, 506px"
             alt="キンダースクールで先生と活動する子ども"
             width="960" height="720" loading="lazy" decoding="async">
         </figure>
         <figure class="hero-slide" data-hero-slide aria-hidden="true">
-          <img src="photos/programs/optimized/480/afterschool/afterschoolcaro.webp"
-            srcset="photos/programs/optimized/480/afterschool/afterschoolcaro.webp 480w, photos/programs/optimized/960/afterschool/afterschoolcaro.webp 960w"
-            sizes="(max-width:600px) calc(100vw - 40px), 45vw"
+          <img src="home-assets-v20260918/480/afterschool/afterschoolcaro.webp"
+            srcset="home-assets-v20260918/480/afterschool/afterschoolcaro.webp 480w, home-assets-v20260918/720/afterschool/afterschoolcaro.webp 720w, home-assets-v20260918/960/afterschool/afterschoolcaro.webp 960w"
+            sizes="(max-width:600px) calc(100vw - 54px), (max-width:900px) 506px, (max-width:1200px) 43vw, 506px"
             alt="アフタースクールでタイダイ染めの説明を聞く小学生たち"
             width="960" height="720" loading="lazy" decoding="async">
         </figure>
@@ -1026,6 +1027,31 @@ document.querySelectorAll(".nav-links a").forEach(link => {
     </div>
   </div>
 </section>
+
+<script>
+(function () {
+  var carousel = document.querySelector('[data-hero-carousel]');
+  var slides = carousel.querySelectorAll('[data-hero-slide]');
+  var start = Number(document.documentElement.dataset.heroStart);
+  if (!Number.isInteger(start) || start < 0 || start >= slides.length) start = 0;
+  slides.forEach(function (slide, index) {
+    var active = index === start;
+    slide.classList.toggle('is-active', active);
+    slide.setAttribute('aria-hidden', String(!active));
+    if (active) {
+      var image = slide.querySelector('img');
+      image.setAttribute('fetchpriority', 'high');
+      image.loading = 'eager';
+    }
+  });
+  carousel.querySelectorAll('[data-hero-caption]').forEach(function (caption, index) {
+    caption.classList.toggle('is-active', index === start);
+  });
+  carousel.querySelectorAll('[data-hero-dot]').forEach(function (dot, index) {
+    dot.setAttribute('aria-current', String(index === start));
+  });
+})();
+</script>
 
 <!-- TRIAL CHOICE -->
 <section class="trial-choice" id="trial">
@@ -1060,9 +1086,9 @@ document.querySelectorAll(".nav-links a").forEach(link => {
     <h2 class="section-title" id="moments-title">レッスンの様子</h2>
     <p class="section-sub" style="margin:0 auto;">英語を使いながら、工作・ゲーム・外遊びなどを楽しんでいます。</p>
     <div class="moments-grid">
-      <a href="/gallery" aria-label="レッスン写真をもっと見る"><img src="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-35.webp" srcset="photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-35.webp 480w, photos/gallery-optimized/720/Everyday%20Moments/July%202026/photo-35.webp 720w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-35.webp 960w" sizes="(max-width:600px) calc(100vw - 40px), 360px" alt="Luana English Schoolで先生と子どもたちが過ごす様子" loading="lazy" decoding="async" width="900" height="1200"></a>
-      <a href="/gallery" aria-label="工作の写真をもっと見る"><img src="photos/gallery-optimized/320/Everyday%20Moments/July%202026/photo-23.webp" srcset="photos/gallery-optimized/320/Everyday%20Moments/July%202026/photo-23.webp 320w, photos/gallery-optimized/480/Everyday%20Moments/July%202026/photo-23.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/July%202026/photo-23.webp 960w" sizes="(max-width:600px) calc(50vw - 24px), 360px" alt="英語レッスンで工作を楽しむ子どもたち" loading="lazy" decoding="async" width="900" height="1200"></a>
-      <a href="/gallery" aria-label="外遊びの写真をもっと見る"><img src="photos/gallery-optimized/320/Everyday%20Moments/June%202026/photo-20.webp" srcset="photos/gallery-optimized/320/Everyday%20Moments/June%202026/photo-20.webp 320w, photos/gallery-optimized/480/Everyday%20Moments/June%202026/photo-20.webp 480w, photos/gallery-optimized/960/Everyday%20Moments/June%202026/photo-20.webp 960w" sizes="(max-width:600px) calc(50vw - 24px), 360px" alt="先生と子どもたちが外で活動する様子" loading="lazy" decoding="async" width="1108" height="1477"></a>
+      <a href="/gallery" aria-label="レッスン写真をもっと見る"><img src="home-assets-v20260918/480/moments/c42e8da29a.webp" srcset="home-assets-v20260918/320/moments/c42e8da29a.webp 320w, home-assets-v20260918/480/moments/c42e8da29a.webp 480w, home-assets-v20260918/720/moments/c42e8da29a.webp 720w" sizes="(max-width:600px) calc(100vw - 40px), 360px" alt="Luana English Schoolで先生と子どもたちが過ごす様子" loading="lazy" decoding="async" width="900" height="1200"></a>
+      <a href="/gallery" aria-label="工作の写真をもっと見る"><img src="home-assets-v20260918/480/moments/12f3466178.webp" srcset="home-assets-v20260918/320/moments/12f3466178.webp 320w, home-assets-v20260918/480/moments/12f3466178.webp 480w, home-assets-v20260918/720/moments/12f3466178.webp 720w" sizes="(max-width:600px) calc(50vw - 24px), 360px" alt="英語レッスンで工作を楽しむ子どもたち" loading="lazy" decoding="async" width="900" height="1200"></a>
+      <a href="/gallery" aria-label="外遊びの写真をもっと見る"><img src="home-assets-v20260918/480/moments/5643e67669.webp" srcset="home-assets-v20260918/320/moments/5643e67669.webp 320w, home-assets-v20260918/480/moments/5643e67669.webp 480w, home-assets-v20260918/720/moments/5643e67669.webp 720w" sizes="(max-width:600px) calc(50vw - 24px), 360px" alt="先生と子どもたちが外で活動する様子" loading="lazy" decoding="async" width="1108" height="1477"></a>
     </div>
     <a class="moments-link" href="/gallery">写真をもっと見る →</a>
   </div>
@@ -1074,9 +1100,9 @@ document.querySelectorAll(".nav-links a").forEach(link => {
     <h2 class="section-title" id="summer-teaser-title">2026年の夏の思い出</h2>
     <p class="section-sub" style="margin:0 auto;">3つのテーマ週と金曜日のフィールドトリップ。この夏の様子を写真と動画でご紹介しています。</p>
     <div class="moments-grid">
-      <a href="/summer" aria-label="お祭りの写真をもっと見る"><img src="photos/summer-2026/480/W1-D4-01-Japan-Matsuri.webp" srcset="photos/summer-2026/480/W1-D4-01-Japan-Matsuri.webp 480w, photos/summer-2026/720/W1-D4-01-Japan-Matsuri.webp 720w" sizes="(max-width:600px) calc(100vw - 40px), 360px" alt="夏祭りを楽しむ子どもたちと先生" loading="lazy" decoding="async" width="1200" height="1500"></a>
-      <a href="/summer" aria-label="海の活動の写真をもっと見る"><img src="photos/summer-2026/480/W2-D3-07-Tides-Waves.webp" srcset="photos/summer-2026/480/W2-D3-07-Tides-Waves.webp 480w, photos/summer-2026/720/W2-D3-07-Tides-Waves.webp 720w" sizes="(max-width:600px) calc(50vw - 24px), 360px" alt="水辺の活動で集合する子どもたちと先生" loading="lazy" decoding="async" width="960" height="720"></a>
-      <a href="/summer" aria-label="フィールドトリップの写真をもっと見る"><img src="photos/summer-2026/480/W3-D5-09-Hug-Hug-Bouldering-Field-Trip.webp" srcset="photos/summer-2026/480/W3-D5-09-Hug-Hug-Bouldering-Field-Trip.webp 480w, photos/summer-2026/720/W3-D5-09-Hug-Hug-Bouldering-Field-Trip.webp 720w" sizes="(max-width:600px) calc(50vw - 24px), 360px" alt="フィールドトリップで先生と記念撮影をする子どもたち" loading="lazy" decoding="async" width="1600" height="1200"></a>
+      <a href="/summer" aria-label="お祭りの写真をもっと見る"><img src="home-assets-v20260918/480/moments/a5bc2b70bd.webp" srcset="home-assets-v20260918/320/moments/a5bc2b70bd.webp 320w, home-assets-v20260918/480/moments/a5bc2b70bd.webp 480w, home-assets-v20260918/720/moments/a5bc2b70bd.webp 720w" sizes="(max-width:600px) calc(100vw - 40px), 360px" alt="夏祭りを楽しむ子どもたちと先生" loading="lazy" decoding="async" width="1200" height="1500"></a>
+      <a href="/summer" aria-label="海の活動の写真をもっと見る"><img src="home-assets-v20260918/480/moments/f95a093f3b.webp" srcset="home-assets-v20260918/320/moments/f95a093f3b.webp 320w, home-assets-v20260918/480/moments/f95a093f3b.webp 480w, home-assets-v20260918/720/moments/f95a093f3b.webp 720w" sizes="(max-width:600px) calc(50vw - 24px), 360px" alt="水辺の活動で集合する子どもたちと先生" loading="lazy" decoding="async" width="960" height="720"></a>
+      <a href="/summer" aria-label="フィールドトリップの写真をもっと見る"><img src="home-assets-v20260918/480/moments/3c90bd2312.webp" srcset="home-assets-v20260918/320/moments/3c90bd2312.webp 320w, home-assets-v20260918/480/moments/3c90bd2312.webp 480w, home-assets-v20260918/720/moments/3c90bd2312.webp 720w" sizes="(max-width:600px) calc(50vw - 24px), 360px" alt="フィールドトリップで先生と記念撮影をする子どもたち" loading="lazy" decoding="async" width="1600" height="1200"></a>
     </div>
     <a class="moments-link" href="/summer">サマースクールを見る →</a>
   </div>
@@ -1558,6 +1584,6 @@ document.querySelectorAll(".nav-links a").forEach(link => {
 }
 </script>
 
-<script src="/site.js?v=20260914-carousel4b"></script>
+<script src="/site.js?v=20260918-performance"></script>
 </body>
 </html>

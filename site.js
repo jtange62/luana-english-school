@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let current = 0;
     let timer = null;
+    let openingImageReady = false;
 
     const show = index => {
       current = (index + slides.length) % slides.length;
@@ -38,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const active = slideIndex === current;
         slide.classList.toggle('is-active', active);
         slide.setAttribute('aria-hidden', String(!active));
+        if (active) slide.querySelector('img').loading = 'eager';
       });
       captions.forEach((caption, captionIndex) => caption.classList.toggle('is-active', captionIndex === current));
       dots.forEach((dot, dotIndex) => dot.setAttribute('aria-current', String(dotIndex === current)));
@@ -49,7 +51,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     const start = () => {
       stop();
-      if (!reduceMotion && !document.hidden) timer = window.setInterval(() => show(current + 1), 4000);
+      if (openingImageReady && !reduceMotion && !document.hidden &&
+          !carousel.matches(':hover') && !carousel.contains(document.activeElement)) {
+        timer = window.setInterval(() => show(current + 1), 4000);
+      }
     };
 
     previous?.addEventListener('click', () => { show(current - 1); start(); });
@@ -68,7 +73,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const startIndex = Number(document.documentElement.dataset.heroStart);
     if (Number.isInteger(startIndex) && startIndex >= 0 && startIndex < slides.length) show(startIndex);
 
-    start();
+    // Give the opening photo a full viewing interval after it actually loads.
+    const openingImage = slides[current].querySelector('img');
+    const ready = () => { openingImageReady = true; start(); };
+    if (openingImage.complete) ready();
+    else {
+      openingImage.addEventListener('load', ready, { once: true });
+      openingImage.addEventListener('error', ready, { once: true });
+    }
   });
 
   document.querySelectorAll('.nav-links a').forEach(link => {
