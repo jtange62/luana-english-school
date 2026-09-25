@@ -54,12 +54,14 @@ test("program Back buttons restore the visitor's prior page and scroll position"
   assert.match(script, /history\.back\(\)/);
 });
 
-test("every public page promotes autumn trial lessons", async () => {
+test("every public page offers the new-first-grader trial in its banner", async () => {
   for (const page of publicPages) {
     const html = await source(page);
-    assert.match(html, /id="seasonal-banner"/, `${page} is missing the autumn banner`);
-    assert.match(html, /href="\/#trial"/, `${page} is missing the trial link`);
-    assert.match(html, /秋の入会受付中/, `${page} is missing the autumn enrollment message`);
+    const banner = html.match(/<div id="seasonal-banner"[\s\S]*?<\/div>/)?.[0];
+    assert.ok(banner, `${page} is missing the trial banner`);
+    assert.match(banner, /2027年度に新1年生になるお子さまは、今から小学生クラスを体験できます。/);
+    assert.match(banner, /href="https:\/\/docs\.google\.com\/forms\/d\/e\/1FAIpQLScbYpdpnxH9C1RSn5QA94qcV8lMzo5htOqTmN7sIeFo_J1f8A\/viewform\?usp=dialog"/);
+    assert.doesNotMatch(banner, /秋の入会受付中/);
   }
 });
 
