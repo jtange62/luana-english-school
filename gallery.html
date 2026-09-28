@@ -350,7 +350,7 @@ window.addEventListener('resize',_fixSeasonalNav);
     <h2 class="section-heading">🌻 Kinder School｜3〜6歳</h2>
     <p class="program-gallery-copy">工作、ゲーム、サークルタイムなど、夢中になれる活動の中で自然に英語を使います。</p>
     <div class="photo-grid">
-      <div class="photo-item" data-src="photos/programs/optimized/1600/kinder/lulimade-jelly.webp"><img src="photos/programs/optimized/480/kinder/lulimade-jelly.webp" srcset="photos/programs/optimized/480/kinder/lulimade-jelly.webp 480w, photos/programs/optimized/960/kinder/lulimade-jelly.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="キンダークラスで手作りのゼリーを見せる子ども" width="4080" height="3060" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/optimized/1600/kinder/lulimade-jelly.webp"><img src="photos/programs/optimized/480/kinder/lulimade-jelly.webp" srcset="photos/programs/optimized/480/kinder/lulimade-jelly.webp 480w, photos/programs/optimized/960/kinder/lulimade-jelly.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="キンダースクールで手作りのゼリーを見せる子ども" width="4080" height="3060" loading="lazy" decoding="async"></div>
       <div class="photo-item" data-src="photos/programs/kinder/1788747367448.jpg"><img src="photos/programs/optimized/480/kinder/1788747367448.webp" srcset="photos/programs/optimized/480/kinder/1788747367448.webp 480w, photos/programs/optimized/960/kinder/1788747367448.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="キンダースクールで英語活動を楽しむ子どもたち 1" loading="lazy" decoding="async"></div>
       <div class="photo-item" data-src="photos/programs/kinder/1788747367449.jpg"><img src="photos/programs/optimized/480/kinder/1788747367449.webp" srcset="photos/programs/optimized/480/kinder/1788747367449.webp 480w, photos/programs/optimized/960/kinder/1788747367449.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="キンダースクールで英語活動を楽しむ子どもたち 2" loading="lazy" decoding="async"></div>
       <div class="photo-item" data-src="photos/programs/kinder/1788747367451.jpg"><img src="photos/programs/optimized/480/kinder/1788747367451.webp" srcset="photos/programs/optimized/480/kinder/1788747367451.webp 480w, photos/programs/optimized/960/kinder/1788747367451.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="キンダースクールで英語活動を楽しむ子どもたち 3" loading="lazy" decoding="async"></div>
@@ -514,9 +514,9 @@ window.addEventListener('resize',_fixSeasonalNav);
   <p>「Learn, Play and Shine in English」</p>
   <div class="footer-links" role="navigation" aria-label="フッターナビゲーション">
     <a href="/peekaboo">Peekaboo</a>
-    <a href="/preschool">プレスクール</a>
-    <a href="/kinder">幼稚園児クラス</a>
-    <a href="/afterschool">小学生クラス</a>
+    <a href="/preschool">プリスクール</a>
+    <a href="/kinder">キンダースクール</a>
+    <a href="/afterschool">アフタースクール</a>
     <a href="/fees">料金</a>
     <a href="/gallery">写真</a>
     <a href="/newsletter">ニュースレター・チラシ</a>
@@ -572,7 +572,7 @@ document.querySelectorAll(".month-group[hidden]").forEach(group => {
     return items;
   }
 
-  const labels = { preschool: "Preschool", kinder: "Kinder", afterschool: "After School", space: "Our Space" };
+  const labels = { preschool: "Preschool", kinder: "Kinder School", afterschool: "After School", space: "Our Space" };
   const picks = Object.keys(labels).flatMap(category => {
     const section = sections.find(item => item.dataset.galleryCategory === category);
     if (!section) return [];

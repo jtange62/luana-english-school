@@ -670,7 +670,7 @@ test("the Peekaboo and Preschool flyers are reachable from more than one place",
 
   for (const [page, slug, title] of [
     ["peekaboo.html", "peekaboo-class", "Peekaboo 親子クラス"],
-    ["preschool.html", "preschool-class", "1〜2歳児 プレスクール"]
+    ["preschool.html", "preschool-class", "1〜2歳児 プリスクール"]
   ]) {
     const pdf = await readFile(new URL(`../pdfs/flyers/${slug}.pdf`, import.meta.url));
     assert.equal(pdf.subarray(0, 4).toString(), "%PDF", `${slug}.pdf must be a real PDF`);
