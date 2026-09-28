@@ -62,31 +62,24 @@
   }
 
   .hero {
-    min-height:30vh;
     background:Linear-gradient(160deg, #E8F8FF 0%, #FFF3D6 100%);
     display:flex; align-items:center; justify-content:center;
-    text-align:center; padding:calc(var(--header-h, 130px) + 12px) 20px 40px;
+    text-align:center; padding:calc(var(--header-h, 130px) + 12px) 20px 28px;
   }
   .hero-tag {
     display:inLine-block; background:#2077A6; color:white;
     font-weight:800; font-size:0.8rem; letter-spacing:2px; text-transform:uppercase;
-    padding:6px 18px; border-radius:30px; margin-bottom:16px;
+    padding:6px 18px; border-radius:30px; margin-bottom:10px;
   }
-  .hero h1 { font-family:'Baloo 2','Zen Maru Gothic',cursive; font-size:clamp(2rem,6vw,3rem); font-weight:800; color:var(--brown); margin-bottom:8px; }
+  .hero h1 { font-family:'Baloo 2','Zen Maru Gothic',cursive; font-size:clamp(2rem,6vw,3rem); font-weight:800; color:var(--brown); margin-bottom:6px; }
   .hero p { font-size:0.95rem; color:#555; Line-height:1.6; }
 
-  .content { max-width:1000px; margin:0 auto; padding:40px 16px 80px; }
+  .content { max-width:1100px; margin:0 auto; padding:32px 16px 80px; }
 
   /* Program gallery navigation */
-  .gallery-intro { text-align:center; margin-bottom:28px; }
-  .gallery-intro h2 {
-    font-family:'Baloo 2','Zen Maru Gothic',cursive; font-size:clamp(1.5rem,4vw,2rem);
-    color:var(--brown); margin-bottom:8px;
-  }
-  .gallery-intro p { color:#666; line-height:1.7; }
   .gallery-filters {
     display:flex; flex-wrap:wrap; justify-content:center; gap:10px;
-    margin:22px 0 38px;
+    margin:18px 0 0;
   }
   .gallery-filter {
     min-height:44px; padding:9px 18px; border:2px solid var(--sky);
@@ -291,14 +284,6 @@ window.addEventListener('resize',_fixSeasonalNav);
     <div class="hero-tag">📸 Gallery</div>
     <h1>日々のレッスン</h1>
     <p>子どもたちの笑顔あふれる毎日をご覧ください！</p>
-  </div>
-</div>
-
-<div class="content">
-
-  <div class="gallery-intro">
-    <h2>クラス別に見る</h2>
-    <p>年齢やクラスを選んで、Luanaで過ごす子どもたちの様子をご覧いただけます。</p>
     <div class="gallery-filters" role="group" aria-label="写真をクラス別に絞り込む">
       <button class="gallery-filter" type="button" data-gallery-filter="all" aria-pressed="true">🌈 すべて</button>
       <button class="gallery-filter" type="button" data-gallery-filter="preschool" aria-pressed="false">🐣 Preschool</button>
@@ -307,6 +292,9 @@ window.addEventListener('resize',_fixSeasonalNav);
       <button class="gallery-filter" type="button" data-gallery-filter="space" aria-pressed="false">🏫 Our Space</button>
     </div>
   </div>
+</div>
+
+<div class="content">
 
   <section class="featured-gallery" aria-labelledby="featured-heading" hidden>
     <h2 class="section-heading" id="featured-heading">✨ 今日のピックアップ</h2>
