@@ -507,7 +507,8 @@ test("the Summer School page presents summer as an extension of year-round learn
   assert.match(html, /href="\/preschool"/);
   assert.match(html, /href="\/kinder"/);
   assert.match(html, /href="\/afterschool"/);
-  assert.match(html, /Luanaの中心は年間を通した通常クラスです/);
+  // The hero only notes that 2026 has ended; the year-round section carries the "regular classes are the core" message.
+  assert.match(html, /毎日の学びがLuanaの中心です/);
   assert.match(html, /class="mobile-signup-bar"[^>]*>[\s\S]*?href="\/#trial"[^>]*>通常クラスを体験する<\/a>/);
   assert.equal((html.match(/class="story-photo(?: featured| wide)?"/g) || []).length, 18);
   assert.match(html, /nav\{position:fixed;z-index:190/);
