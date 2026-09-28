@@ -977,6 +977,34 @@
     .banner { font-size: 0.8rem; padding: 8px 12px; }
   }
 
+  /* 2026-09-28: compact homepage — photo in first mobile screen, one-column About, tighter approach + access */
+  .about-grid { grid-template-columns: 1fr; margin-top: 36px; }
+  @media (min-width: 761px) {
+    .about-features { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 0; }
+  }
+  @media (max-width: 600px) {
+    .hero { min-height: auto; padding-top: calc(var(--header-h, 148px) - 70px + 20px); padding-bottom: 36px; } /* body already has 70px top padding below 860px */
+    .hero-content { gap: 0; }
+    .hero-copy { display: contents; }
+    .hero-brand-line { order: 1; justify-self: center; margin-bottom: 14px; }
+    .hero h1 { order: 2; margin-bottom: 16px; }
+    .hero-photo { order: 3; }
+    .hero-sub { order: 4; margin: 16px 0 6px; }
+    .hero-cta-wrap { order: 5; }
+    .hero-trust { order: 6; margin-top: 14px; }
+    .hero-captions { min-height: 40px; margin-top: 10px; }
+    .about-grid { margin-top: 24px; }
+    .about-features { margin-top: 0; gap: 12px; }
+  }
+  @media (max-width: 540px) {
+    .approach-points { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .approach-point { display: block; padding: 14px 12px; }
+    .approach-point-number { width: 30px; height: 30px; margin-bottom: 8px; }
+    .approach-point h4 { font-size: 0.9rem; line-height: 1.45; margin-bottom: 6px; }
+    .approach-point p { font-size: 0.8rem; line-height: 1.7; }
+    .access-address img { aspect-ratio: 4 / 3 !important; object-fit: cover; object-position: center 40%; }
+    .access-map iframe { height: 180px; }
+  }
 </style>
 <!-- Google Analytics -->
 <script>
@@ -1046,7 +1074,7 @@ document.querySelectorAll(".nav-links a").forEach(link => {
       <p class="hero-sub">
         多摩市・聖蹟桜ヶ丘からも通いやすく、遊びや体験を通して英語を自然に使える力へ。
       </p>
-      <div>
+      <div class="hero-cta-wrap">
         <a href="#trial" class="hero-cta">体験レッスンを予約する</a>
       </div>
       <div class="hero-trust" aria-label="スクールの特徴">
@@ -1195,12 +1223,6 @@ document.querySelectorAll(".nav-links a").forEach(link => {
       <p class="section-sub">はじめての英語でも安心して通える空間。"英語って楽しい！"があふれる毎日を提供します。</p>
     </div>
     <div class="about-grid">
-      <div class="about-illustration" style="padding:0;border:4px solid var(--sky);overflow:hidden;border-radius:32px;">
-  <picture>
-    <source srcset="images/optimized/exterior-480.webp 480w, images/optimized/exterior-640.webp 640w, images/optimized/exterior-960.webp 960w" sizes="(max-width:600px) calc(100vw - 40px), 50vw" type="image/webp">
-    <img src="images/index-2.jpg" alt="Luana English School exterior" loading="lazy" decoding="async" width="1108" height="1477" style="width:100%;height:100%;object-fit:cover;display:block;">
-  </picture>
-</div>
       <div>
         <div class="about-features">
           <div class="about-feature">
