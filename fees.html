@@ -226,6 +226,22 @@
   }
   .note strong { color:var(--brown); }
 
+  .fee-selector { margin-bottom:24px; }
+  .fee-selector h2 { color:var(--brown); font-size:1.1rem; margin-bottom:12px; }
+  .fee-selector-links { display:flex; flex-wrap:wrap; gap:10px; }
+  .fee-selector a {
+    display:inline-flex; align-items:center; min-height:44px; padding:10px 16px;
+    border:1px solid #9b7752; border-radius:24px; background:#fff;
+    color:#644321; font-weight:700; text-decoration:none; line-height:1.5;
+  }
+  .fee-selector a:hover { background:#fff0dc; }
+  .fee-selector a:focus-visible { outline:3px solid #644321; outline-offset:3px; }
+  .fee-card[id] { scroll-margin-top:180px; }
+  @media (max-width:380px) {
+    .fee-card[id] { scroll-margin-top:220px; }
+  }
+  .fee-card:target { outline:3px solid #9b7752; outline-offset:4px; }
+
   /* Fee grid */
   .fee-grid {
     display:grid;
@@ -257,6 +273,7 @@
   .fee-card-sub { font-size:0.85rem; color:#666; }
 
   .fee-card-body { padding:20px 28px 24px; }
+  .fee-tax-note { color:#555; font-size:0.85rem; margin-bottom:12px; }
 
   .fee-row {
     display:flex; justify-content:space-between; align-items:center;
@@ -387,10 +404,21 @@ window.addEventListener('resize',_fixSeasonalNav);
     入会金は初回のみ ¥20,000（共通）。延長料金は30分につき ¥600 です。
   </div>
 
+  <section class="fee-selector" aria-labelledby="fee-selector-title">
+    <h2 id="fee-selector-title">クラスの料金へ</h2>
+    <div class="fee-selector-links">
+      <a href="#peekaboo">親子クラス（0〜3歳）</a>
+      <a href="#preschool">プリスクール（1〜2歳）</a>
+      <a href="#kinder-short">キンダー（1時間）</a>
+      <a href="#kinder-long">キンダー（2時間）</a>
+      <a href="#afterschool">アフタースクール（小学生）</a>
+    </div>
+  </section>
+
   <div class="fee-grid">
 
     <!-- Preschool -->
-    <div class="fee-card peekaboo">
+    <div class="fee-card peekaboo" id="peekaboo">
       <div class="fee-card-header">
         <span class="fee-card-emoji">👶</span>
         <span class="fee-card-label">Peekaboo</span>
@@ -398,6 +426,7 @@ window.addEventListener('resize',_fixSeasonalNav);
         <span class="fee-card-sub">0〜3歳のお子さまと保護者の方（１時間レッスン）</span>
       </div>
       <div class="fee-card-body">
+        <p class="fee-tax-note">料金はすべて税別です。</p>
         <div class="fee-row enrollment">
           <span class="label">🎫 入会金</span>
           <span class="amount">¥20,000</span>
@@ -410,7 +439,7 @@ window.addEventListener('resize',_fixSeasonalNav);
         <div class="fee-row"><span class="label">週１日</span><span class="amount">¥9,000</span></div>
       </div>
     </div>
-    <div class="fee-card preschool">
+    <div class="fee-card preschool" id="preschool">
       <div class="fee-card-header">
         <span class="fee-card-emoji">🐣</span>
         <span class="fee-card-label">プリスクール</span>
@@ -418,6 +447,7 @@ window.addEventListener('resize',_fixSeasonalNav);
         <span class="fee-card-sub">オールイングリッシュ プリスクール（２時間レッスン）</span>
       </div>
       <div class="fee-card-body">
+        <p class="fee-tax-note">料金はすべて税別です。</p>
         <div class="fee-row enrollment">
           <span class="label">🎫 入会金</span>
           <span class="amount">¥20,000</span>
@@ -434,7 +464,7 @@ window.addEventListener('resize',_fixSeasonalNav);
     </div>
 
     <!-- Kinder K1/K2 -->
-    <div class="fee-card k1k2">
+    <div class="fee-card k1k2" id="kinder-short">
       <div class="fee-card-header">
         <span class="fee-card-emoji">🌱</span>
         <span class="fee-card-label">キンダースクール K1・K2</span>
@@ -442,6 +472,7 @@ window.addEventListener('resize',_fixSeasonalNav);
         <span class="fee-card-sub">オールイングリッシュ キンダースクール（１時間レッスン）</span>
       </div>
       <div class="fee-card-body">
+        <p class="fee-tax-note">料金はすべて税別です。</p>
         <div class="fee-row enrollment">
           <span class="label">🎫 入会金</span>
           <span class="amount">¥20,000</span>
@@ -458,7 +489,7 @@ window.addEventListener('resize',_fixSeasonalNav);
     </div>
 
     <!-- Kinder K2/K3 -->
-    <div class="fee-card k2k3">
+    <div class="fee-card k2k3" id="kinder-long">
       <div class="fee-card-header">
         <span class="fee-card-emoji">🌟</span>
         <span class="fee-card-label">キンダースクール K2・K3</span>
@@ -466,6 +497,7 @@ window.addEventListener('resize',_fixSeasonalNav);
         <span class="fee-card-sub">オールイングリッシュ キンダースクール（２時間レッスン）</span>
       </div>
       <div class="fee-card-body">
+        <p class="fee-tax-note">料金はすべて税別です。</p>
         <div class="fee-row enrollment">
           <span class="label">🎫 入会金</span>
           <span class="amount">¥20,000</span>
@@ -482,7 +514,7 @@ window.addEventListener('resize',_fixSeasonalNav);
     </div>
 
     <!-- After School -->
-    <div class="fee-card after">
+    <div class="fee-card after" id="afterschool">
       <div class="fee-card-header">
         <span class="fee-card-emoji">🚀</span>
         <span class="fee-card-label">アフタースクール</span>
@@ -490,6 +522,7 @@ window.addEventListener('resize',_fixSeasonalNav);
         <span class="fee-card-sub">オールイングリッシュ アフタースクール（14:00〜18:00）</span>
       </div>
       <div class="fee-card-body">
+        <p class="fee-tax-note">料金はすべて税別です。</p>
         <div class="fee-row enrollment">
           <span class="label">🎫 入会金</span>
           <span class="amount">¥20,000</span>
