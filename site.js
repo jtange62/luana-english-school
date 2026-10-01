@@ -1,24 +1,11 @@
 (() => {
   if (typeof window.gtag !== 'function') return;
 
-  let loaded = false;
-  const interactionEvents = ['pointerdown', 'keydown', 'scroll'];
-
-  const loadAnalytics = () => {
-    if (loaded) return;
-    loaded = true;
-    interactionEvents.forEach(eventName => window.removeEventListener(eventName, loadAnalytics));
-    const script = document.createElement('script');
-    script.async = true;
-    script.src = 'https://www.googletagmanager.com/gtag/js?id=G-YBX9T1NJEL';
-    document.head.appendChild(script);
-  };
-
-  interactionEvents.forEach(eventName => window.addEventListener(eventName, loadAnalytics, {
-    once: true,
-    passive: true
-  }));
-  window.addEventListener('load', () => window.setTimeout(loadAnalytics, 5000), { once: true });
+  // Start tracking promptly without waiting for interaction or slow page assets.
+  const script = document.createElement('script');
+  script.async = true;
+  script.src = 'https://www.googletagmanager.com/gtag/js?id=G-YBX9T1NJEL';
+  document.head.appendChild(script);
 })();
 
 document.addEventListener('DOMContentLoaded', () => {

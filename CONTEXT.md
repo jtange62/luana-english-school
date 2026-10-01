@@ -14,7 +14,7 @@ Japanese-language marketing site for Luana English School, a children's English 
 - **Storage:** D1 `luana_parent_portal` (binding `DB`), R2 `luana-parent-photos` (binding `PHOTOS`), Cloudflare Images (binding `IMAGES`), static assets (binding `ASSETS`).
 - **Email:** Resend HTTP API via `RESEND_API_KEY` + `LOGIN_FROM_EMAIL`; falls back to console logging when unset. Inbound `aloha@`/`info@` use Cloudflare Email Routing.
 - **Testing:** `node:test` + `node:assert/strict`. No test framework.
-- **Analytics:** `gtag` (G-YBX9T1NJEL), lazily loaded on first interaction.
+- **Analytics:** `gtag` (G-YBX9T1NJEL), loaded asynchronously as soon as the shared public-site script runs.
 - **Scripts:** PowerShell (`scripts/*.ps1`). CI: GitHub Actions `.github/workflows/validate.yml`.
 
 ## Directory Map
