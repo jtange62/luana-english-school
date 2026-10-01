@@ -653,8 +653,16 @@ document.querySelectorAll(".month-group[hidden]").forEach(group => {
     if (returnFocus) returnFocus.focus();
   }
 
-  function prev() { open((current - 1 + items.length) % items.length); }
-  function next() { open((current + 1) % items.length); }
+  function move(direction) {
+    const visibleItems = items.filter(item => !item.closest("[hidden]"));
+    if (!visibleItems.length) return;
+    const position = visibleItems.indexOf(items[current]);
+    const nextItem = visibleItems[(position + direction + visibleItems.length) % visibleItems.length];
+    open(items.indexOf(nextItem));
+  }
+
+  function prev() { move(-1); }
+  function next() { move(1); }
 
   items.forEach((item, i) => {
     const label = item.querySelector("img").alt;
