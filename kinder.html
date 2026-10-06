@@ -264,6 +264,8 @@
 
   .hero-actions { display:flex; justify-content:flex-start; flex-wrap:wrap; gap:12px; margin-top:24px; }
   .hero-actions .cta-btn { padding:14px 28px; }
+  .hero-price { margin-top:14px; font-weight:800; color:#704814; line-height:1.6; }
+  .hero-price small { display:block; font-weight:600; color:#555; font-size:0.85rem; }
   .hero-fees-link {
     display:inline-flex; align-items:center; padding:14px 24px; border:2px solid var(--sun);
     border-radius:40px; color:var(--brown); background:white; text-decoration:none; font-weight:800;
@@ -465,7 +467,7 @@ window.addEventListener('resize',_fixSeasonalNav);
 
 <nav style="top:0;">
   <a href="/#classes" class="back-btn" data-history-back>← Back</a>
-  <div style="display:flex;align-items:center;gap:8px;"><a href="/"><img src="logo.png?v=20260814-transparent" alt="Luana English School" width="161" height="144"></a>
+  <div style="display:flex;align-items:center;gap:8px;"><a href="/"><img src="/images/optimized/logo-128.webp?v=20260820-responsive" srcset="/images/optimized/logo-128.webp?v=20260820-responsive 128w, /images/optimized/logo-160.webp?v=20260820-responsive 160w, /images/optimized/logo-256.webp?v=20260820-responsive 256w" sizes="80px" alt="Luana English School" width="161" height="144"></a>
     <ul class="nav-links">
     <li><a href="/#about">スクール紹介</a></li>
     <li><a href="/#classes">クラス</a></li>
@@ -486,6 +488,7 @@ window.addEventListener('resize',_fixSeasonalNav);
       <div class="hero-tag">🌻 Kinder School</div>
       <h1>府中市の幼稚園児向け英語クラス</h1>
       <p>中河原で、年少・年中・年長それぞれのレベルに合わせて楽しく学べる英語の時間！</p>
+      <p class="hero-price">年少・年中クラス 月額 ¥6,000〜／年中・年長クラス 月額 ¥10,000〜<small>週1日・税別｜入会金 ¥20,000（初回のみ）</small></p>
       <div class="hero-actions">
         <a href="https://docs.google.com/forms/d/e/1FAIpQLSe1fLxRno8bzY1DzSxAqpGnieWfcCrWDZJTVNnzL8yoUu-zdQ/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_kinder_hero')" class="cta-btn">体験レッスンを申し込む</a>
         <a href="/fees#kinder-short" class="hero-fees-link">キンダースクールの料金を見る</a>
