@@ -156,6 +156,7 @@
   .featured-photo:focus-visible { outline:4px solid var(--coral); outline-offset:3px; }
 
   .program-gallery { padding:24px; border-radius:24px; }
+  .program-gallery[data-gallery-category="peekaboo"] { background:#FFF0F3; }
   .program-gallery[data-gallery-category="preschool"] { background:#EAF8FE; }
   .program-gallery[data-gallery-category="kinder"] { background:#FFF8DC; }
   .program-gallery[data-gallery-category="afterschool"] { background:#F5F0FF; }
@@ -338,6 +339,7 @@ window.addEventListener('resize',_fixSeasonalNav);
     <p>子どもたちの笑顔あふれる毎日をご覧ください！</p>
     <div class="gallery-filters" role="group" aria-label="写真をクラス別に絞り込む">
       <button class="gallery-filter" type="button" data-gallery-filter="all" aria-pressed="true">🌈 すべて</button>
+      <button class="gallery-filter" type="button" data-gallery-filter="peekaboo" aria-pressed="false">👶 Peekaboo</button>
       <button class="gallery-filter" type="button" data-gallery-filter="preschool" aria-pressed="false">🐣 Preschool</button>
       <button class="gallery-filter" type="button" data-gallery-filter="kinder" aria-pressed="false">🌻 Kinder School</button>
       <button class="gallery-filter" type="button" data-gallery-filter="afterschool" aria-pressed="false">🎒 After School</button>
@@ -364,6 +366,20 @@ window.addEventListener('resize',_fixSeasonalNav);
       </svg>
       @luana.english.school をフォロー
     </a>
+  </div>
+
+  <div class="section-block program-gallery" data-gallery-category="peekaboo" hidden>
+    <h2 class="section-heading">👶 Peekaboo｜0〜3歳・親子</h2>
+    <p class="program-gallery-copy">保護者の方とお子さまが一緒に、歌や遊び、工作を通してはじめての英語に親しみます。</p>
+    <div class="photo-grid">
+      <div class="photo-item" data-src="photos/programs/peekaboo/peekaboo-class.jpg"><img src="photos/programs/optimized/480/peekaboo/peekaboo-class.webp" srcset="photos/programs/optimized/480/peekaboo/peekaboo-class.webp 480w, photos/programs/optimized/960/peekaboo/peekaboo-class.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="Peekabooクラスで先生とハイタッチをする男の子とお母さん" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/optimized/1600/peekaboo/1791432657552.webp"><img src="photos/programs/optimized/480/peekaboo/1791432657552.webp" srcset="photos/programs/optimized/480/peekaboo/1791432657552.webp 480w, photos/programs/optimized/960/peekaboo/1791432657552.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="ぬいぐるみを使って先生と英語で遊ぶ親子" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/optimized/1600/peekaboo/1791432692151.webp"><img src="photos/programs/optimized/480/peekaboo/1791432692151.webp" srcset="photos/programs/optimized/480/peekaboo/1791432692151.webp 480w, photos/programs/optimized/960/peekaboo/1791432692151.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="カラフルな感触袋で遊ぶ親子と見守る先生" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/optimized/1600/peekaboo/1791432716498.webp"><img src="photos/programs/optimized/480/peekaboo/1791432716498.webp" srcset="photos/programs/optimized/480/peekaboo/1791432716498.webp 480w, photos/programs/optimized/960/peekaboo/1791432716498.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="黄色いスカーフを持って先生と手遊びをする親子" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/optimized/1600/peekaboo/1791432754455.webp"><img src="photos/programs/optimized/480/peekaboo/1791432754455.webp" srcset="photos/programs/optimized/480/peekaboo/1791432754455.webp 480w, photos/programs/optimized/960/peekaboo/1791432754455.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="お母さんと一緒にハロウィンの絵を描く女の子" loading="lazy" decoding="async"></div>
+      <div class="photo-item" data-src="photos/programs/optimized/1600/peekaboo/1791432770548.webp"><img src="photos/programs/optimized/480/peekaboo/1791432770548.webp" srcset="photos/programs/optimized/480/peekaboo/1791432770548.webp 480w, photos/programs/optimized/960/peekaboo/1791432770548.webp 960w" sizes="(max-width: 600px) calc(50vw - 24px), min(31vw, 320px)" alt="ハロウィン飾りの教室で先生のまねをして踊る女の子" loading="lazy" decoding="async"></div>
+    </div>
+    <a class="program-gallery-link" href="/peekaboo">Peekaboo親子クラスについて詳しく見る →</a>
   </div>
 
   <div class="section-block program-gallery" data-gallery-category="preschool" hidden>
@@ -624,7 +640,7 @@ document.querySelectorAll(".month-group[hidden]").forEach(group => {
     return items;
   }
 
-  const labels = { preschool: "Preschool", kinder: "Kinder School", afterschool: "After School", space: "Our Space" };
+  const labels = { peekaboo: "Peekaboo", preschool: "Preschool", kinder: "Kinder School", afterschool: "After School", space: "Our Space" };
   const picks = Object.keys(labels).flatMap(category => {
     const section = sections.find(item => item.dataset.galleryCategory === category);
     if (!section) return [];
