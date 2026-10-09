@@ -146,8 +146,21 @@
   .featured-gallery[hidden] { display:none; }
   .featured-gallery { margin-bottom:40px; }
   .featured-gallery p { color:#555; line-height:1.65; margin:-8px 0 20px; }
-  /* 5 programs × 2 picks = 10 tiles: 5 columns fills exactly two rows, no orphans */
-  .featured-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; }
+  /* Desktop: 6-column mirrored collage for the 10 picks (5 programs × 2).
+     Rows are sized from the section width so tiles stay square-based and the pattern is exact. */
+  .featured-gallery { container-type:inline-size; }
+  .featured-grid { display:grid; grid-template-columns:repeat(6,1fr); grid-auto-rows:calc((100cqw - 50px) / 6); gap:10px; }
+  .featured-grid .featured-photo { aspect-ratio:auto; height:100%; }
+  .featured-grid .featured-photo:nth-child(1)  { grid-area:1 / 1 / 3 / 3; }
+  .featured-grid .featured-photo:nth-child(2)  { grid-area:1 / 3 / 2 / 4; }
+  .featured-grid .featured-photo:nth-child(3)  { grid-area:1 / 4 / 2 / 5; }
+  .featured-grid .featured-photo:nth-child(4)  { grid-area:2 / 3 / 3 / 4; }
+  .featured-grid .featured-photo:nth-child(5)  { grid-area:2 / 4 / 3 / 5; }
+  .featured-grid .featured-photo:nth-child(6)  { grid-area:1 / 5 / 3 / 7; }
+  .featured-grid .featured-photo:nth-child(7)  { grid-area:3 / 1 / 4 / 2; }
+  .featured-grid .featured-photo:nth-child(8)  { grid-area:3 / 2 / 4 / 4; }
+  .featured-grid .featured-photo:nth-child(9)  { grid-area:3 / 4 / 4 / 6; }
+  .featured-grid .featured-photo:nth-child(10) { grid-area:3 / 6 / 4 / 7; }
   .featured-photo { aspect-ratio:1; border:0; border-radius:16px; overflow:hidden; padding:0;
     position:relative; background:white; cursor:pointer; }
   .featured-photo img { width:100%; height:100%; object-fit:cover; display:block; }
@@ -229,7 +242,8 @@
   .photo-item img { width:100%; height:100%; object-fit:cover; display:block; }
 
   @media(max-width:900px) {
-    .featured-grid { grid-template-columns:repeat(2,1fr); }
+    .featured-grid { grid-template-columns:repeat(2,1fr); grid-auto-rows:auto; }
+    .featured-grid .featured-photo:nth-child(n) { grid-area:auto; aspect-ratio:1; height:auto; }
   }
   @media(max-width:600px) {
     .featured-grid { gap:8px; }
@@ -661,7 +675,7 @@ document.querySelectorAll(".month-group[hidden]").forEach(group => {
     const image = photo.querySelector("img").cloneNode(true);
     image.alt = "";
     image.loading = index < 4 ? "eager" : "lazy";
-    image.sizes = "(max-width: 900px) calc(50vw - 24px), min(18vw, 185px)";
+    image.sizes = "(max-width: 900px) calc(50vw - 24px), min(30vw, 320px)";
     const badge = document.createElement("span");
     badge.textContent = labels[category];
     button.append(image, badge);
