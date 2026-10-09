@@ -64,9 +64,16 @@ nav button.hamburger[aria-expanded="true"] {
   }
 }
 
-/* Micro-interactions: buttons and cards lift on hover and keyboard focus. Only transform and box-shadow animate. */
-.cta-btn { transition:transform 0.2s ease, box-shadow 0.2s ease; }
-.cta-btn:focus-visible { transform:translateY(-3px); box-shadow:0 0 0 5px rgba(255,217,90,0.7); }
+/* Shared primary button (used on every page). Pages must not redefine .cta-btn. */
+.cta-btn {
+  display:inline-block; background:#CC4632; color:white;
+  font-weight:800; font-size:1rem; padding:16px 36px; border-radius:40px;
+  text-decoration:none; box-shadow:0 6px 0 #9E3524;
+  transition:transform 0.2s ease, box-shadow 0.2s ease;
+}
+.cta-btn:hover { transform:translateY(-3px); box-shadow:0 9px 0 #9E3524; }
+/* Keyboard focus: same lift as hover, plus a yellow ring */
+.cta-btn:focus-visible { transform:translateY(-3px); box-shadow:0 9px 0 #9E3524, 0 0 0 5px rgba(255,217,90,0.7); }
 .preschool-reason, .fee-card { transition:transform 0.2s ease, box-shadow 0.2s ease; }
 .preschool-reason:hover, .fee-card:hover { box-shadow:0 10px 24px rgba(45,45,45,0.12); }
 
