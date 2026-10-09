@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <link rel="icon" type="image/png" href="logo.png?v=20260814-transparent"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="/site.css?v=20261009-reveal">
+<link rel="stylesheet" href="/site.css?v=20261010-polish">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="canonical" href="https://luanaenglishschool.jp/gallery">
 <title>ギャラリー | 府中市・多摩市の子ども英語教室 | Luana English School</title>
@@ -256,15 +256,22 @@
   }
 
   /* Lightbox */
+  /* Fade the overlay and ease the photo in from slightly smaller; hidden overlays are removed from focus order via visibility */
   .lb-overlay {
-    display:none; position:fixed; inset:0; z-index:1000;
+    display:flex; position:fixed; inset:0; z-index:1000;
     background:rgba(0,0,0,0.88); align-items:center; justify-content:center;
+    opacity:0; visibility:hidden; transition:opacity 0.25s ease, visibility 0s linear 0.25s;
   }
-  .lb-overlay.open { display:flex; }
+  .lb-overlay.open { opacity:1; visibility:visible; transition:opacity 0.25s ease; }
   .lb-img {
     max-width:92vw; max-height:88vh; border-radius:12px;
     box-shadow:0 8px 40px rgba(0,0,0,0.5); object-fit:contain;
     touch-action:pan-y; user-select:none; -webkit-user-drag:none;
+    transform:scale(0.96); transition:transform 0.25s ease;
+  }
+  .lb-overlay.open .lb-img { transform:none; }
+  @media (prefers-reduced-motion: reduce) {
+    .lb-overlay, .lb-overlay.open, .lb-img { transition:none; }
   }
   .lb-close {
     position:absolute; top:16px; right:20px;
@@ -808,7 +815,7 @@ document.querySelectorAll(".month-group[hidden]").forEach(group => {
 })();
 </script>
 
-<script src="/site.js?v=20261009-reveal"></script>
+<script src="/site.js?v=20261010-polish"></script>
 </body>
 </html>
 

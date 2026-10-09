@@ -64,6 +64,12 @@ nav button.hamburger[aria-expanded="true"] {
   }
 }
 
+/* Micro-interactions: buttons and cards lift on hover and keyboard focus. Only transform and box-shadow animate. */
+.cta-btn { transition:transform 0.2s ease, box-shadow 0.2s ease; }
+.cta-btn:focus-visible { transform:translateY(-3px); box-shadow:0 0 0 5px rgba(255,217,90,0.7); }
+.preschool-reason, .fee-card { transition:transform 0.2s ease, box-shadow 0.2s ease; }
+.preschool-reason:hover, .fee-card:hover { box-shadow:0 10px 24px rgba(45,45,45,0.12); }
+
 /* Scroll reveal: only applies once site.js adds .js-reveal (never without JS or with reduced motion) */
 .js-reveal .reveal-pending { opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease; }
 .js-reveal .reveal-pending.is-visible { opacity:1; transform:none; }

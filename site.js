@@ -145,8 +145,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       if (!entry.isIntersecting) return;
-      entry.target.classList.add('is-visible');
-      observer.unobserve(entry.target);
+      const element = entry.target;
+      element.classList.add('is-visible');
+      observer.unobserve(element);
+      // Drop the reveal classes once the fade finishes so hover effects on the card work normally afterwards
+      element.addEventListener('transitionend', () => element.classList.remove('reveal-pending', 'is-visible'), { once: true });
     });
   }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
 
