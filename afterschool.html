@@ -170,6 +170,9 @@
     .hero-content { grid-template-columns: 1fr; text-align: center; gap: 28px; }
     .hero-copy { text-align: center; }
     .hero-photo { justify-self: center; max-width: 320px; margin: 0 auto; }
+    /* Phones: photo leads as a short banner above the title, so parents see a child before the text */
+    .hero-photo { order: -1; }
+    .hero-photo-frame { aspect-ratio: 16 / 9; }
     .hero-actions { justify-content: center; }
   }
   .hero-tag {
