@@ -64,6 +64,16 @@ nav button.hamburger[aria-expanded="true"] {
   }
 }
 
+/* Wave edge at the bottom of a hero: the cream page curves up into the hero's yellow edge.
+   Same shape as the homepage dividers, flipped vertically. Add class wave-bottom to the hero. */
+.wave-bottom { position:relative; --wave-fill:#FFF9EE; }
+.wave-bottom::after {
+  content:""; position:absolute; left:0; right:0; bottom:-1px; height:48px; pointer-events:none;
+  background:var(--wave-fill); transform:scaleY(-1);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 48' preserveAspectRatio='none'%3E%3Cpath d='M0 0H1440V24C1200 44 960 4 720 24S240 44 0 24Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 48' preserveAspectRatio='none'%3E%3Cpath d='M0 0H1440V24C1200 44 960 4 720 24S240 44 0 24Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+
 /* Shared primary button (used on every page). Pages must not redefine .cta-btn. */
 .cta-btn {
   display:inline-block; background:#CC4632; color:white;
