@@ -332,6 +332,20 @@
 </div>
 <style>
 @media(max-width:760px){#seasonal-banner{font-size:0.78rem;padding:7px 10px;}}
+@media(max-width:600px){
+  .mobile-signup-bar {
+    position:fixed; z-index:250; left:0; right:0; bottom:0; display:flex; gap:10px;
+    padding:10px 12px; background:rgba(255,255,255,0.97); border-top:1px solid #e8e8e8;
+    box-shadow:0 -4px 18px rgba(0,0,0,0.12);
+  }
+  .mobile-signup-bar a {
+    flex:1; min-width:0; padding:13px 10px; border-radius:8px;
+    text-align:center; text-decoration:none; color:white; font-weight:800;
+  }
+  .mobile-signup-bar .mobile-trial { background:#CC4632; }
+  .mobile-signup-bar .mobile-line { background:#067A34; }
+  body { padding-bottom:72px; }
+}
 </style>
 <script>
 function _fixSeasonalNav(){var b=document.getElementById('seasonal-banner'),n=document.querySelector('nav');if(b&&n){n.style.top=b.offsetHeight+'px';document.documentElement.style.setProperty('--header-h',(b.offsetHeight+n.offsetHeight+12)+'px');}}
@@ -815,6 +829,10 @@ document.querySelectorAll(".month-group[hidden]").forEach(group => {
 })();
 </script>
 
+<div class="mobile-signup-bar" aria-label="お問い合わせ">
+  <a class="mobile-trial" href="/#trial" onclick="gtag('event','trial_lesson_gallery_sticky')">無料体験</a>
+  <a class="mobile-line" href="https://lin.ee/SOqP6Vz" target="_blank" rel="noopener" onclick="gtag('event','contact_line_gallery_sticky')">LINEで相談</a>
+</div>
 <script src="/site.js?v=20261010-polish"></script>
 </body>
 </html>
