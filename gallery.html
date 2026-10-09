@@ -240,6 +240,13 @@
     transform:scale(1.02); box-shadow:0 6px 20px rgba(0,0,0,0.12);
   }
   .photo-item img { width:100%; height:100%; object-fit:cover; display:block; }
+  .photo-item[hidden] { display:none; }
+  .photo-more {
+    display:block; margin:18px auto 0; padding:10px 22px; border:2px solid var(--sky); border-radius:40px;
+    background:white; color:var(--brown); font-family:'Baloo 2','Zen Maru Gothic',cursive; font-weight:800; font-size:0.95rem; cursor:pointer;
+  }
+  .photo-more:hover { background:#fff0dc; }
+  .photo-more:focus-visible { outline:3px solid var(--sun); outline-offset:3px; }
 
   @media(max-width:900px) {
     .featured-grid { grid-template-columns:repeat(2,1fr); grid-auto-rows:auto; }
@@ -711,6 +718,23 @@ document.querySelectorAll(".month-group[hidden]").forEach(group => {
       [photos[index], photos[randomIndex]] = [photos[randomIndex], photos[index]];
     }
     photos.forEach(photo => grid.appendChild(photo));
+  });
+
+  // Show the first 6 photos in each grid; the rest appear on request so no single program fills the page
+  const previewCount = 6;
+  document.querySelectorAll(".photo-grid").forEach(grid => {
+    const photos = Array.from(grid.querySelectorAll(":scope > .photo-item"));
+    if (photos.length <= previewCount) return;
+    photos.slice(previewCount).forEach(photo => { photo.hidden = true; });
+    const moreButton = document.createElement("button");
+    moreButton.type = "button";
+    moreButton.className = "photo-more";
+    moreButton.textContent = `もっと見る（残り${photos.length - previewCount}枚）`;
+    moreButton.addEventListener("click", () => {
+      photos.forEach(photo => { photo.hidden = false; });
+      moreButton.remove();
+    });
+    grid.after(moreButton);
   });
 
   sections.forEach(section => {
