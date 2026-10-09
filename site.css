@@ -64,6 +64,10 @@ nav button.hamburger[aria-expanded="true"] {
   }
 }
 
+/* Scroll reveal: only applies once site.js adds .js-reveal (never without JS or with reduced motion) */
+.js-reveal .reveal-pending { opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease; }
+.js-reveal .reveal-pending.is-visible { opacity:1; transform:none; }
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto !important; }
   *, *::before, *::after {

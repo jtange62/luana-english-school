@@ -129,3 +129,29 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
+// Scroll reveal: cards fade up as they enter the viewport. Content only hides once
+// this runs, so pages without JavaScript or with reduced motion stay fully visible.
+document.addEventListener('DOMContentLoaded', () => {
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion || !('IntersectionObserver' in window)) return;
+
+  // Skip anything hidden at load (e.g. filtered gallery sections) so it is never stuck invisible.
+  const targets = Array.from(document.querySelectorAll('.fee-card, .cta-box, .preschool-reason, .program-gallery'))
+    .filter(element => !element.closest('[hidden]'));
+  if (!targets.length) return;
+
+  document.documentElement.classList.add('js-reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('is-visible');
+      observer.unobserve(entry.target);
+    });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+
+  targets.forEach(element => {
+    element.classList.add('reveal-pending');
+    observer.observe(element);
+  });
+});
