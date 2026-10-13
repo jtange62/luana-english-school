@@ -54,6 +54,15 @@ test("program Back buttons restore the visitor's prior page and scroll position"
   assert.match(script, /history\.back\(\)/);
 });
 
+test("site.js skips loading analytics on devices opted out with ?noga", async () => {
+  const script = await source("site.js");
+  const loader = script.slice(0, script.indexOf("googletagmanager.com/gtag/js"));
+  assert.match(loader, /params\.has\('noga'\)/);
+  assert.match(loader, /params\.has\('ga'\)/);
+  assert.match(loader, /if \(optedOut\) return;/);
+  assert.match(loader, /history\.replaceState/);
+});
+
 test("every public page offers the new-first-grader trial in its banner", async () => {
   for (const page of publicPages) {
     const html = await source(page);

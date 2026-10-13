@@ -1,6 +1,29 @@
 (() => {
   if (typeof window.gtag !== 'function') return;
 
+  // Owner opt-out: open any page with ?noga to stop loading analytics on this
+  // device (works on any network, unlike GA's IP filter); ?ga turns it back on.
+  const params = new URLSearchParams(window.location.search);
+  const toggled = params.has('noga') || params.has('ga');
+  let optedOut = params.has('noga');
+  let remembered = true;
+  try {
+    if (params.has('noga')) localStorage.setItem('luana-noga', '1');
+    if (params.has('ga')) localStorage.removeItem('luana-noga');
+    optedOut = localStorage.getItem('luana-noga') === '1';
+  } catch (error) {
+    remembered = false;
+  }
+  if (toggled) {
+    params.delete('noga');
+    params.delete('ga');
+    const query = params.toString();
+    history.replaceState(null, '', window.location.pathname + (query ? `?${query}` : '') + window.location.hash);
+    if (!remembered) alert('Analytics setting could not be saved (browser storage is blocked).');
+    else alert(optedOut ? 'Analytics is now OFF on this device.' : 'Analytics is now ON for this device.');
+  }
+  if (optedOut) return;
+
   // Start tracking promptly without waiting for interaction or slow page assets.
   const script = document.createElement('script');
   script.async = true;
