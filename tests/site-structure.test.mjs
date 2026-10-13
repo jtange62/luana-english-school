@@ -63,12 +63,31 @@ test("site.js skips loading analytics on devices opted out with ?noga", async ()
   assert.match(loader, /history\.replaceState/);
 });
 
+test("the new-first-grader entrance-fee offer expires on its own after 2026-12-31", async () => {
+  const offers = {
+    "afterschool.html": /<p class="grade-bridge-offer" data-offer-until="2026-12-31">[^<]*<strong>入会金 ¥20,000 → ¥10,000（半額）<\/strong><\/p>/,
+    "kinder.html": /<p class="grade-bridge-offer" data-offer-until="2026-12-31">[^<]*<strong>入会金 ¥20,000 → ¥10,000（半額）<\/strong><\/p>/,
+    "fees.html": /<p class="fee-hint" data-offer-until="2026-12-31">[^<]*入会金 ¥10,000（通常 ¥20,000）。<\/p>/,
+    "index.html": /<span class="trial-offer" data-offer-until="2026-12-31">12月31日までのご入会で入会金半額<\/span>/
+  };
+  for (const [page, pattern] of Object.entries(offers)) {
+    assert.match(await source(page), pattern, `${page} is missing the time-limited offer`);
+  }
+
+  const script = await source("site.js");
+  assert.match(script, /querySelectorAll\('\[data-offer-until\]'\)/);
+  assert.match(script, /todayJst > element\.dataset\.offerUntil\) element\.remove\(\)/);
+  assert.match(script, /9 \* 60 \* 60 \* 1000/);
+});
+
 test("every public page offers the new-first-grader trial in its banner", async () => {
   for (const page of publicPages) {
     const html = await source(page);
     const banner = html.match(/<div id="seasonal-banner"[\s\S]*?<\/div>/)?.[0];
     assert.ok(banner, `${page} is missing the trial banner`);
-    assert.match(banner, /2027年度に新1年生になるお子さまは、今から小学生クラスを体験できます。/);
+    assert.match(banner, /2027年度 新1年生さん<span data-offer-until="2026-12-31">：12月31日までのご入会で入会金半額！無料体験受付中<\/span>/);
+    // Once the offer lapses the banner must fall back to the plain trial message.
+    assert.match(banner, /<span data-offer-after="2026-12-31" hidden>は、今から小学生クラスを体験できます。<\/span>/);
     assert.match(banner, /href="https:\/\/docs\.google\.com\/forms\/d\/e\/1FAIpQLScbYpdpnxH9C1RSn5QA94qcV8lMzo5htOqTmN7sIeFo_J1f8A\/viewform\?usp=dialog"/);
     assert.doesNotMatch(banner, /秋の入会受付中/);
   }

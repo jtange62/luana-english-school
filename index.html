@@ -378,12 +378,13 @@
   .trial-action.kinder { background: #FFF8DC; border-color: var(--sun); box-shadow: 0 5px 0 rgba(255,217,90,0.35); }
   .trial-action.after { background: #F5F0FF; border-color: var(--lavender); box-shadow: 0 5px 0 rgba(201,167,240,0.35); }
   /* Not a class -- the 2027 campaign, styled like the grade-bridge CTA. */
-  .trial-action.shinichinensei { background: #CC4632; border-color: #CC4632; color: #fff; box-shadow: 0 5px 0 #9E3524; }
+  .trial-action.shinichinensei { background: #CC4632; border-color: #CC4632; color: #fff; box-shadow: 0 5px 0 #9E3524; flex-direction: column; text-align: center; }
   .trial-action:hover { transform: translateY(-2px); box-shadow: 0 7px 0 rgba(91,200,245,0.28); }
   .trial-action.peekaboo:hover { box-shadow: 0 7px 0 rgba(255,127,110,0.35); }
   .trial-action.kinder:hover { box-shadow: 0 7px 0 rgba(255,217,90,0.35); }
   .trial-action.after:hover { box-shadow: 0 7px 0 rgba(201,167,240,0.35); }
   .trial-action.shinichinensei:hover { box-shadow: 0 7px 0 #9E3524; }
+  .trial-offer { display: block; margin-top: 2px; font-size: 0.82rem; font-weight: 700; }
   .trial-note { margin-top: 18px; color: #666; font-size: 0.92rem; }
 
   .trial-or {
@@ -1036,7 +1037,7 @@
   padding:10px 20px; font-family:'Baloo 2','Zen Maru Gothic',cursive; font-weight:800; font-size:0.95rem;
   color:#7A4A0A; letter-spacing:0.3px;
 ">
-  <a href="https://docs.google.com/forms/d/e/1FAIpQLScbYpdpnxH9C1RSn5QA94qcV8lMzo5htOqTmN7sIeFo_J1f8A/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" onclick="gtag('event','trial_lesson_shinichinensei_banner')" style="color:#7A4A0A;text-decoration:underline;font-weight:800;">2027年度に新1年生になるお子さまは、今から小学生クラスを体験できます。</a>
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLScbYpdpnxH9C1RSn5QA94qcV8lMzo5htOqTmN7sIeFo_J1f8A/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" onclick="gtag('event','trial_lesson_shinichinensei_banner')" style="color:#7A4A0A;text-decoration:underline;font-weight:800;">2027年度 新1年生さん<span data-offer-until="2026-12-31">：12月31日までのご入会で入会金半額！無料体験受付中</span><span data-offer-after="2026-12-31" hidden>は、今から小学生クラスを体験できます。</span></a>
 </div>
 <style>
 @media(max-width:760px){#seasonal-banner{font-size:0.78rem;padding:7px 10px;}}
@@ -1185,7 +1186,7 @@ document.querySelectorAll(".nav-links a").forEach(link => {
       <a class="trial-action preschool" href="https://docs.google.com/forms/d/e/1FAIpQLScj5WNaLAc5Z9DxK1OZVFvbwyybkOBnePVofcUGATNvIcAJnQ/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_preschool')">🐣 プリスクール（1〜2歳）無料体験</a>
       <a class="trial-action kinder" href="https://docs.google.com/forms/d/e/1FAIpQLSe1fLxRno8bzY1DzSxAqpGnieWfcCrWDZJTVNnzL8yoUu-zdQ/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_kinder')">🌻 キンダースクール（年少〜年長）無料体験</a>
       <a class="trial-action after" href="https://docs.google.com/forms/d/e/1FAIpQLSc-GqYR10IOEfLaSN1hieuvVi3gziH-jySSuas-caJ3-MEclw/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_afterschool')">🎒 アフタースクール（小学生）無料体験</a>
-      <a class="trial-action shinichinensei" href="https://docs.google.com/forms/d/e/1FAIpQLScbYpdpnxH9C1RSn5QA94qcV8lMzo5htOqTmN7sIeFo_J1f8A/viewform?usp=dialog" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_shinichinensei')">🌸 2027年度 新1年生（現年長さん）無料体験</a>
+      <a class="trial-action shinichinensei" href="https://docs.google.com/forms/d/e/1FAIpQLScbYpdpnxH9C1RSn5QA94qcV8lMzo5htOqTmN7sIeFo_J1f8A/viewform?usp=dialog" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_shinichinensei')">🌸 2027年度 新1年生（現年長さん）無料体験<span class="trial-offer" data-offer-until="2026-12-31">12月31日までのご入会で入会金半額</span></a>
     </div>
     <p class="trial-note">フォーム送信後、スクールから日程をご案内します。</p>
 
@@ -1739,6 +1740,6 @@ document.querySelectorAll(".nav-links a").forEach(link => {
 }
 </script>
 
-<script src="/site.js?v=20261013-noga"></script>
+<script src="/site.js?v=20261013-offer"></script>
 </body>
 </html>

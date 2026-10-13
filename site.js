@@ -31,6 +31,19 @@
   document.head.appendChild(script);
 })();
 
+// Time-limited offers: [data-offer-until="YYYY-MM-DD"] is removed once that day has
+// passed in Japan, and any [data-offer-after] replacement text is shown instead.
+// Runs before DOMContentLoaded so the banner height is measured without the offer.
+(() => {
+  const todayJst = new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  document.querySelectorAll('[data-offer-until]').forEach(element => {
+    if (todayJst > element.dataset.offerUntil) element.remove();
+  });
+  document.querySelectorAll('[data-offer-after]').forEach(element => {
+    if (todayJst > element.dataset.offerAfter) element.hidden = false;
+  });
+})();
+
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('[data-hero-carousel]').forEach(carousel => {
     const slides = Array.from(carousel.querySelectorAll('[data-hero-slide]'));
