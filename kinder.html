@@ -181,27 +181,14 @@
 
   .content { max-width: 900px; margin: 0 auto; padding: 60px 20px 80px; }
 
-  /* TABS */
-  .tabs { display: flex; gap: 12px; margin-bottom: 36px; flex-wrap: wrap; }
-  .tab-btn {
-    font-family: 'Baloo 2', 'Zen Maru Gothic', cursive; font-weight: 800; font-size: 1rem;
-    padding: 12px 28px; border-radius: 30px; border: 3px solid transparent;
-    cursor: pointer; transition: all 0.2s; background: white; color: var(--brown);
-    border-color: var(--sun);
-  }
-  .tab-btn.active { background: var(--sun); color: #6E4517; box-shadow: 0 4px 0 #c9a010; }
-  .tab-btn:hover { background: var(--sun); }
-
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; }
-
   /* Schedule */
   .schedule-box {
     background: white; border-radius: 24px; padding: 28px 32px;
     margin-bottom: 36px; box-shadow: 0 2px 12px rgba(0,0,0,0.05);
   }
-  .schedule-box.k1 { border: 2px solid var(--sun); }
-  .schedule-box.k2 { border: 2px solid var(--sky); }
+  .schedule-box { border: 2px solid var(--sun); }
+  .schedule-note { margin-top:12px; font-size:0.85rem; color:#6E4517; text-align:center; }
+  tr.long-only td { background:#EEF9FE !important; }
   .schedule-box h2 { font-family:'Baloo 2','Zen Maru Gothic',cursive; font-size:1.3rem; font-weight:800; color:var(--brown); margin-bottom:18px; text-align:center; }
   table { width:100%; border-collapse:collapse; font-size:0.9rem; }
   th { padding:10px 14px; text-align:left; font-weight:800; color:var(--brown); background:#fafafa; }
@@ -219,18 +206,11 @@
     box-shadow: 0 2px 10px rgba(0,0,0,0.04);
   }
   .activity-card:hover { transform: translateX(5px); }
-  .k1-panel .activity-card:nth-child(1) { border-color: #FFD95A; }
-  .k1-panel .activity-card:nth-child(2) { border-color: #5BC8F5; }
-  .k1-panel .activity-card:nth-child(3) { border-color: #FF7F6E; }
-  .k1-panel .activity-card:nth-child(4) { border-color: #C9A7F0; }
-  .k1-panel .activity-card:nth-child(5) { border-color: #7EDDB2; }
-  .k2-panel .activity-card:nth-child(1) { border-color: #FFD95A; }
-  .k2-panel .activity-card:nth-child(2) { border-color: #5BC8F5; }
-  .k2-panel .activity-card:nth-child(3) { border-color: #FF7F6E; }
-  .k2-panel .activity-card:nth-child(4) { border-color: #C9A7F0; }
-  .k2-panel .activity-card:nth-child(5) { border-color: #7EDDB2; }
-  .k2-panel .activity-card:nth-child(6) { border-color: #5BC8F5; }
-  .k2-panel .activity-card:nth-child(7) { border-color: #FF7F6E; }
+  .activities .activity-card:nth-child(5n+1) { border-color: #FFD95A; }
+  .activities .activity-card:nth-child(5n+2) { border-color: #5BC8F5; }
+  .activities .activity-card:nth-child(5n+3) { border-color: #FF7F6E; }
+  .activities .activity-card:nth-child(5n+4) { border-color: #C9A7F0; }
+  .activities .activity-card:nth-child(5n+5) { border-color: #7EDDB2; }
 
   .activity-icon {
     font-size: 2rem; flex-shrink: 0; width: 56px; height: 56px;
@@ -272,8 +252,6 @@
 
   @media(max-width:600px) {
     .activity-card { flex-direction:column; padding:18px; }
-    .tabs { gap:8px; }
-    .tab-btn { font-size:0.85rem; padding:10px 18px; }
   }
 
   /* ── MOBILE FIRST IMPROVEMENTS ── */
@@ -329,9 +307,6 @@
     .activity-card { flex-direction: column; padding: 20px; gap: 12px; }
     .activity-icon { width: 48px; height: 48px; font-size: 1.6rem; }
 
-    /* Tabs */
-    .tabs { flex-direction: column; gap: 8px; }
-    .tab-btn { width: 100%; text-align: center; }
 
     /* Gallery */
     .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
@@ -431,11 +406,38 @@
   .site-footer .footer-links a { font-weight: 800; } @media (max-width: 760px) { .footer-links { row-gap: 0; } .footer-links a, footer p a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 4px; } }
   @media(max-width: 600px) { .site-footer { padding: 30px 16px; } }
 
-  .class-guide {
-    background: white; border: 2px solid var(--sun); border-radius: 14px;
-    padding: 16px 20px; margin: 0 0 26px; color: #6E4517; line-height: 1.8; font-size: 0.95rem;
+  .how-it-works, .second-hour {
+    background: white; border: 2px solid var(--sun); border-radius: 24px;
+    padding: 28px 32px; margin: 0 0 36px; color: #4A3520; line-height: 1.8;
   }
-  .class-guide p { margin: 0; }
+  .second-hour { border-color: var(--sky); }
+  .nowrap { white-space:nowrap; }
+  .how-it-works h2, .second-hour h2 { font-family:'Baloo 2','Zen Maru Gothic',cursive; font-size:1.3rem; font-weight:800; color:var(--brown); margin-bottom:10px; text-align:center; }
+  .how-lead { font-size:0.95rem; margin-bottom:20px; text-align:center; }
+  .how-step { display:flex; align-items:center; gap:10px; font-size:1.05rem; font-weight:800; color:var(--brown); margin:22px 0 12px; }
+  .how-step span { display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:50%; background:var(--sun); color:#6E4517; font-size:0.95rem; flex-shrink:0; }
+  .course-options { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .course-option { border-radius:18px; padding:16px 18px; background:#FFF8DC; border:2px solid var(--sun); }
+  .course-option.long { background:#EEF9FE; border-color:var(--sky); }
+  .course-name { font-weight:800; color:var(--brown); font-size:1.05rem; }
+  .course-time { font-weight:800; color:#1F7887; margin:2px 0 6px; }
+  .course-option p { font-size:0.88rem; color:#555; line-height:1.6; }
+  .how-note { font-size:0.88rem; color:#6E4517; margin:6px 0; }
+  .how-note a { color:#8B5E2A; font-weight:700; }
+  .course-prices { margin:8px 0 6px; font-size:0.95rem; }
+  .course-prices caption { caption-side:top; text-align:right; font-size:0.8rem; color:#555; padding-bottom:4px; }
+  .course-prices th, .course-prices td { text-align:center; padding:10px 8px; }
+  .course-prices tbody th { background:#fafafa; color:var(--brown); border-bottom:1px solid #f0f0f0; }
+  .course-prices td { font-weight:800; color:var(--dark); }
+  .second-hour p { font-size:0.95rem; margin-bottom:12px; }
+  .second-hour ul { list-style:none; display:flex; flex-direction:column; gap:10px; }
+  .second-hour li { font-size:0.92rem; background:#F5FBFE; border-radius:14px; padding:12px 16px; }
+  .second-hour li strong { color:#1F7887; }
+  .long-badge { display:inline-block; vertical-align:middle; margin-left:6px; padding:2px 10px; border-radius:20px; background:#DDF3FC; color:#155F6B; font-family:'Nunito','Zen Maru Gothic',sans-serif; font-size:0.72rem; font-weight:800; white-space:nowrap; }
+  @media(max-width:600px) {
+    .how-it-works, .second-hour { padding:22px 16px; }
+    .course-options { grid-template-columns:1fr; }
+  }
   .enrolment-note {
     background: #FFF8DC; border-left: 4px solid var(--sun);
     border-radius: 0 10px 10px 0; padding: 10px 16px; margin: 0 0 26px;
@@ -491,7 +493,7 @@ window.addEventListener('resize',_fixSeasonalNav);
       <div class="hero-tag">🌻 Kinder School</div>
       <h1>府中市の幼稚園児向け英語クラス</h1>
       <p>府中市中河原で、幼稚園のあとに楽しく英語に親しめる年少〜年長（3〜6歳）の英語クラス。聖蹟桜ヶ丘エリアからも通えます。</p>
-      <p class="hero-price">年少・年中クラス 月額 ¥6,000〜／年中・年長クラス 月額 ¥10,000〜<small>週1日・税別｜入会金 ¥20,000（初回のみ）</small></p>
+      <p class="hero-price">1時間コース 月額 ¥6,000〜／2時間コース 月額 ¥10,000〜<small>週1日の場合・税別（週1〜5日から選べます）｜入会金 ¥20,000（初回のみ）</small></p>
       <div class="hero-actions">
         <a href="https://docs.google.com/forms/d/e/1FAIpQLSe1fLxRno8bzY1DzSxAqpGnieWfcCrWDZJTVNnzL8yoUu-zdQ/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_kinder_hero')" class="cta-btn">体験レッスンを申し込む</a>
         <a href="/fees#kinder-short" class="hero-fees-link">キンダースクールの料金を見る</a>
@@ -516,146 +518,121 @@ window.addEventListener('resize',_fixSeasonalNav);
 
   <p class="enrolment-note">🌷 3〜6歳（幼稚園の年少・年中・年長にあたる年齢）のお子さまが対象です。幼稚園に通っていないお子さまもご参加いただけます。1〜2歳のお子さまは<a href="/preschool">プリスクール</a>をご覧ください。</p>
 
-  <div class="class-guide" id="class-guide">
-    <p>🧭 <strong>1時間コース</strong>（15:00–16:00）と<strong>2時間コース</strong>（15:00–17:00）があります。2時間コースは、レッスンのあとアフタースクールに合流して過ごします。</p>
-  </div>
+  <section class="how-it-works" id="class-guide" aria-labelledby="how-title">
+    <h2 id="how-title">🧭 コースの選び方</h2>
+    <p class="how-lead">選ぶのは<strong>「時間」</strong>と<strong>「週の日数」</strong>の2つだけ。年少・年中・年長どの学年のお子さまも、どちらのコースでもお選びいただけます。</p>
 
-  <!-- TABS -->
-  <div class="tabs" role="tablist" aria-label="キンダースクール">
-    <button id="k1-tab" class="tab-btn active" role="tab" aria-selected="true" aria-controls="k1" tabindex="0" onclick="showTab('k1', this)">🌱 K1・K2（年少・年中）15:00–16:00</button>
-    <button id="k2-tab" class="tab-btn" role="tab" aria-selected="false" aria-controls="k2" tabindex="-1" onclick="showTab('k2', this)">🌟 K2・K3（年中・年長）15:00–17:00</button>
-  </div>
-
-  <!-- K1/K2 Panel -->
-  <div id="k1" class="tab-panel active k1-panel" role="tabpanel" aria-labelledby="k1-tab">
-
-    <div class="schedule-box k1">
-      <h2>🕒 カリキュラム K1・K2（年少・年中）</h2>
-      <table>
-        <thead><tr><th>時間</th><th>Activity</th></tr></thead>
-        <tbody>
-          <tr><td>15:00 – 15:15</td><td>Free Play</td></tr>
-          <tr><td>15:15 – 15:25</td><td>Circle Time</td></tr>
-          <tr><td>15:25 – 15:45</td><td>Phonics/Theme</td></tr>
-          <tr><td>15:45 – 16:00</td><td>Craft/Activity</td></tr>
-        </tbody>
-      </table>
+    <h3 class="how-step"><span>1</span>時間を選ぶ</h3>
+    <div class="course-options">
+      <div class="course-option short">
+        <div class="course-name">🌱 1時間コース</div>
+        <div class="course-time">15:00 – 16:00</div>
+        <p>英語レッスン（Free Play・Circle Time・Phonics・工作など）</p>
+      </div>
+      <div class="course-option long">
+        <div class="course-name">🌟 2時間コース</div>
+        <div class="course-time">15:00 – 17:00</div>
+        <p>同じ英語レッスン ＋ アフタースクールに合流してもう1時間</p>
+      </div>
     </div>
 
-    <div class="activities">
-      <div class="activity-card">
-        <div class="activity-icon">🎵</div>
-        <div class="activity-text">
-          <h3>Circle Time</h3>
-          <p>Warming Up Time で楽しくスタート！お天気、曜日などをお歌で覚えていきます。</p>
-        </div>
-      </div>
-      <div class="activity-card">
-        <div class="activity-icon">🔤</div>
-        <div class="activity-text">
-          <h3>Phonics</h3>
-          <p>アルファベットの音を、リズムに乗りながら、覚えていきます。</p>
-        </div>
-      </div>
-      <div class="activity-card">
-        <div class="activity-icon">🃏</div>
-        <div class="activity-text">
-          <h3>Theme</h3>
-          <p>毎月のテーマに沿って、ゲームなどのアクティビティを通して、自然と覚えていきます。</p>
-        </div>
-      </div>
-      <div class="activity-card">
-        <div class="activity-icon">✂️</div>
-        <div class="activity-text">
-          <h3>Craft / Activity</h3>
-          <p>イベントに合わせた工作や、その日の Activity を楽しんでいきます。</p>
-        </div>
-      </div>
-      <div class="activity-card">
-        <div class="activity-icon">🧸</div>
-        <div class="activity-text">
-          <h3>Free Play</h3>
-          <p>好きな遊びを All English の環境でお友達や Teacher と会話をしながら過ごす、一番自然な英語が自然と身につく時間です。</p>
-        </div>
-      </div>
-    </div>
+    <h3 class="how-step"><span>2</span>週の日数を選ぶ</h3>
+    <p class="how-note">月曜日〜金曜日のうち、週1〜5日からお選びいただけます。</p>
+    <table class="course-prices">
+      <caption>月額（税別）</caption>
+      <thead><tr><th scope="col">週の日数</th><th scope="col">1時間コース</th><th scope="col">2時間コース</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">週1日</th><td>¥6,000</td><td>¥10,000</td></tr>
+        <tr><th scope="row">週2日</th><td>¥10,000</td><td>¥18,000</td></tr>
+        <tr><th scope="row">週3日</th><td>¥15,500</td><td>¥27,500</td></tr>
+        <tr><th scope="row">週4日</th><td>¥21,000</td><td>¥37,000</td></tr>
+        <tr><th scope="row">週5日</th><td>¥26,500</td><td>¥46,500</td></tr>
+      </tbody>
+    </table>
+    <p class="how-note">入会金 ¥20,000（初回のみ）｜延長 30分 ¥600｜<a href="/fees#kinder-short">料金ページで詳しく見る</a></p>
+  </section>
+
+  <section class="second-hour" aria-labelledby="second-hour-title">
+    <h2 id="second-hour-title">🌟 2時間コースの後半<span class="nowrap">（16:00 – 17:00）</span></h2>
+    <p>レッスンのあとは、小学生のアフタースクールに合流します。Teacher と一緒に、お兄さん・お姉さんたちと同じ All English の空間で過ごす1時間です。</p>
+    <ul>
+      <li><strong>One Question A Day</strong>：毎日ひとつの質問に英語で答えます。年齢に合わせて、話すことから少しずつ。</li>
+      <li><strong>Park / Activity</strong>：公園での外遊びや、工作・ゲームなど。遊びながら英語で会話します。</li>
+      <li><strong>年上の子から学ぶ</strong>：小学生の英語を聞いてまねすることで、表現が自然と増えていきます。小学生クラスへのスムーズな準備にもなります。</li>
+    </ul>
+  </section>
+
+  <div class="schedule-box">
+    <h2>🕒 1日の流れ</h2>
+    <table>
+      <thead><tr><th>時間</th><th>Activity</th></tr></thead>
+      <tbody>
+        <tr><td>15:00 – 15:15</td><td>Free Play</td></tr>
+        <tr><td>15:15 – 15:25</td><td>Circle Time</td></tr>
+        <tr><td>15:25 – 15:45</td><td>Phonics/Theme</td></tr>
+        <tr><td>15:45 – 16:00</td><td>Craft/Activity</td></tr>
+        <tr class="long-only"><td>16:00 – 16:15</td><td>One Question A Day <span class="long-badge">2時間コース</span></td></tr>
+        <tr class="long-only"><td>16:15 – 17:00</td><td>Activity 2 / Park <span class="long-badge">2時間コース</span></td></tr>
+      </tbody>
+    </table>
+    <p class="schedule-note">1時間コースは16:00まで、2時間コースは17:00までです。</p>
   </div>
 
-
-  <!-- K2/K3 Panel -->
-  <div id="k2" class="tab-panel k2-panel" role="tabpanel" aria-labelledby="k2-tab" hidden>
-
-    <div class="schedule-box k2">
-      <h2>🕒 カリキュラム K2・K3（年中・年長）</h2>
-      <table>
-        <thead><tr><th>時間</th><th>Activity</th></tr></thead>
-        <tbody>
-          <tr><td>15:00 – 15:15</td><td>Free Play</td></tr>
-          <tr><td>15:15 – 15:25</td><td>Circle Time</td></tr>
-          <tr><td>15:25 – 15:45</td><td>Phonics/Theme</td></tr>
-          <tr><td>15:45 – 16:00</td><td>Craft/Activity</td></tr>
-          <tr><td>16:00 – 16:15</td><td>One Question A Day</td></tr>
-          <tr><td>16:15 – 17:00</td><td>Activity 2 / Park</td></tr>
-        </tbody>
-      </table>
+  <div class="activities">
+    <div class="activity-card">
+      <div class="activity-icon">🎵</div>
+      <div class="activity-text">
+        <h3>Circle Time</h3>
+        <p>Warming Up Time で楽しくスタート！お天気、曜日などをお歌で覚えていきます。</p>
+      </div>
     </div>
-
-    <div class="activities">
-      <div class="activity-card">
-        <div class="activity-icon">🎵</div>
-        <div class="activity-text">
-          <h3>Circle Time</h3>
-          <p>Warming Up Time で楽しくスタート！お天気、曜日などをお歌で覚えていきます。</p>
-        </div>
+    <div class="activity-card">
+      <div class="activity-icon">🔤</div>
+      <div class="activity-text">
+        <h3>Phonics</h3>
+        <p>アルファベットの音を、リズムに乗りながら、覚えていきます。</p>
       </div>
-      <div class="activity-card">
-        <div class="activity-icon">🔤</div>
-        <div class="activity-text">
-          <h3>Phonics</h3>
-          <p>アルファベットの音を、リズムに乗りながら、覚えていきます。</p>
-        </div>
+    </div>
+    <div class="activity-card">
+      <div class="activity-icon">🃏</div>
+      <div class="activity-text">
+        <h3>Theme</h3>
+        <p>毎月のテーマに沿って、ゲームなどのアクティビティを通して、自然と覚えていきます。</p>
       </div>
-      <div class="activity-card">
-        <div class="activity-icon">🃏</div>
-        <div class="activity-text">
-          <h3>Theme</h3>
-          <p>毎月のテーマに沿って、ゲームなどのアクティビティを通して、自然と覚えていきます。</p>
-        </div>
+    </div>
+    <div class="activity-card">
+      <div class="activity-icon">✂️</div>
+      <div class="activity-text">
+        <h3>Craft / Activity</h3>
+        <p>イベントに合わせた工作や、その日の Activity を楽しんでいきます。</p>
       </div>
-      <div class="activity-card">
-        <div class="activity-icon">✂️</div>
-        <div class="activity-text">
-          <h3>Craft / Activity</h3>
-          <p>イベントに合わせた工作や、その日の Activity を楽しんでいきます。</p>
-        </div>
+    </div>
+    <div class="activity-card">
+      <div class="activity-icon">🧸</div>
+      <div class="activity-text">
+        <h3>Free Play</h3>
+        <p>好きな遊びを All English の環境でお友達や Teacher と会話をしながら過ごす、一番自然な英語が自然と身につく時間です。</p>
       </div>
-      <div class="activity-card">
-        <div class="activity-icon">🧸</div>
-        <div class="activity-text">
-          <h3>Free Play</h3>
-          <p>好きな遊びを All English の環境でお友達や Teacher と会話をしながら過ごす、一番自然な英語が自然と身につく時間です。</p>
-        </div>
+    </div>
+    <div class="activity-card">
+      <div class="activity-icon">📖</div>
+      <div class="activity-text">
+        <h3>Reading <span class="long-badge">2時間コース</span></h3>
+        <p>先生と一緒に絵本を読みます。</p>
       </div>
-      <div class="activity-card">
-        <div class="activity-icon">📖</div>
-        <div class="activity-text">
-          <h3>Reading</h3>
-          <p>先生と一緒に絵本を読みます。</p>
-        </div>
+    </div>
+    <div class="activity-card">
+      <div class="activity-icon">✏️</div>
+      <div class="activity-text">
+        <h3>One Question A Day <span class="long-badge">2時間コース</span></h3>
+        <p>1日１質問！Speaking、Writing で解答することで、Natural English、phrase、文法を自然と身につけていきます。</p>
       </div>
-      <div class="activity-card">
-        <div class="activity-icon">✏️</div>
-        <div class="activity-text">
-          <h3>One Question A Day</h3>
-          <p>1日１質問！Speaking、Writing で解答することで、Natural English、phrase、文法を自然と身につけていきます。</p>
-        </div>
-      </div>
-      <div class="activity-card">
-        <div class="activity-icon">🌳</div>
-        <div class="activity-text">
-          <h3>Activity 2 / Park</h3>
-          <p>屋外でのびのびと体を動かしながら、All English の環境で友達や Teacher と自然に英語で会話。楽しい遊びの中で英語を身につけていきます。</p>
-        </div>
+    </div>
+    <div class="activity-card">
+      <div class="activity-icon">🌳</div>
+      <div class="activity-text">
+        <h3>Activity 2 / Park <span class="long-badge">2時間コース</span></h3>
+        <p>屋外でのびのびと体を動かしながら、All English の環境で友達や Teacher と自然に英語で会話。楽しい遊びの中で英語を身につけていきます。</p>
       </div>
     </div>
   </div>
@@ -669,7 +646,7 @@ window.addEventListener('resize',_fixSeasonalNav);
   </section>
   <div class="cta-box">
     <h3>✨ 体験レッスン受付中！</h3>
-    <p>体験レッスンは無料です。フォームでご希望日をお知らせください。送信後、スクールから日程をご案内します。年中さんの1時間・2時間クラス選びも、LINEでお気軽にご相談ください。</p>
+    <p>体験レッスンは無料です。フォームでご希望日をお知らせください。送信後、スクールから日程をご案内します。1時間・2時間コースや曜日の選び方も、LINEでお気軽にご相談ください。</p>
     <p class="cta-phone" style="margin-bottom:16px;">お電話でもご相談いただけます：<a href="tel:0423067392" onclick="gtag('event','contact_phone_program')" style="color:#CC4632;font-weight:700;text-decoration:none;">042-306-7392</a></p>
     <div class="cta-options">
       <a href="https://docs.google.com/forms/d/e/1FAIpQLSe1fLxRno8bzY1DzSxAqpGnieWfcCrWDZJTVNnzL8yoUu-zdQ/viewform?usp=header" target="_blank" onclick="gtag('event','trial_lesson_kinder')" class="cta-btn" rel="noopener noreferrer">体験レッスンを申し込む</a>
@@ -711,26 +688,6 @@ window.addEventListener('resize',_fixSeasonalNav);
   <a class="mobile-line" href="https://lin.ee/SOqP6Vz" target="_blank" rel="noopener" onclick="gtag('event','contact_line_sticky')">LINEで相談</a>
 </div>
 <script>
-function showTab(id, btn) {
-  document.querySelectorAll('.tab-panel').forEach(p => { p.classList.remove('active'); p.hidden = true; });
-  document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); b.tabIndex = -1; });
-  const panel = document.getElementById(id);
-  panel.classList.add('active');
-  panel.hidden = false;
-  btn.classList.add('active');
-  btn.setAttribute('aria-selected', 'true');
-  btn.tabIndex = 0;
-}
-document.querySelector('.tabs').addEventListener('keydown', event => {
-  if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
-  const tabs = Array.from(document.querySelectorAll('.tab-btn'));
-  const current = tabs.indexOf(document.activeElement);
-  let next = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 :
-    (current + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
-  event.preventDefault();
-  tabs[next].focus();
-  tabs[next].click();
-});
 document.querySelectorAll(".nav-links a").forEach(link => {
   link.addEventListener("click", () => document.querySelector(".nav-links").classList.remove("open"));
 });
