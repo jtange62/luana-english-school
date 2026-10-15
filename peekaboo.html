@@ -312,8 +312,9 @@
   .content { position: relative; }
   .photo-ghost {
     position: absolute; width: 210px; aspect-ratio: 4 / 3; z-index: 0; pointer-events: none;
-    background: var(--ghost) center / cover no-repeat; border: 6px solid white; border-radius: 18px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08); opacity: 0.32; display: none;
+    /* Solid photo under a cream wash: looks faded but hides the activities band behind it */
+    background: linear-gradient(rgba(255,249,238,0.68), rgba(255,249,238,0.68)), var(--ghost) center / cover no-repeat;
+    border: 6px solid white; border-radius: 18px; box-shadow: 0 6px 18px rgba(0,0,0,0.05); display: none;
   }
   .photo-ghost.left { left: -260px; transform: rotate(-5deg); }
   .photo-ghost.right { right: -260px; transform: rotate(4deg); }
@@ -328,7 +329,7 @@
     mask-image: linear-gradient(transparent, black 18%, black 82%, transparent);
   }
   .content > * { position: relative; z-index: 1; }
-  .content > .photo-ghost { position: absolute; z-index: 0; }
+  .content > .photo-ghost { position: absolute; z-index: 2; } /* above the activities band; ghosts sit in the margins, never over text */
   .cta-box {
     background: linear-gradient(135deg, rgba(255,240,238,0.9), rgba(255,243,214,0.9)),
       url("photos/programs/optimized/960/peekaboo/1791957716482.webp") center / cover no-repeat;
