@@ -241,6 +241,9 @@
   .photo-ghost.right { right: -260px; transform: rotate(4deg); }
   .photo-ghost.tall { aspect-ratio: 3 / 4; width: 180px; }
   .photo-ghost.right.tall { right: -230px; }
+  /* Keep clear of the activities band (it extends 40px past .activities): lift the one before it, drop the one after it */
+  .photo-ghost.above-band { margin-top: -330px; }
+  .photo-ghost.below-band { margin-top: 80px; }
   @media (min-width: 1460px) { .photo-ghost { display: block; } }
   .activities { position: relative; }
   .activities::before {
@@ -609,7 +612,7 @@ window.addEventListener('resize',_fixSeasonalNav);
     <p class="schedule-note">1時間コースは16:00まで、2時間コースは17:00までです。</p>
   </div>
 
-  <div class="photo-ghost left tall" style="--ghost:url('photos/programs/optimized/480/kinder/1788747367448.webp')" aria-hidden="true"></div>
+  <div class="photo-ghost left tall above-band" style="--ghost:url('photos/programs/optimized/480/kinder/1788747367448.webp')" aria-hidden="true"></div>
   <div class="activities">
     <div class="activity-card">
       <div class="activity-icon">🎵</div>
@@ -677,7 +680,7 @@ window.addEventListener('resize',_fixSeasonalNav);
     <a href="https://docs.google.com/forms/d/e/1FAIpQLScbYpdpnxH9C1RSn5QA94qcV8lMzo5htOqTmN7sIeFo_J1f8A/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" onclick="gtag('event','trial_lesson_shinichinensei_kinder')">2027年度 新1年生の無料体験を申し込む</a>
     <a class="grade-bridge-flyer" href="/pdfs/flyers/shinichinensei-2027.pdf" target="_blank" rel="noopener noreferrer" onclick="gtag('event','flyer_shinichinensei_kinder')"><span>チラシを見る</span>（PDF）</a>
   </section>
-  <div class="photo-ghost right" style="--ghost:url('photos/programs/optimized/480/kinder/lulimade-jelly.webp')" aria-hidden="true"></div>
+  <div class="photo-ghost right below-band" style="--ghost:url('photos/programs/optimized/480/kinder/lulimade-jelly.webp')" aria-hidden="true"></div>
   <div class="cta-box">
     <h3>✨ 体験レッスン受付中！</h3>
     <p>体験レッスンは無料です。フォームでご希望日をお知らせください。送信後、スクールから日程をご案内します。1時間・2時間コースや曜日の選び方も、LINEでお気軽にご相談ください。</p>

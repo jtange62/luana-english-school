@@ -320,6 +320,9 @@
   .photo-ghost.right { right: -260px; transform: rotate(4deg); }
   .photo-ghost.tall { aspect-ratio: 3 / 4; width: 180px; }
   .photo-ghost.right.tall { right: -230px; }
+  /* Keep clear of the activities band (it extends 40px past .activities): lift the one before it, drop the one after it */
+  .photo-ghost.above-band { margin-top: -330px; }
+  .photo-ghost.below-band { margin-top: 80px; }
   @media (min-width: 1360px) { .photo-ghost { display: block; } }
   .activities { position: relative; }
   .activities::before {
@@ -555,7 +558,7 @@ window.addEventListener('resize',_fixSeasonalNav);
     </div>
   </div>
 
-  <div class="photo-ghost left tall" style="--ghost:url('photos/programs/optimized/480/peekaboo/1791957716535.webp')" aria-hidden="true"></div>
+  <div class="photo-ghost left tall above-band" style="--ghost:url('photos/programs/optimized/480/peekaboo/1791957716535.webp')" aria-hidden="true"></div>
   <div class="activities">
 
     <div class="activity-card">
@@ -600,7 +603,7 @@ window.addEventListener('resize',_fixSeasonalNav);
 
   </div>
 
-  <div class="photo-ghost right" style="--ghost:url('photos/programs/optimized/480/peekaboo/1791957686996.webp')" aria-hidden="true"></div>
+  <div class="photo-ghost right below-band" style="--ghost:url('photos/programs/optimized/480/peekaboo/1791957686996.webp')" aria-hidden="true"></div>
   <div class="cta-box">
     <h3>✨ Peekaboo 参加受付中</h3>
     <p>体験レッスンは無料です。フォームでご希望日をお知らせください。送信後、スクールから日程をご案内します。空き状況・持ち物などはLINEでもお気軽にご相談ください。</p>
