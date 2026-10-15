@@ -227,6 +227,33 @@
   .cta-box h3 { font-family:'Baloo 2','Zen Maru Gothic',cursive; font-size:1.5rem; font-weight:800; color:var(--brown); margin-bottom:10px; }
   .cta-box p { color:#666; margin-bottom:24px; font-size:0.95rem; }
   /* .cta-btn: shared definition in site.css */
+
+  /* Faded class photos as background decoration (decorative only, aria-hidden) */
+  html { overflow-x: clip; } /* the 100vw band below includes the scrollbar width on Windows */
+  .content { position: relative; }
+  .photo-ghost {
+    position: absolute; width: 210px; aspect-ratio: 4 / 3; z-index: 0; pointer-events: none;
+    background: var(--ghost) center / cover no-repeat; border: 6px solid white; border-radius: 18px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08); opacity: 0.32; display: none;
+  }
+  .photo-ghost.left { left: -260px; transform: rotate(-5deg); }
+  .photo-ghost.right { right: -260px; transform: rotate(4deg); }
+  .photo-ghost.tall { aspect-ratio: 3 / 4; width: 180px; }
+  .photo-ghost.right.tall { right: -230px; }
+  @media (min-width: 1460px) { .photo-ghost { display: block; } }
+  .activities { position: relative; }
+  .activities::before {
+    content: ""; position: absolute; z-index: -1; top: -40px; bottom: -40px; left: 50%; width: 100vw; transform: translateX(-50%);
+    background: url("photos/programs/optimized/960/kinder/1788747367455.webp") center 50% / cover no-repeat; opacity: 0.14;
+    -webkit-mask-image: linear-gradient(transparent, black 18%, black 82%, transparent);
+    mask-image: linear-gradient(transparent, black 18%, black 82%, transparent);
+  }
+  .content > * { position: relative; z-index: 1; }
+  .content > .photo-ghost { position: absolute; z-index: 0; }
+  .cta-box {
+    background: linear-gradient(135deg, rgba(255,248,220,0.9), rgba(255,243,214,0.9)),
+      url("photos/programs/optimized/960/kinder/1788747367454.webp") center / cover no-repeat;
+  }
   .cta-options { display:flex; justify-content:center; flex-wrap:wrap; gap:14px; }
   .line-cta {
     display:inline-flex; align-items:center; justify-content:center;
@@ -519,6 +546,7 @@ window.addEventListener('resize',_fixSeasonalNav);
 
   <p class="enrolment-note">🌷 3〜6歳（幼稚園の年少・年中・年長にあたる年齢）のお子さまが対象です。幼稚園に通っていないお子さまもご参加いただけます。1〜3歳のお子さまは<a href="/preschool">プリスクール</a>をご覧ください。</p>
 
+  <div class="photo-ghost left tall" style="--ghost:url('photos/programs/optimized/480/kinder/1788747367449.webp')" aria-hidden="true"></div>
   <section class="how-it-works" id="class-guide" aria-labelledby="how-title">
     <h2 id="how-title">🧭 コースの選び方</h2>
     <p class="how-lead">選ぶのは<strong>「時間」</strong>と<strong>「週の日数」</strong>の2つだけ。年少・年中・年長どの学年のお子さまも、どちらのコースでもお選びいただけます。</p>
@@ -563,6 +591,7 @@ window.addEventListener('resize',_fixSeasonalNav);
     </ul>
   </section>
 
+  <div class="photo-ghost right tall" style="--ghost:url('photos/programs/optimized/480/kinder/1788747367452(1).webp')" aria-hidden="true"></div>
   <div class="schedule-box">
     <h2>🕒 1日の流れ</h2>
     <table>
@@ -579,6 +608,7 @@ window.addEventListener('resize',_fixSeasonalNav);
     <p class="schedule-note">1時間コースは16:00まで、2時間コースは17:00までです。</p>
   </div>
 
+  <div class="photo-ghost left tall" style="--ghost:url('photos/programs/optimized/480/kinder/1788747367448.webp')" aria-hidden="true"></div>
   <div class="activities">
     <div class="activity-card">
       <div class="activity-icon">🎵</div>
@@ -646,6 +676,7 @@ window.addEventListener('resize',_fixSeasonalNav);
     <a href="https://docs.google.com/forms/d/e/1FAIpQLScbYpdpnxH9C1RSn5QA94qcV8lMzo5htOqTmN7sIeFo_J1f8A/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" onclick="gtag('event','trial_lesson_shinichinensei_kinder')">2027年度 新1年生の無料体験を申し込む</a>
     <a class="grade-bridge-flyer" href="/pdfs/flyers/shinichinensei-2027.pdf" target="_blank" rel="noopener noreferrer" onclick="gtag('event','flyer_shinichinensei_kinder')"><span>チラシを見る</span>（PDF）</a>
   </section>
+  <div class="photo-ghost right" style="--ghost:url('photos/programs/optimized/480/kinder/lulimade-jelly.webp')" aria-hidden="true"></div>
   <div class="cta-box">
     <h3>✨ 体験レッスン受付中！</h3>
     <p>体験レッスンは無料です。フォームでご希望日をお知らせください。送信後、スクールから日程をご案内します。1時間・2時間コースや曜日の選び方も、LINEでお気軽にご相談ください。</p>

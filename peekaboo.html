@@ -306,6 +306,33 @@
   }
   .cta-flyer span { text-decoration: underline; }
   /* .cta-btn: shared definition in site.css */
+
+  /* Faded class photos as background decoration (decorative only, aria-hidden) */
+  html { overflow-x: clip; } /* the 100vw band below includes the scrollbar width on Windows */
+  .content { position: relative; }
+  .photo-ghost {
+    position: absolute; width: 210px; aspect-ratio: 4 / 3; z-index: 0; pointer-events: none;
+    background: var(--ghost) center / cover no-repeat; border: 6px solid white; border-radius: 18px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08); opacity: 0.32; display: none;
+  }
+  .photo-ghost.left { left: -260px; transform: rotate(-5deg); }
+  .photo-ghost.right { right: -260px; transform: rotate(4deg); }
+  .photo-ghost.tall { aspect-ratio: 3 / 4; width: 180px; }
+  .photo-ghost.right.tall { right: -230px; }
+  @media (min-width: 1360px) { .photo-ghost { display: block; } }
+  .activities { position: relative; }
+  .activities::before {
+    content: ""; position: absolute; z-index: -1; top: -40px; bottom: -40px; left: 50%; width: 100vw; transform: translateX(-50%);
+    background: url("photos/programs/optimized/960/peekaboo/1791957646212.webp") center 45% / cover no-repeat; opacity: 0.14;
+    -webkit-mask-image: linear-gradient(transparent, black 18%, black 82%, transparent);
+    mask-image: linear-gradient(transparent, black 18%, black 82%, transparent);
+  }
+  .content > * { position: relative; z-index: 1; }
+  .content > .photo-ghost { position: absolute; z-index: 0; }
+  .cta-box {
+    background: linear-gradient(135deg, rgba(255,240,238,0.9), rgba(255,243,214,0.9)),
+      url("photos/programs/optimized/960/peekaboo/1791957716482.webp") center / cover no-repeat;
+  }
   .line-cta {
     display:inline-flex; align-items:center; justify-content:center;
     padding:16px 30px; border-radius:40px; background:#067A34; color:white;
@@ -465,6 +492,7 @@ window.addEventListener('resize',_fixSeasonalNav);
 
   <div class="age-badge">📅 月曜日〜金曜日｜10:00 – 11:00（1時間）｜対象：0〜3歳のお子さまと保護者の方</div>
 
+  <div class="photo-ghost left tall" style="--ghost:url('photos/programs/optimized/480/peekaboo/1791957687031.webp')" aria-hidden="true"></div>
   <section class="peekaboo-reasons" aria-label="Peekabooの特長">
     <div class="peekaboo-reason">
       <span aria-hidden="true">👩‍👦</span>
@@ -492,6 +520,7 @@ window.addEventListener('resize',_fixSeasonalNav);
     </p>
   </section>
 
+  <div class="photo-ghost right tall" style="--ghost:url('photos/programs/optimized/480/peekaboo/1791432657552.webp')" aria-hidden="true"></div>
   <!-- Hour Schedule -->
   <div style="background:white; border-radius:24px; padding:32px; margin-bottom:40px; box-shadow:0 2px 12px rgba(0,0,0,0.05); border:2px solid var(--coral);">
     <h2 style="font-family:'Baloo 2','Zen Maru Gothic',cursive; font-size:1.4rem; font-weight:800; color:var(--brown); margin-bottom:20px; text-align:center;">🕥 1時間の流れ</h2>
@@ -525,6 +554,7 @@ window.addEventListener('resize',_fixSeasonalNav);
     </div>
   </div>
 
+  <div class="photo-ghost left tall" style="--ghost:url('photos/programs/optimized/480/peekaboo/1791957716535.webp')" aria-hidden="true"></div>
   <div class="activities">
 
     <div class="activity-card">
@@ -569,6 +599,7 @@ window.addEventListener('resize',_fixSeasonalNav);
 
   </div>
 
+  <div class="photo-ghost right" style="--ghost:url('photos/programs/optimized/480/peekaboo/1791957686996.webp')" aria-hidden="true"></div>
   <div class="cta-box">
     <h3>✨ Peekaboo 参加受付中</h3>
     <p>体験レッスンは無料です。フォームでご希望日をお知らせください。送信後、スクールから日程をご案内します。空き状況・持ち物などはLINEでもお気軽にご相談ください。</p>
