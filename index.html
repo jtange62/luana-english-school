@@ -769,6 +769,32 @@
   /* ── FAQ ── */
   .faq { background: var(--cream); }
 
+  /* Faded class photos as decoration (aria-hidden). Pinned photos and photo bands never share a section, so they can't overlap. */
+  html { overflow-x: clip; }
+  .photo-ghost {
+    position: absolute; z-index: 2; pointer-events: none; display: none; width: 210px; aspect-ratio: 4 / 3;
+    background: linear-gradient(rgba(255,249,238,0.68), rgba(255,249,238,0.68)), var(--ghost) center / cover no-repeat;
+    border: 6px solid white; border-radius: 18px; box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+  }
+  .photo-ghost.tall { aspect-ratio: 3 / 4; width: 180px; }
+  .about .container { position: relative; }
+  .about-pins .photo-ghost:nth-child(1) { top: 10px; right: 250px; transform: rotate(-5deg); }
+  .about-pins .photo-ghost:nth-child(2) { top: 34px; right: 10px; transform: rotate(4deg); }
+  @media (min-width: 1000px) { .about-pins .photo-ghost { display: block; } }
+  .faq-list { position: relative; }
+  .faq-list .photo-ghost.left { left: -260px; transform: rotate(-5deg); }
+  .faq-list .photo-ghost.right { right: -240px; transform: rotate(4deg); }
+  @media (min-width: 1360px) { .faq-list .photo-ghost { display: block; } }
+  .classes, .contact { position: relative; overflow: hidden; }
+  .classes > .container, .contact > .container { position: relative; z-index: 1; }
+  .photo-band {
+    position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: 0.14;
+    background: var(--band) center 45% / cover no-repeat;
+    -webkit-mask-image: linear-gradient(transparent, black 20%, black 80%, transparent);
+    mask-image: linear-gradient(transparent, black 20%, black 80%, transparent);
+  }
+  .contact .photo-band { opacity: 0.12; }
+
   /* Wave dividers: each section's top edge is curved into the section above (the fill colour matches that section) */
   .summer-teaser, .about, .faq { position:relative; }
   .summer-teaser::before, .about::before, .faq::before {
@@ -1233,6 +1259,7 @@ document.querySelectorAll(".nav-links a").forEach(link => {
 <!-- ABOUT -->
 <section class="about" id="about">
   <div class="container">
+    <div class="about-pins"><div class="photo-ghost" style="--ghost:url('photos/gallery-optimized/480/our-space/IMG_3331.webp')" aria-hidden="true"></div><div class="photo-ghost" style="--ghost:url('photos/programs/optimized/480/preschool/1792034222895(1).webp')" aria-hidden="true"></div></div>
     <div>
       <div class="section-tag">🌟 About Us</div>
       <h2 class="section-title">あたたかく、<br>アットホームなスクール</h2>
@@ -1324,6 +1351,7 @@ document.querySelectorAll(".nav-links a").forEach(link => {
 
 <!-- CLASSES -->
 <section class="classes" id="classes">
+  <div class="photo-band" style="--band:url('photos/programs/optimized/960/afterschool/IMG_3349.webp')" aria-hidden="true"></div>
   <div class="container">
     <div class="section-tag">📚 Classes</div>
     <h2 class="section-title">クラス一覧</h2>
@@ -1459,6 +1487,10 @@ document.querySelectorAll(".nav-links a").forEach(link => {
     <h2 class="section-title">よくあるご質問</h2>
     <p class="section-sub">体験前に保護者の方からよくいただくご質問です。</p>
     <div class="faq-list">
+      <div class="photo-ghost left" style="--ghost:url('photos/programs/optimized/480/peekaboo/1791957716482.webp');top:40px" aria-hidden="true"></div>
+      <div class="photo-ghost right" style="--ghost:url('photos/programs/optimized/480/preschool/1792034271818.webp');top:22%" aria-hidden="true"></div>
+      <div class="photo-ghost left tall" style="--ghost:url('photos/programs/optimized/480/kinder/1788747367451.webp');top:45%" aria-hidden="true"></div>
+      <div class="photo-ghost right tall" style="--ghost:url('photos/programs/optimized/480/afterschool/IMG_2463.webp');top:68%" aria-hidden="true"></div>
       <div class="faq-item">
         <h3>英語がはじめてでも参加できますか？</h3>
         <p>はい、初心者のお子さまも歓迎しています。一人ひとりのペースに合わせ、歌や遊び、アクティビティを通して自然に英語へ親しめるようサポートします。</p>
@@ -1493,6 +1525,7 @@ document.querySelectorAll(".nav-links a").forEach(link => {
 
 <!-- CONTACT -->
 <section class="contact" id="contact">
+  <div class="photo-band" style="--band:url('photos/gallery-optimized/960/our-space/IMG_3640.webp')" aria-hidden="true"></div>
   <div class="container">
     <div class="section-tag">📩 Contact</div>
     <h2 class="section-title">お問い合わせ</h2>
