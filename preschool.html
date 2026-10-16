@@ -242,6 +242,9 @@
   .activity-card:nth-child(5) { border-color: #C9A7F0; }
   .activity-card:nth-child(6) { border-color: #FFD95A; }
   .activity-card:nth-child(7) { border-color: #5BC8F5; }
+  .activity-card:nth-child(8) { border-color: #FF7F6E; }
+  .activity-card:nth-child(9) { border-color: #7EDDB2; }
+  .activity-card:nth-child(10) { border-color: #C9A7F0; }
 
   .activity-icon {
     font-size: 2.2rem; flex-shrink: 0;
@@ -257,6 +260,9 @@
   .activity-card:nth-child(5) .activity-icon { background: #F5F0FF; }
   .activity-card:nth-child(6) .activity-icon { background: #FFF8DC; }
   .activity-card:nth-child(7) .activity-icon { background: #E8F8FF; }
+  .activity-card:nth-child(8) .activity-icon { background: #FFE8E6; }
+  .activity-card:nth-child(9) .activity-icon { background: #E8FFF4; }
+  .activity-card:nth-child(10) .activity-icon { background: #F5F0FF; }
 
   .activity-text h3 {
     font-family: 'Baloo 2', 'Zen Maru Gothic', cursive;
@@ -654,6 +660,43 @@ window.addEventListener('resize',_fixSeasonalNav);
       <div class="activity-text">
         <h3>Craft / Activity</h3>
         <p>イベントに合わせた工作や、その日の Activity を楽しんでいきます。</p>
+      </div>
+    </div>
+
+    <div class="activity-card">
+      <div class="activity-icon"><svg width="1.35em" height="1.35em" viewBox="0 0 64 64" aria-hidden="true">
+        <defs>
+          <linearGradient id="bubble-rim" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#FF5E8A"/><stop offset=".25" stop-color="#FFB627"/><stop offset=".5" stop-color="#3DD68C"/><stop offset=".75" stop-color="#2FA8F0"/><stop offset="1" stop-color="#9B6CF0"/>
+          </linearGradient>
+          <radialGradient id="bubble-fill" cx=".35" cy=".35" r=".75">
+            <stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset=".55" stop-color="#BDEBFF" stop-opacity=".6"/><stop offset="1" stop-color="#E2B8FF" stop-opacity=".8"/>
+          </radialGradient>
+        </defs>
+        <g fill="url(#bubble-fill)" stroke="url(#bubble-rim)" stroke-width="5">
+          <circle cx="26" cy="36" r="20"/><circle cx="50" cy="18" r="10"/><circle cx="51" cy="47" r="7"/>
+        </g>
+        <g fill="#fff"><ellipse cx="18" cy="27" rx="5" ry="3" transform="rotate(-40 18 27)"/><circle cx="46" cy="14" r="2.5"/><circle cx="48.5" cy="44.5" r="1.8"/></g>
+      </svg></div>
+      <div class="activity-text">
+        <h3>Sensory Play</h3>
+        <p>さわる・にぎる・こねるなど、いろいろな感触の素材で遊びながら、五感と英語の言葉をいっしょに育てます。</p>
+      </div>
+    </div>
+
+    <div class="activity-card">
+      <div class="activity-icon">🔍</div>
+      <div class="activity-text">
+        <h3>Active Exploration Play</h3>
+        <p>体をたくさん動かして、見つけて、試して。子どもたちの「なんだろう？」を大切に、英語の声かけで遊びを広げます。</p>
+      </div>
+    </div>
+
+    <div class="activity-card">
+      <div class="activity-icon">🌳</div>
+      <div class="activity-text">
+        <h3>Outdoor Play</h3>
+        <p>お天気の良い日は、公園へお出かけすることもあります。外で元気に体を動かしながら、自然の中で英語にふれます。</p>
       </div>
     </div>
 
