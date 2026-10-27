@@ -844,7 +844,8 @@ document.querySelectorAll(".month-group[hidden]").forEach(group => {
   }
 
   function move(direction) {
-    const visibleItems = items.filter(item => !item.closest("[hidden]"));
+    // Include photos collapsed by "show more", but exclude filtered-out sections.
+    const visibleItems = items.filter(item => !item.parentElement.closest("[hidden]"));
     if (!visibleItems.length) return;
     const position = visibleItems.indexOf(items[current]);
     const nextItem = visibleItems[(position + direction + visibleItems.length) % visibleItems.length];

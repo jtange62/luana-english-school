@@ -236,9 +236,9 @@
   }
   .fee-selector a:hover { background:#fff0dc; }
   .fee-selector a:focus-visible { outline:3px solid #644321; outline-offset:3px; }
-  .fee-card[id] { scroll-margin-top:180px; }
+  .fee-card[id], #trial { scroll-margin-top:180px; }
   @media (max-width:380px) {
-    .fee-card[id] { scroll-margin-top:220px; }
+    .fee-card[id], #trial { scroll-margin-top:220px; }
   }
   .fee-card:target { outline:3px solid #9b7752; outline-offset:4px; }
 
@@ -559,7 +559,7 @@ window.addEventListener('resize',_fixSeasonalNav);
     <h2>✨ 体験レッスン受付中！</h2>
     <p>ご希望のクラスのボタンからお申し込みください。</p>
     <p class="cta-phone" style="margin-bottom:16px;">お電話でもご相談いただけます：<a href="tel:0423067392" onclick="gtag('event','contact_phone_program')" style="color:#CC4632;font-weight:700;text-decoration:none;">042-306-7392</a></p>
-    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:16px; max-width:600px; margin:8px auto 0;">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(250px,100%),1fr)); gap:16px; max-width:600px; margin:8px auto 0;">
       <a href="https://docs.google.com/forms/d/e/1FAIpQLSc5qZmrrRXGVBSfMolVnXwwHd0w2XI0v7UeuQpOlFSLprYEBg/viewform"
         target="_blank" onclick="gtag('event','trial_lesson_peekaboo')"
         style="display:inline-block; background:linear-gradient(135deg,#FFF0EE,#FFE0DB); color:#8B5E2A;
