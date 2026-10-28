@@ -689,7 +689,7 @@ test("every possible opening photo is promoted before the carousel starts", asyn
   }
 });
 
-test("the Peekaboo and Preschool flyers are reachable from more than one place", async () => {
+test("each class flyer is reachable from more than one place", async () => {
   const newsletter = await source("newsletter.html");
 
   // Scope to the flyer section: the newsletter section below also uses .pdf-grid.
@@ -699,7 +699,9 @@ test("the Peekaboo and Preschool flyers are reachable from more than one place",
 
   for (const [page, slug, title] of [
     ["peekaboo.html", "peekaboo-class", "Peekaboo 親子クラス"],
-    ["preschool.html", "preschool-class", "1〜3歳児 プリスクール"]
+    ["preschool.html", "preschool-class", "1〜3歳児 プリスクール"],
+    ["kinder.html", "kinder-class", "Kinder School 幼稚園児クラス"],
+    ["afterschool.html", "afterschool-class", "After School 小学生クラス"]
   ]) {
     const pdf = await readFile(new URL(`../pdfs/flyers/${slug}.pdf`, import.meta.url));
     assert.equal(pdf.subarray(0, 4).toString(), "%PDF", `${slug}.pdf must be a real PDF`);
@@ -727,7 +729,7 @@ test("every archive card uses a pre-rendered thumbnail, not a PDF drawn in the b
   }
 
   const cards = html.match(/<a href="pdfs\/[^"]+\.pdf"[\s\S]*?<\/a>/g) || [];
-  assert.equal(cards.length, 13, "six flyers and seven newsletters");
+  assert.equal(cards.length, 16, "nine flyers and seven newsletters");
 
   for (const card of cards) {
     const pdf = card.match(/href="(pdfs\/[^"]+\.pdf)"/)[1];
