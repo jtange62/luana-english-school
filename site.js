@@ -201,7 +201,7 @@ const startHalloween = () => {
   overlay.innerHTML = bats.map(([top, dur, delay, size, rtl, colour]) =>
     `<div class="hw-bat${rtl ? ' hw-rtl' : ''}" style="top:${top}%;width:${size}px;color:${colour};animation-duration:${dur}s;animation-delay:${delay}s">`
     + `<div class="hw-bob" style="animation-delay:${delay / 3}s">${bat}</div></div>`).join('')
-    + [[2, 54, 0], [8.5, 40, 0.7], [null, 48, 1.4]].map(([left, size, delay]) =>
+    + [[2, 120, 0], [10, 88, 0.7], [null, 104, 1.4]].map(([left, size, delay]) =>
       `<div class="hw-pumpkin" style="${left === null ? 'right:3%' : `left:${left}%`};width:${size}px;animation-delay:${delay}s">${pumpkin}</div>`).join('');
 
   const style = document.createElement('style');
@@ -223,7 +223,7 @@ const startHalloween = () => {
     @keyframes hw-glow { from { opacity:.45; } to { opacity:1; } }
     @media (max-width: 760px) {
       .hw-bat:nth-child(n+7), .hw-pumpkin:nth-child(13) { display:none; }
-      .hw-pumpkin { scale:.7; transform-origin:50% 100%; }
+      .hw-pumpkin { scale:.6; transform-origin:50% 100%; }
     }`;
   document.head.appendChild(style);
   document.body.appendChild(overlay);
