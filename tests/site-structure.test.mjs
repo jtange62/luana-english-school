@@ -146,11 +146,11 @@ test("the 2027 new-first-grader flyer is the newest listed material", async () =
     /<section class="archive-section" aria-labelledby="flyer-heading">[\s\S]*?<\/section>/
   )[0];
   assert.ok(
-    flyerSection.indexOf("shinichinensei-2027") < flyerSection.indexOf("preschool-afterschool-2026"),
-    "the 2027 flyer must be listed first"
+    flyerSection.indexOf("shinichinensei-2027") < flyerSection.indexOf("summerschool2026"),
+    "the 2027 flyer must be listed ahead of the older flyers"
   );
   assert.doesNotMatch(
-    flyerSection.slice(flyerSection.indexOf("preschool-afterschool-2026")),
+    flyerSection.slice(flyerSection.indexOf("summerschool2026")),
     /new-badge/,
     "the badge moved to the 2027 flyer, so no later flyer may still carry it"
   );
@@ -729,7 +729,7 @@ test("every archive card uses a pre-rendered thumbnail, not a PDF drawn in the b
   }
 
   const cards = html.match(/<a href="pdfs\/[^"]+\.pdf"[\s\S]*?<\/a>/g) || [];
-  assert.equal(cards.length, 16, "nine flyers and seven newsletters");
+  assert.equal(cards.length, 15, "eight flyers and seven newsletters");
 
   for (const card of cards) {
     const pdf = card.match(/href="(pdfs\/[^"]+\.pdf)"/)[1];
