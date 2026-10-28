@@ -166,12 +166,17 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// Halloween overlay: bats drift across the page (plus glowing jack-o'-lanterns on
-// wide screens) through HALLOWEEN_UNTIL in Japan, then stops on its own. Purely
-// decorative: no pointer events, hidden from assistive tech, skipped with reduced
-// motion, and added after load so it never competes with the page's first paint.
-// Self-contained (styles included) so the whole block can be deleted after the season.
-window.addEventListener('load', () => {
+// Halloween overlay: bats and glowing jack-o'-lanterns drift over the page through
+// HALLOWEEN_UNTIL in Japan, then stop on its own. Purely decorative: no pointer
+// events, hidden from assistive tech, skipped with reduced motion. Starts on load or
+// 2.5 s after the page appears, whichever is first, so it stays out of the first paint
+// without waiting on a slow load event. Self-contained (styles included) so the whole
+// block can be deleted after the season.
+(() => {
+let started = false;
+const startHalloween = () => {
+  if (started) return;
+  started = true;
   const HALLOWEEN_UNTIL = '2026-10-31';
   const todayJst = new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
   if (todayJst > HALLOWEEN_UNTIL) return;
@@ -231,7 +236,11 @@ window.addEventListener('load', () => {
   };
   fitAboveBar();
   window.addEventListener('resize', fitAboveBar);
-});
+};
+if (document.readyState === 'complete') startHalloween();
+else window.addEventListener('load', startHalloween);
+setTimeout(startHalloween, 2500);
+})();
 
 // Scroll reveal: cards fade up as they enter the viewport. Content only hides once
 // this runs, so pages without JavaScript or with reduced motion stay fully visible.
