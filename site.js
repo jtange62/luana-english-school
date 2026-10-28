@@ -166,6 +166,73 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+// Halloween overlay: bats drift across the page (plus glowing jack-o'-lanterns on
+// wide screens) through HALLOWEEN_UNTIL in Japan, then stops on its own. Purely
+// decorative: no pointer events, hidden from assistive tech, skipped with reduced
+// motion, and added after load so it never competes with the page's first paint.
+// Self-contained (styles included) so the whole block can be deleted after the season.
+window.addEventListener('load', () => {
+  const HALLOWEEN_UNTIL = '2026-10-31';
+  const todayJst = new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  if (todayJst > HALLOWEEN_UNTIL) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const wing = 'M-2-2C-8-12-20-15-31-10C-28-6-26-1-25 4C-23 0-19 1-17 6C-15 2-11 1-9 5C-7 2-4 1-2 3z';
+  const bat = `<svg viewBox="-32 -16 64 24"><g class="hw-wing"><path d="${wing}"/><path d="${wing}" transform="scale(-1 1)"/></g>`
+    + '<path d="M-3-3-4-9-1-6h2l3-3-1 6c1 3 1 7-3 9-4-2-4-6-3-9z"/></svg>';
+  const pumpkin = '<svg viewBox="0 0 64 56"><path d="M30 10c0-5 2-8 6-9l1 3c-3 1-3 3-3 6z" fill="#3E7A3A"/>'
+    + '<ellipse cx="32" cy="32" rx="30" ry="23" fill="#E8761E"/><ellipse cx="32" cy="32" rx="14" ry="23" fill="#F2892B"/>'
+    + '<path d="M17 25l7-7 7 7zm16 0l7-7 7 7zM14 36c6 3 12 5 18 5s12-2 18-5c-2 7-9 11-18 11s-16-4-18-11z" fill="#FFE07A"/></svg>';
+
+  // [top %, flight seconds, start delay seconds, width px, right-to-left, colour]
+  // Phones show only the first six, so those are spread across the screen.
+  const bats = [[14, 19, -4, 58, 0, '#5B3E8C'], [32, 24, -15, 42, 1, '#3E5C9A'], [55, 17, -9, 50, 0, '#2E2A3F'],
+                [22, 28, 3, 36, 1, '#8A5BC2'], [70, 21, -1, 46, 1, '#5B3E8C'], [44, 26, 7, 38, 0, '#3E5C9A'],
+                [8, 23, 11, 44, 1, '#2E2A3F'], [62, 30, -20, 32, 0, '#8A5BC2'], [38, 20, 14, 48, 0, '#5B3E8C'],
+                [78, 25, 5, 34, 1, '#2E2A3F'], [27, 22, -12, 40, 0, '#3E5C9A']];
+  const overlay = document.createElement('div');
+  overlay.className = 'hw-overlay';
+  overlay.setAttribute('aria-hidden', 'true');
+  overlay.innerHTML = bats.map(([top, dur, delay, size, rtl, colour]) =>
+    `<div class="hw-bat${rtl ? ' hw-rtl' : ''}" style="top:${top}%;width:${size}px;color:${colour};animation-duration:${dur}s;animation-delay:${delay}s">`
+    + `<div class="hw-bob" style="animation-delay:${delay / 3}s">${bat}</div></div>`).join('')
+    + [[2, 54, 0], [8.5, 40, 0.7], [null, 48, 1.4]].map(([left, size, delay]) =>
+      `<div class="hw-pumpkin" style="${left === null ? 'right:3%' : `left:${left}%`};width:${size}px;animation-delay:${delay}s">${pumpkin}</div>`).join('');
+
+  const style = document.createElement('style');
+  style.textContent = `
+    .hw-overlay { position:fixed; inset:0; z-index:90; pointer-events:none; overflow:hidden; }
+    .hw-bat { position:absolute; left:0; animation:hw-fly linear infinite backwards; will-change:transform; }
+    .hw-bat.hw-rtl { animation-direction:reverse; }
+    .hw-bob { animation:hw-bob 2.6s ease-in-out infinite alternate; }
+    .hw-bat svg { display:block; width:100%; fill:currentColor; opacity:.72; }
+    .hw-wing { transform-box:fill-box; transform-origin:50% 30%; animation:hw-flap .28s ease-in-out infinite alternate; }
+    .hw-pumpkin { position:absolute; bottom:calc(var(--hw-bar, 0px) - 6px); animation:hw-wobble 3.2s ease-in-out infinite alternate; transform-origin:50% 100%; }
+    .hw-pumpkin::before { content:""; position:absolute; inset:-35%; border-radius:50%;
+      background:radial-gradient(circle, rgba(255,170,60,.55), rgba(255,140,40,0) 65%); animation:hw-glow 1.8s ease-in-out infinite alternate; }
+    .hw-pumpkin svg { position:relative; display:block; width:100%; }
+    @keyframes hw-fly { from { transform:translateX(-12vw); } to { transform:translateX(112vw); } }
+    @keyframes hw-bob { from { transform:translateY(-14px); } to { transform:translateY(14px); } }
+    @keyframes hw-flap { from { transform:scaleY(1); } to { transform:scaleY(.5); } }
+    @keyframes hw-wobble { from { transform:rotate(-3deg); } to { transform:rotate(3deg); } }
+    @keyframes hw-glow { from { opacity:.45; } to { opacity:1; } }
+    @media (max-width: 760px) {
+      .hw-bat:nth-child(n+7), .hw-pumpkin:nth-child(13) { display:none; }
+      .hw-pumpkin { scale:.7; transform-origin:50% 100%; }
+    }`;
+  document.head.appendChild(style);
+  document.body.appendChild(overlay);
+
+  // On phones the pumpkins sit on top of the fixed signup bar rather than behind it.
+  const bar = document.querySelector('.mobile-signup-bar');
+  const fitAboveBar = () => {
+    const height = bar && getComputedStyle(bar).display !== 'none' ? bar.offsetHeight : 0;
+    overlay.style.setProperty('--hw-bar', `${height}px`);
+  };
+  fitAboveBar();
+  window.addEventListener('resize', fitAboveBar);
+});
+
 // Scroll reveal: cards fade up as they enter the viewport. Content only hides once
 // this runs, so pages without JavaScript or with reduced motion stay fully visible.
 document.addEventListener('DOMContentLoaded', () => {
