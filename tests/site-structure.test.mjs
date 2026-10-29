@@ -6,6 +6,7 @@ import { runInNewContext } from "node:vm";
 const publicPages = [
   "index.html",
   "afterschool.html",
+  "events.html",
   "fees.html",
   "gallery.html",
   "kinder.html",
@@ -101,6 +102,32 @@ test("the Summer School page remains canonical and indexed", async () => {
 
   const sitemap = await source("sitemap.xml");
   assert.match(sitemap, /<loc>https:\/\/luanaenglishschool\.jp\/summer<\/loc>/);
+});
+
+test("the events page is reachable everywhere and shows only real photos", async () => {
+  for (const page of publicPages) {
+    const html = await source(page);
+    const navigation = html.match(/<ul class="nav-links">[\s\S]*?<\/ul>/)?.[0] || "";
+    assert.match(navigation, /<a href="\/events">イベント<\/a>/, `${page} is missing the Events navigation link`);
+    const footer = html.match(/<footer[\s\S]*?<\/footer>/)[0];
+    assert.match(footer, /<a href="\/events">イベント<\/a>/, `${page} footer is missing the Events link`);
+  }
+
+  const html = await source("events.html");
+  // These are members-only class events, not public ones a searcher could attend.
+  assert.doesNotMatch(html, /"@type": "Event"/);
+
+  // Every past-event card jumps to a section that exists on the page.
+  for (const [, id] of html.matchAll(/<a class="event-card" href="#([^"]+)"/g)) {
+    assert.match(html, new RegExp(`<section class="event-section" id="${id}"`), `card links to missing #${id}`);
+  }
+
+  // Every photo size the page requests must exist, or the grid shows broken tiles.
+  const photos = new Set(html.match(/photos\/[^"\s]+\.(?:webp|jpg)/g));
+  assert.ok(photos.size > 0);
+  for (const path of photos) {
+    await stat(new URL(`../${path}`, import.meta.url));
+  }
 });
 
 test("program pages show a breadcrumb whose labels match their BreadcrumbList", async () => {
