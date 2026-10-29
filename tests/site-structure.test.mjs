@@ -20,10 +20,10 @@ async function source(path) {
   return readFile(new URL(`../${path}`, import.meta.url), "utf8");
 }
 
-test("every public header links to the Japanese Summer School page", async () => {
+test("public navigation keeps the Japanese Summer School page reachable", async () => {
   for (const page of publicPages) {
     const html = await source(page);
-    const navigation = html.match(/<ul class="nav-links">[\s\S]*?<\/ul>/)?.[0] || "";
+    const navigation = page === "index.html" ? html.match(/<footer[\s\S]*?<\/footer>/)?.[0] || "" : html.match(/<ul class="nav-links">[\s\S]*?<\/ul>/)?.[0] || "";
     assert.match(
       navigation,
       /<a href="\/summer">サマースクール<\/a>/,
@@ -580,32 +580,19 @@ test("production request failures are logged without exposing request data", asy
   assert.match(worker, /pathname: url\.pathname/);
 });
 
-test("the hero carousel opens on a random slide without losing its preload", async () => {
-  const index = await source("index.html");
-  const site = await source("site.js");
-  const carousel = index.match(/<div class="hero-photo" data-hero-carousel[\s\S]*?<div class="hero-captions">/)[0];
-
-  // The head script preloads whichever slide it picks, so its list has to be
-  // the slide order exactly -- a drift would preload an image we never show.
-  const rendered = [...carousel.matchAll(/src="photos\/programs\/optimized\/480\/([^"]+)"/g)].map(m => m[1]);
-  const declared = [...index.match(/var slides = \[([\s\S]*?)\];/)[1].matchAll(/"([^"]+)"/g)].map(m => m[1]);
-  assert.deepEqual(declared, rendered, "the head script list must match the rendered slides");
-  assert.equal(rendered.length, 4);
-
-  // Pick a slide, publish the pick, and preload it at high priority.
-  assert.match(index, /Math\.floor\(Math\.random\(\) \* slides\.length\)/);
-  assert.match(index, /setAttribute\("data-hero-start", start\)/);
-  assert.match(index, /link\.setAttribute\("fetchpriority", "high"\)/);
-
-  // Visitors without JavaScript still get the first slide preloaded.
-  assert.match(index, /<noscript><link rel="preload" as="image" href="photos\/programs\/optimized\/480\/peekaboo\/peekaboo-class\.webp"/);
-
-  // site.js must honour the pick, and bounds-check it rather than trust it.
-  assert.match(site, /document\.documentElement\.dataset\.heroStart/);
-  assert.match(site, /startIndex >= 0 && startIndex < slides\.length/);
-
-  // Cached JS against fresh HTML would strand the pick, so the buster must move.
-  assert.notEqual(index.match(/site\.js\?v=([\w-]+)/)[1], "20260911-carousel-random");
+test("homepage class choices retain working forms without JavaScript", async () => {
+  const html = await source("index.html");
+  for (const key of ["peekaboo", "preschool", "kinder", "afterschool"]) {
+    assert.ok(html.includes(`href="#class-${key}"`));
+    const panel = html.match(new RegExp(`<section[^>]+id="class-${key}"[^>]*>[\\s\\S]*?</section>`))?.[0];
+    assert.ok(panel, key);
+    assert.doesNotMatch(panel.split(">")[0], /hidden/);
+    assert.match(panel, /https:\/\/docs\.google\.com\/forms\/d\/e\//);
+    assert.ok(panel.includes(`href="/${key}"`));
+    assert.ok(panel.includes('href="/fees"'));
+  }
+  assert.match(html, /fetchpriority="high"/);
+  assert.doesNotMatch(html, /data:image|window\.openai|プレビュー/);
 });
 
 test("the Peekaboo and Preschool flyers are reachable from more than one place", async () => {

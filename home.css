@@ -1,0 +1,81 @@
+
+    #luana-home{--lu-ink:#453728;--lu-paper:#fffdf8;--lu-soft:#f0f7f4;--lu-sky:#e2f4fb;--lu-muted:#655e54;--lu-line:#deded1;--lu-accent:#176c64;--lu-button:#fff;--lu-yellow:#ffdf86;font-family:"Noto Sans JP",system-ui,sans-serif;color:var(--lu-ink);background:var(--lu-paper);font-size:16px;line-height:1.7}
+    #luana-home *{box-sizing:border-box}
+    #luana-home button,#luana-home a{font:inherit}
+    #luana-home button{cursor:pointer}
+    #luana-home h1,#luana-home h2,#luana-home h3,#luana-home p{margin:0}
+    #luana-home h1{font-size:clamp(28px,4.8vw,46px);line-height:1.45;letter-spacing:-.025em;font-weight:700;margin:12px 0 18px}
+    #luana-home h2{font-size:25px;line-height:1.5;font-weight:700;margin:6px 0 12px}
+    #luana-home h3{font-size:17px;line-height:1.5;font-weight:700;margin-bottom:8px}
+    #luana-home .lu-header{padding:18px 5%;display:flex;gap:20px;align-items:center;justify-content:space-between}
+    #luana-home .lu-brand{font-family:Georgia,serif;font-size:25px;line-height:1.15;letter-spacing:1px;font-weight:700}
+    #luana-home .lu-brand small{display:block;font-family:system-ui,sans-serif;font-size:10px;letter-spacing:2px;margin-top:5px}
+    #luana-home .lu-nav{display:flex;align-items:center;flex-wrap:wrap;gap:18px}
+    #luana-home .lu-nav a{color:var(--lu-ink);text-decoration:none;font-size:13px}
+    #luana-home .lu-primary{display:inline-flex;justify-content:center;align-items:center;gap:12px;background:var(--lu-accent);color:var(--lu-button);border:0;border-radius:999px;padding:14px 23px;text-decoration:none;font-weight:700;min-height:46px}
+    #luana-home .lu-hero{background:var(--lu-sky);padding:40px 5%;display:grid;grid-template-columns:1.05fr 1fr;gap:30px;align-items:center}
+    #luana-home .lu-eyebrow{font-size:12px;letter-spacing:1.6px;color:var(--lu-muted);font-weight:700}
+    #luana-home .lu-hero-copy>p{margin-bottom:22px}
+    #luana-home .lu-sub{display:block;color:var(--lu-muted);font-size:12px;margin-top:10px}
+    #luana-home .lu-hero-photo{margin:0;position:relative}
+    #luana-home .lu-hero-photo img{width:100%;aspect-ratio:4/4.2;object-fit:cover;border-radius:90px 90px 18px 18px;display:block}
+    #luana-home .lu-hero-photo figcaption{background:var(--lu-paper);padding:12px 17px;border-radius:12px;margin:-28px 16px 0;position:relative;font-size:13px}
+    #luana-home .lu-strip{display:flex;justify-content:center;flex-wrap:wrap;gap:12px 32px;padding:17px;background:var(--lu-soft);font-size:13px}
+    #luana-home .lu-section{padding:36px 5%}
+    #luana-home .lu-intro{color:var(--lu-muted);margin-bottom:22px}
+    #luana-home .lu-classes{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:22px}
+    #luana-home .lu-choice{border:1px solid var(--lu-line);background:var(--lu-paper);color:var(--lu-ink);border-radius:14px;padding:18px 12px;text-align:left;min-width:0}
+    #luana-home .lu-choice[aria-pressed=true]{border:2px solid var(--lu-accent);background:var(--lu-soft);padding:17px 11px}
+    #luana-home .lu-choice span{display:block;font-size:12px;margin-top:5px}
+    #luana-home .lu-choice strong{font-size:17px;font-weight:700}
+    #luana-home .lu-selected{margin-top:16px;padding:24px;background:var(--lu-soft);border-radius:14px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}
+    #luana-home .lu-selected p{font-size:13px}
+    #luana-home .lu-detail-link{color:var(--lu-ink);font-size:12px;margin-top:8px;display:block;text-underline-offset:3px}
+    #luana-home .lu-split{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center}
+    #luana-home .lu-split img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:20px;display:block}
+    #luana-home .lu-reasons{display:grid;gap:16px;margin-top:18px}
+    #luana-home .lu-reasons p{font-size:13px;color:var(--lu-muted)}
+    #luana-home .lu-reasons strong{display:block;color:var(--lu-ink);font-size:15px}
+    #luana-home .lu-teachers{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+    #luana-home .lu-teacher{padding:20px;border:1px solid var(--lu-line);border-radius:16px}
+    #luana-home .lu-teacher p{font-size:13px;color:var(--lu-muted)}
+    #luana-home .lu-step-row{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:24px}
+    #luana-home .lu-step-num{display:inline-flex;align-items:center;justify-content:center;background:var(--lu-yellow);width:34px;height:34px;border-radius:50%;margin-bottom:12px;font-family:Georgia,serif;font-size:20px}
+    #luana-home .lu-step-row p{font-size:13px;color:var(--lu-muted)}
+    #luana-home details{border-bottom:1px solid var(--lu-line);padding:14px 0}
+    #luana-home summary{cursor:pointer;font-weight:700}
+    #luana-home details p{font-size:13px;color:var(--lu-muted);padding-top:12px}
+    #luana-home .lu-close{background:var(--lu-sky);text-align:center}
+    #luana-home .lu-booking{max-width:550px;margin:20px auto 0;padding:22px;background:var(--lu-paper);border-radius:18px;text-align:left}
+    #luana-home .lu-booking label{display:block;font-size:13px;margin-bottom:6px}
+    #luana-home select{width:100%;background:var(--lu-paper);color:var(--lu-ink);border:1px solid var(--lu-line);padding:12px;font-size:16px;border-radius:8px;margin-bottom:16px}
+    #luana-home .lu-booking .lu-primary{width:100%}
+    #luana-home .lu-line-button{background:none;color:var(--lu-ink);border:0;text-decoration:underline;text-underline-offset:4px;margin-top:14px;padding:8px}
+    #luana-home .lu-status{margin-top:12px;color:var(--lu-muted);font-size:13px}
+    #luana-home .lu-footer{padding:24px 5%;font-size:12px;color:var(--lu-muted);display:flex;gap:20px;justify-content:space-between;flex-wrap:wrap}
+    @media(max-width:640px){#luana-home .lu-nav a{display:none}#luana-home .lu-header{gap:10px}#luana-home .lu-header .lu-primary{font-size:12px;padding:10px 14px}#luana-home .lu-hero{grid-template-columns:1fr;padding-top:25px}#luana-home .lu-hero-photo img{aspect-ratio:4/2.7;border-radius:50px 50px 15px 15px}#luana-home .lu-classes{grid-template-columns:1fr 1fr}#luana-home .lu-selected,#luana-home .lu-split,#luana-home .lu-teachers{grid-template-columns:1fr}#luana-home .lu-step-row{grid-template-columns:1fr;gap:20px}#luana-home .lu-section{padding:28px 5%}#luana-home .lu-brand{font-size:21px}#luana-home h2{font-size:22px}}
+  
+body {margin:0;background:#fffdf8;} html {scroll-behavior:smooth;scroll-padding-top:100px;} [hidden]{display:none!important;}
+#luana-home {max-width:1440px;margin:auto;} #luana-home .lu-section {padding:58px max(5%,calc((100% - 1100px)/2));} #luana-home .lu-hero{padding:50px max(5%,calc((100% - 1100px)/2));}
+#luana-home .lu-header{position:sticky;top:0;z-index:20;background:#fffdf8;border-bottom:1px solid #deded1;}
+#luana-home .lu-header img{width:76px;height:76px;object-fit:contain;} #luana-home .lu-nav a{font-size:14px;} #luana-home .nav-links{display:flex;list-style:none;gap:24px;margin:0;padding:0;align-items:center;}
+#luana-home .lu-primary {color:white;} #luana-home a:focus-visible,#luana-home button:focus-visible,#luana-home select:focus-visible{outline:3px solid #a33d16;outline-offset:4px;}
+#luana-home .lu-choice {color:var(--lu-ink);text-decoration:none;} #luana-home .lu-choice[aria-current=true]{border:2px solid var(--lu-accent);background:var(--lu-soft);padding:17px 11px;}
+#luana-home .lu-panel{margin-top:16px;padding:25px;background:var(--lu-soft);border-radius:16px;display:grid;grid-template-columns:1fr auto;gap:25px;align-items:center;} #luana-home .lu-panel p{margin:8px 0;}
+#luana-home .lu-panel-links{display:flex;gap:20px;flex-wrap:wrap;} #luana-home .lu-panel-links a{color:#176c64;font-weight:700;}
+#luana-home .trial-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:25px auto;max-width:850px;}
+#luana-home .trial-action{display:block;padding:17px;border:1px solid #deded1;background:white;border-radius:12px;color:#176c64;text-align:left;font-weight:700;text-decoration:none;}
+#luana-home .trial-action:hover{background:#f0f7f4;} #luana-home .shinichinensei{grid-column:1/-1;background:#fff1cb;}
+#luana-home .lu-banner{background:#ffdf86;text-align:center;padding:10px 18px;font-size:13px;color:#453728;} #luana-home .lu-banner a{color:inherit;font-weight:700;}
+#luana-home .lu-footer{background:#453728;color:white;padding:35px 5%;} #luana-home .lu-footer a{color:#bce9e3;text-underline-offset:4px;} #luana-home .footer-links{display:flex;flex-wrap:wrap;gap:10px 20px;}
+#luana-home .lu-menu{display:none;} #luana-home .lu-access{display:grid;grid-template-columns:1fr 1fr;gap:30px;} #luana-home .lu-access a{color:#176c64;} #luana-home .lu-access p{margin:10px 0;}
+#luana-home .lu-mobile-actions{display:none;} #luana-home .lu-secondary{color:#176c64;font-weight:700;text-underline-offset:5px;display:inline-block;margin-top:18px;}
+#luana-home .lu-skip{position:absolute;left:10px;top:-100px;z-index:50;padding:15px;background:white;color:#176c64;} #luana-home .lu-skip:focus{top:10px;}
+@media(max-width:760px){#luana-home .lu-header{padding:8px 5%;} #luana-home .lu-header img{width:58px;height:58px;} #luana-home .lu-menu{display:block;background:none;color:#453728;border:1px solid #deded1;border-radius:8px;padding:10px;font:inherit;}
+#luana-home .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:#fffdf8;padding:18px 5%;box-shadow:0 8px 15px #0001;flex-direction:column;align-items:stretch;gap:0;} #luana-home .nav-links.open{display:flex;} #luana-home .nav-links a{display:block;padding:12px;}
+#luana-home .lu-section{padding:36px 5%;} #luana-home .lu-hero{padding:28px 5%;} #luana-home .lu-panel,#luana-home .lu-access{grid-template-columns:1fr;} #luana-home .trial-actions{grid-template-columns:1fr;}
+#luana-home .lu-mobile-actions{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:25;background:#fffdf8;padding:10px 12px calc(10px + env(safe-area-inset-bottom));gap:10px;border-top:1px solid #deded1;} #luana-home .lu-mobile-actions a{flex:1;text-align:center;text-decoration:none;padding:12px 8px;border-radius:12px;background:#176c64;color:white;font-size:14px;font-weight:700;} #luana-home .lu-mobile-actions a+a{background:#f0f7f4;color:#176c64;} body{padding-bottom:85px;} }
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;}}
+
+#luana-home .lu-nav > .lu-primary{display:inline-flex;color:#fff;}
+#luana-home .lu-footer{display:block;} #luana-home .lu-footer .footer-links{margin-top:20px;}
