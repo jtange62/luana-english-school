@@ -20,3 +20,4 @@ videos/summer-2026/*-original.mp4
 *.md
 Claude outputs
 .gitignore
+.vscode
