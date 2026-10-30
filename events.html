@@ -536,6 +536,15 @@ document.querySelectorAll(".nav-links a").forEach(link => {
   link.addEventListener("click", () => document.querySelector(".nav-links").classList.remove("open"));
 });
 
+// Shuffle each class's photos so repeat visitors see a different preview
+document.querySelectorAll(".photo-grid").forEach(grid => {
+  const photos = Array.from(grid.children);
+  for (let index = photos.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [photos[index], photos[randomIndex]] = [photos[randomIndex], photos[index]];
+  }
+  photos.forEach(photo => grid.appendChild(photo));
+});
 // Show the first 6 photos in each class; the rest appear on request so one class doesn't bury the next
 document.querySelectorAll(".photo-grid").forEach(grid => {
   const previewCount = Number(grid.dataset.preview) || 6;
