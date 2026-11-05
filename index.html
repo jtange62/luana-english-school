@@ -812,6 +812,19 @@
   .faq-item h3 { font-size: 1.05rem; line-height: 1.5; margin-bottom: 8px; color: #704814; }
   .faq-item p { color: #555; line-height: 1.75; }
 
+  /* ── INTERNATIONAL SCHOOL COMPARISON ── background matches the FAQ's top wave fill */
+  .intl-option { background: #FFF9EE; }
+  .intl-option .section-title, .intl-option .section-sub { text-align: center; margin-left: auto; margin-right: auto; }
+  .intl-option .section-title { font-size: clamp(1.1rem, 5.6vw, 2.4rem); }
+  .intl-option .section-tag { display: table; margin-left: auto; margin-right: auto; }
+  .intl-panel { max-width: 820px; margin: 30px auto 0; padding: 32px; background: var(--white); border: 2px solid #eadfce; border-radius: 24px; }
+  .intl-panel p { color: #555; line-height: 1.75; }
+  .intl-list { margin: 16px 0; padding-left: 1.2em; color: #555; line-height: 1.9; }
+  .intl-list strong { color: #704814; }
+  .intl-list a { display: inline-block; color: #A8341F; font-weight: 800; text-decoration: underline; }
+  .intl-cta { margin-top: 12px; text-align: center; }
+  @media (max-width: 540px) { .intl-panel { padding: 24px 18px; } }
+
   /* ── CONTACT ── */
   .contact {
     background: Linear-gradient(160deg, #F0FBFF, #FFF0F0);
@@ -1116,7 +1129,7 @@ document.querySelectorAll(".nav-links a").forEach(link => {
       </div>
       <h1><em>府中市・中河原の<br>子ども英会話教室</em></h1>
       <p class="hero-sub">
-        多摩市・聖蹟桜ヶ丘からも通いやすく、遊びや体験を通して英語を自然に使える力へ。
+        0歳から小学生までの子ども英会話・英語クラス。多摩市・聖蹟桜ヶ丘からも通いやすく、遊びや体験を通して英語を自然に使える力へ。
       </p>
       <div class="hero-cta-wrap">
         <a href="#trial" class="hero-cta">体験レッスンを予約する</a>
@@ -1312,7 +1325,7 @@ document.querySelectorAll(".nav-links a").forEach(link => {
   <div class="container">
     <div class="section-tag">🌟 Our Approach</div>
     <h2 class="section-title">私たちの教育方針</h2>
-    <p class="section-sub">All English の環境で、自然に英語を身につける。</p>
+    <p class="section-sub">All English の子ども英会話で、自然に英語を身につける。</p>
 
     <div class="approach-panel">
       <div class="approach-intro">
@@ -1357,7 +1370,7 @@ document.querySelectorAll(".nav-links a").forEach(link => {
   <div class="container">
     <div class="section-tag">📚 Classes</div>
     <h2 class="section-title">クラス一覧</h2>
-    <p class="section-sub">年齢に合わせた4つのクラスをご用意しています。</p>
+    <p class="section-sub">府中市中河原の英会話教室として、0歳から小学生まで年齢に合わせた4つのクラスをご用意しています。</p>
 
     <div class="classes-grid">
       <div style="display:flex; flex-direction:column; align-items:center; gap:16px; align-self:stretch;">
@@ -1479,6 +1492,25 @@ document.querySelectorAll(".nav-links a").forEach(link => {
           🚀 無料体験を申し込む
         </a>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- International school comparison -->
+<section class="intl-option" id="international">
+  <div class="container">
+    <div class="section-tag">🌏 International School</div>
+    <h2 class="section-title">インターナショナルスクールを<br>お探しの方へ</h2>
+    <p class="section-sub">府中市周辺でインターナショナルスクールをご検討中の方に、週1日から通える子ども英会話教室という選択肢をご紹介します。</p>
+    <div class="intl-panel">
+      <p>Luana English School は全日制のインターナショナルスクールではなく、今の生活に英語の時間をプラスできる子ども英語教室です。レッスンはネイティブ講師とバイリンガルの先生による All English。インターナショナルスクールで長年経験を積んだ保育士も在籍しています。</p>
+      <ul class="intl-list">
+        <li><strong>1〜3歳：</strong>平日2時間の<a href="/preschool">プリスクール</a></li>
+        <li><strong>3〜6歳：</strong>幼稚園のあとに通える<a href="/kinder">キンダースクール</a></li>
+        <li><strong>小学生：</strong>放課後の<a href="/afterschool">アフタースクール</a></li>
+      </ul>
+      <p>まずは体験レッスンで、お子さまに合うかご確認ください。</p>
+      <div class="intl-cta"><a href="#trial" class="hero-cta">体験レッスンを予約する</a></div>
     </div>
   </div>
 </section>
