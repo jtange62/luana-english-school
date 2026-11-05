@@ -941,8 +941,8 @@ function renderParentActivities(posts, selectedWeek) {
   if (!weekPosts.length) {
     list.innerHTML = `
       <div class="empty-week">
-        <h3>写真やお知らせはここに表示されます</h3>
-        <p>サマースクールが始まり、最初の投稿が公開されるまでお待ちください。</p>
+        <h3>現在公開中の写真はありません</h3>
+        <p>2026年サマースクールの写真の公開は終了しました。</p>
       </div>
     `;
     return;
