@@ -384,6 +384,9 @@
   .trial-action.kinder:hover { box-shadow: 0 7px 0 rgba(255,217,90,0.35); }
   .trial-action.after:hover { box-shadow: 0 7px 0 rgba(201,167,240,0.35); }
   .trial-action.shinichinensei:hover { box-shadow: 0 7px 0 #9E3524; }
+  /* Labels break only between these pieces, never inside a word like 無料体験. */
+  .trial-label { text-align: center; }
+  .trial-label .nw { display: inline-block; }
   .trial-offer { display: block; margin-top: 2px; font-size: 0.82rem; font-weight: 700; }
   .trial-note { margin-top: 18px; color: #666; font-size: 0.92rem; }
 
@@ -1223,11 +1226,11 @@ document.querySelectorAll(".nav-links a").forEach(link => {
     <h2 class="section-title">年齢からクラスを選ぶ</h2>
     <p class="section-sub">体験レッスンは<strong>無料</strong>です。お子さまの年齢に合うクラスを選んで、専用フォームからご予約ください。</p>
     <div class="trial-actions">
-      <a class="trial-action peekaboo" href="https://docs.google.com/forms/d/e/1FAIpQLSc5qZmrrRXGVBSfMolVnXwwHd0w2XI0v7UeuQpOlFSLprYEBg/viewform" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_peekaboo')">👶 Peekaboo（0〜3歳・親子）無料体験</a>
-      <a class="trial-action preschool" href="https://docs.google.com/forms/d/e/1FAIpQLScj5WNaLAc5Z9DxK1OZVFvbwyybkOBnePVofcUGATNvIcAJnQ/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_preschool')">🐣 プリスクール（1〜3歳）無料体験</a>
-      <a class="trial-action kinder" href="https://docs.google.com/forms/d/e/1FAIpQLSe1fLxRno8bzY1DzSxAqpGnieWfcCrWDZJTVNnzL8yoUu-zdQ/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_kinder')">🌻 キンダースクール（年少〜年長）無料体験</a>
-      <a class="trial-action after" href="https://docs.google.com/forms/d/e/1FAIpQLSc-GqYR10IOEfLaSN1hieuvVi3gziH-jySSuas-caJ3-MEclw/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_afterschool')">🎒 アフタースクール（小学生）無料体験</a>
-      <a class="trial-action shinichinensei" href="https://docs.google.com/forms/d/e/1FAIpQLScbYpdpnxH9C1RSn5QA94qcV8lMzo5htOqTmN7sIeFo_J1f8A/viewform?usp=dialog" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_shinichinensei')">🌸 2027年度 新1年生（現年長さん）無料体験<span class="trial-offer" data-offer-until="2026-12-31">12月31日までのご入会で入会金半額</span></a>
+      <a class="trial-action peekaboo" href="https://docs.google.com/forms/d/e/1FAIpQLSc5qZmrrRXGVBSfMolVnXwwHd0w2XI0v7UeuQpOlFSLprYEBg/viewform" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_peekaboo')"><span class="trial-label"><span class="nw">👶 Peekaboo</span><span class="nw">（0〜3歳・親子）</span><span class="nw">無料体験</span></span></a>
+      <a class="trial-action preschool" href="https://docs.google.com/forms/d/e/1FAIpQLScj5WNaLAc5Z9DxK1OZVFvbwyybkOBnePVofcUGATNvIcAJnQ/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_preschool')"><span class="trial-label"><span class="nw">🐣 プリスクール</span><span class="nw">（1〜3歳）</span><span class="nw">無料体験</span></span></a>
+      <a class="trial-action kinder" href="https://docs.google.com/forms/d/e/1FAIpQLSe1fLxRno8bzY1DzSxAqpGnieWfcCrWDZJTVNnzL8yoUu-zdQ/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_kinder')"><span class="trial-label"><span class="nw">🌻 キンダースクール</span><span class="nw">（年少〜年長）</span><span class="nw">無料体験</span></span></a>
+      <a class="trial-action after" href="https://docs.google.com/forms/d/e/1FAIpQLSc-GqYR10IOEfLaSN1hieuvVi3gziH-jySSuas-caJ3-MEclw/viewform?usp=header" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_afterschool')"><span class="trial-label"><span class="nw">🎒 アフタースクール</span><span class="nw">（小学生）</span><span class="nw">無料体験</span></span></a>
+      <a class="trial-action shinichinensei" href="https://docs.google.com/forms/d/e/1FAIpQLScbYpdpnxH9C1RSn5QA94qcV8lMzo5htOqTmN7sIeFo_J1f8A/viewform?usp=dialog" target="_blank" rel="noopener" onclick="gtag('event','trial_lesson_shinichinensei')"><span class="trial-label"><span class="nw">🌸 2027年度</span> <span class="nw">新1年生（現年長さん）</span><span class="nw">無料体験</span></span><span class="trial-offer" data-offer-until="2026-12-31">12月31日までのご入会で入会金半額</span></a>
     </div>
     <p class="trial-note">フォーム送信後、スクールから日程をご案内します。</p>
 

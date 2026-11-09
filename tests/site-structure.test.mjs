@@ -776,3 +776,22 @@ test("every archive card uses a pre-rendered thumbnail, not a PDF drawn in the b
     assert.match(img[0], /loading="(lazy|eager)"/);
   }
 });
+
+test("missing URLs get the branded 404 page, which stays out of search", async () => {
+  // Without not_found_handling the asset layer answers a miss with an empty
+  // body, and browsers show their own error screen with no way back.
+  const config = await source("wrangler.jsonc");
+  assert.equal((config.match(/"not_found_handling": "404-page"/g) || []).length, 2, "production and staging must both serve 404.html");
+
+  const page = await source("404.html");
+  assert.match(page, /<meta name="robots" content="noindex">/);
+  assert.doesNotMatch(page, /rel="canonical"/, "a 404 page must not claim a canonical URL");
+  // It is served at any depth (/a/b/c), so relative paths would break.
+  for (const [, url] of page.matchAll(/(?:href|src)="([^"]+)"/g)) {
+    assert.match(url, /^(\/|https:\/\/)/, `404.html must use absolute paths, found ${url}`);
+  }
+  assert.match(page, /href="\/#trial"/, "a lost visitor should still reach the trial forms");
+
+  const sitemap = await source("sitemap.xml");
+  assert.doesNotMatch(sitemap, /404/);
+});

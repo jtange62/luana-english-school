@@ -30,7 +30,8 @@
   },
   "assets": {
     "directory": ".",
-    "binding": "ASSETS"
+    "binding": "ASSETS",
+    "not_found_handling": "404-page"
   },
   "d1_databases": [
     {
@@ -70,7 +71,8 @@
       },
       "assets": {
         "directory": ".",
-        "binding": "ASSETS"
+        "binding": "ASSETS",
+        "not_found_handling": "404-page"
       },
       "d1_databases": [
         {

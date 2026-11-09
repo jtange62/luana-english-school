@@ -180,6 +180,7 @@
     border:2px solid var(--sky);
   }
   .hero h1 { font-family:'Baloo 2','Zen Maru Gothic',cursive; font-size:clamp(2rem,6vw,3rem); font-weight:800; color:var(--brown); margin-bottom:8px; }
+  .hero h1 .nw { display:inline-block; } /* keeps チラシ from splitting on phones */
   .hero p { font-size:0.95rem; color:#555; line-height:1.6; }
 
   .content { max-width:900px; margin:0 auto; padding:50px 20px 80px; }
@@ -346,7 +347,7 @@ window.addEventListener('resize',_fixSeasonalNav);
 <div class="hero">
   <div>
     <div class="hero-tag">📰 News & Flyers</div>
-    <h1>ニュースレター・チラシ</h1>
+    <h1><span class="nw">ニュースレター・</span><span class="nw">チラシ</span></h1>
     <p>府中市中河原の子ども英語教室 Luana English School の最新情報とご案内をお届けします！</p>
   </div>
 </div>

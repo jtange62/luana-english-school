@@ -41,7 +41,7 @@ Japanese-language marketing site for Luana English School, a children's English 
 2. Hard 404 for `/worker.js`, `/wrangler.jsonc`, `/migrations/*`, `/docs/*`.
 3. `/parents` and `/staff` → serve the corresponding HTML asset.
 4. `/api/*` → `handleApi()`.
-5. Everything else → `env.ASSETS.fetch(request)`.
+5. Everything else → `env.ASSETS.fetch(request)`. A miss returns `404.html` with status 404 (`assets.not_found_handling: "404-page"`). That page is `noindex`, uses only absolute paths because it is served at any depth, and stays out of the sitemap.
 
 **The Worker does not run for asset paths.** `run_worker_first` is not set, so Cloudflare's asset layer answers any request matching a file in the bundle *before* `fetch` executes. Only non-asset paths (`/api/*`, `/parents`, `/staff`, and the hard-404 list, all of which are absent from the bundle or listed in `.assetsignore`) reach the Worker. Consequences, verified in production on 2026-09-07:
 
