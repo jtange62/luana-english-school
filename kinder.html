@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" type="image/png" href="logo.png?v=20260814-transparent"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/favicon-96.png?v=20261117"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="/site.css?v=20261010-waves">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="canonical" href="https://luanaenglishschool.jp/kinder">
@@ -475,6 +475,8 @@
     border-radius: 0 10px 10px 0; padding: 10px 16px; margin: 0 0 26px;
     font-size: 0.9rem; color: #6E4517; line-height: 1.7;
   }
+  /* Cross-class links: padded to a comfortable tap height (WCAG 2.2 target size). */
+  .other-classes a { display:inline-block; padding:10px 4px; }
 </style>
 <!-- Google Analytics -->
 <script>
@@ -692,7 +694,7 @@ window.addEventListener('resize',_fixSeasonalNav);
     </div>
   </div>
 
-  <div role="navigation" aria-label="その他のクラス" style="text-align:center;margin:32px 0 12px;">
+  <div class="other-classes" role="navigation" aria-label="その他のクラス" style="text-align:center;margin:32px 0 12px;">
     <strong>その他のクラス：</strong>
     <a href="/peekaboo">Peekaboo（0〜3歳・親子）</a> ・ <a href="/preschool">プリスクール（1〜3歳）</a> ・ <a href="/afterschool">アフタースクール（小学生）</a>
   </div>

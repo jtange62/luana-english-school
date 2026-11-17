@@ -4,8 +4,9 @@ The archive used to draw thumbnails in the browser with pdf.js, which meant
 every visitor downloaded the full PDFs and a 372KB library to see six small
 pictures, and a <canvas> has no natural size so landscape sheets were stretched
 into the portrait card. Thumbnails are pre-rendered instead: one .webp beside
-each .pdf, always 600x800, with the sheet centred on a #2D2D2D letterbox. That
-gives landscape and portrait sheets the same card shape.
+each .pdf, always 600x800, with the sheet centred on a light #EFE7DA letterbox.
+That gives landscape and portrait sheets the same card shape. (The letterbox was
+#2D2D2D until 2026-11-17; the dark bars looked heavy on the cream page.)
 
 Dev-time tool, not part of the site. scripts/ is in .assetsignore, so nothing
 here is served. Needs PyMuPDF and Pillow, which the site itself does not.
@@ -23,7 +24,7 @@ import fitz  # PyMuPDF
 from PIL import Image
 
 WIDTH, HEIGHT = 600, 800
-LETTERBOX = (0x2D, 0x2D, 0x2D)  # --dark, the same colour as the site footer
+LETTERBOX = (0xEF, 0xE7, 0xDA)  # warm light beige, soft against the cream page
 QUALITY = 84
 SOURCES = ("pdfs/flyers/*.pdf", "pdfs/newsletters/*.pdf")
 
